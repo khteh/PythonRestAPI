@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            pipenv install
+            pipenv install flask flask-sqlalchemy psycopg2 flask-migrate flask-script marshmallow flask-bcrypt pyjwt pytest pytest-flask
             python -m pytest --version
             python -m flask --version
       - run: 
