@@ -1,0 +1,30 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/workspace
+    docker:
+      - image: circleci/python:latest
+        restart: on-failure # Restart the container if it exits due to an error
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: false # Only available in paid plan      
+      - run:
+          name: Install dependencies in src
+          command: |
+            cd src
+            pipenv install
+      - run:
+          name: Install dependencies in test
+          command: |
+            cd test
+            pipenv install
+      - run:
+          name: Tests
+          command: |
+            cd test
+            pytest -v
+      - run:
+          name: Build docker image
+          command: |
+            docker build -t khteh/pythonflaskrestapi:latest src
