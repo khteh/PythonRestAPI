@@ -3,7 +3,7 @@ version: 2.1
 #  python: circleci/python@0.2.1
 jobs:
   build_and_test:
-    executor: python/default
+    #executor: python/default
     working_directory: ~/workspace
     docker:
       - image: circleci/python:latest
