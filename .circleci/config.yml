@@ -16,7 +16,11 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan      
       - run: pipenv install
-      - run: pytest -v
+      - run: 
+          name: Run Tests
+          command: |
+            pip install pytest
+            pytest -v
       - run:
           name: Build docker image
           command: |
