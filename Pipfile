@@ -4,8 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-pytest-flask = "*"
 
 [packages]
 flask = "*"
@@ -16,6 +14,8 @@ flask-script = "*"
 marshmallow = "*"
 flask-bcrypt = "*"
 pyjwt = "*"
+pytest = "*"
+pytest-flask = "*"
 
 [requires]
 python_version = "3.8"
