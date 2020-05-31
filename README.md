@@ -42,7 +42,9 @@ python manage.py db migrate
 python manage.py db upgrade
 ```
 # Test using PyTest:
+
 * There are 7 test cases
+
 ** JWT token generation and decoding
 ** GreetingsController
 ** FibonacciController
