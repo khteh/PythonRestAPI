@@ -30,6 +30,7 @@ jobs:
           command: |
             cd test
             pip install pytest
+            pipenv install            
             pytest -v
       - run:
           name: Build docker image
