@@ -19,13 +19,12 @@ jobs:
           name: Install dependencies
           command: |
             pipenv install
-            pytest --version
-            flask --version
+            python -m pytest --version
+            python -m flask --version
       - run: 
           name: Run Tests
           command: |
-            pip install pytest flask
-            pytest -v
+            python -m pytest -v
       - run:
           name: Build docker image
           command: |
