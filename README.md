@@ -43,11 +43,10 @@ python manage.py db upgrade
 ```
 # Test using PyTest:
 
-* There are 7 test cases
-
-** JWT token generation and decoding
-** GreetingsController
-** FibonacciController
+There are 7 test cases
+* JWT token generation and decoding
+* GreetingsController
+* FibonacciController
 ```
 pytest -v
 ```
