@@ -5,9 +5,9 @@ jobs:
   build_and_test:
     executor: python/default
     working_directory: ~/workspace
-    docker:
-      - image: circleci/python:latest
-        restart: on-failure # Restart the container if it exits due to an error
+    #docker:
+    #  - image: circleci/python:latest
+    #    restart: on-failure # Restart the container if it exits due to an error
     steps:
       - checkout
       - python/load-cache
