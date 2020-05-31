@@ -1,12 +1,18 @@
-version: 2
+version: 2.1
+orbs:
+  python: circleci/python@0.2.1
 jobs:
-  build:
+  build_and_test:
+    executor: python/default
     working_directory: ~/workspace
     docker:
       - image: circleci/python:latest
         restart: on-failure # Restart the container if it exits due to an error
     steps:
       - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache      
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan      
       - run:
@@ -29,7 +35,6 @@ jobs:
           command: |
             docker build -t khteh/pythonflaskrestapi:latest src
 workflows:
-  version: 2
-  build-and-deploy:
+  main:
     jobs:
-      - build
+      - build_and_test
