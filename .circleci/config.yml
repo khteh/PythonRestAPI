@@ -29,7 +29,7 @@ jobs:
           name: Tests
           command: |
             cd test
-            pip install flask pytest
+            pip install pytest
             pytest -v
       - run:
           name: Build docker image
