@@ -10,9 +10,9 @@ jobs:
     #    restart: on-failure # Restart the container if it exits due to an error
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache      
+      #- python/load-cache
+      #- python/install-deps
+      #- python/save-cache      
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan      
       - run:
