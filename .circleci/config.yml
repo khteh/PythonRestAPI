@@ -15,7 +15,12 @@ jobs:
       #- python/save-cache      
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan      
-      - run: pipenv install
+      - run:
+          name: Install dependencies
+          command: |
+            pipenv install
+            pytest --version
+            flask --version
       - run: 
           name: Run Tests
           command: |
