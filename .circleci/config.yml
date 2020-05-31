@@ -29,7 +29,8 @@ jobs:
           name: Tests
           command: |
             cd test
-            python -m pytest -v
+            pip install pytest
+            pytest -v
       - run:
           name: Build docker image
           command: |
