@@ -1,5 +1,5 @@
 import jwt
-import os
+import os, sys
 import datetime
 from flask import json, Response, request, g
 from functools import wraps
