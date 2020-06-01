@@ -16,11 +16,15 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan      
       - run: pip install -r requirements.txt
-      - run: pytest -v -s
+      - run: pytest -v
       - run:
           name: Build docker image
           command: |
             docker build -t khteh/pythonflaskrestapi:latest src
+      - run:
+          name: Push images to docker hub
+          command: |
+            docker push khteh/pythonflaskrestapi:latest
 workflows:
   main:
     jobs:
