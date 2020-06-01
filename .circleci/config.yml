@@ -16,8 +16,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan      
       - run: pip install -r requirements.txt
-      - run: flask --version
-      - run: pytest -v
+      - run: pytest -v -s
       - run:
           name: Build docker image
           command: |
