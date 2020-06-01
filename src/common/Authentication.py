@@ -30,7 +30,7 @@ class Authentication():
                     }
                 return jwt.encode(payload, os.getenv("JWT_SECRET_KEY"), "HS512").decode("utf-8")
             except Exception as e:
-			    print("generate_token exception:", sys.exc_info()[0])
+                print("generate_token exception:", sys.exc_info()[0])
                 return Response(mimetype="application/json", response=json.dumps({"error": "Token generation error!"}), status=400)
         else:
             raise Exception("Invalid user id!")
