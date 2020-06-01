@@ -7,8 +7,6 @@ from common.Authentication import Authentication
 def test_tokengeneration_pass():
     """ JWT token generation should pass with valid user input parameter """
     token = Authentication.generate_token("test_user")
-    print(f"Authentication.generate_token response content-type: {token.headers['content-type']}, data: {token.data}")
-    print(token.__dict__)	
     assert type(token) is str
     assert token != ""
 

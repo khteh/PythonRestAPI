@@ -9,3 +9,6 @@ def app() -> Flask:
     """ Provides an instance of our Flask app """
     from app import create_app
     return create_app("development")
+
+def pytest_generate_tests(metafunc):
+        os.environ['JWT_SECRET_KEY'] = 'pythonflaskrestapipostgres'

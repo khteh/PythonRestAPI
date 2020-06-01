@@ -15,6 +15,8 @@ class Authentication():
         Generate Token
         """
         #print(f"generate_token(): user_id: {user_id}")
+        if not os.getenv("JWT_SECRET_KEY"):
+            raise Exception("Invalid user id!")
         if user_id:
             try:
                 now = datetime.datetime.utcnow()
