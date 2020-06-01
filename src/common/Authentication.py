@@ -27,10 +27,14 @@ class Authentication():
 					"aud": "urn:PythonFlaskRestAPI",
                     "user_id": user_id
 					# https://stackoverflow.com/questions/28418360/jwt-json-web-token-audience-aud-versus-client-id-whats-the-difference
-                    }
+                }
                 return jwt.encode(payload, os.getenv("JWT_SECRET_KEY"), "HS512").decode("utf-8")
             except Exception as e:
-                print("generate_token exception:", sys.exc_info()[0])
+                print("generate_token exception!")
+                print(type(e))    # the exception instance
+                print(e.args)     # arguments stored in .args
+                print(e)          # __str__ allows args to be printed directly,
+                                  # but may be overridden in exception subclasses
                 return Response(mimetype="application/json", response=json.dumps({"error": "Token generation error!"}), status=400)
         else:
             raise Exception("Invalid user id!")
