@@ -22,6 +22,9 @@ jobs:
           command: |
             docker build -t khteh/pythonflaskrestapi:latest src
       - run:
+          name: Login to docker hub
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
           name: Push images to docker hub
           command: |
             docker push khteh/pythonflaskrestapi:latest
