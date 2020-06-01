@@ -1,21 +1,21 @@
 version: 2.1
-orbs:
-  python: circleci/python@0.2.1
+#orbs:
+#  python: circleci/python@0.2.1
 jobs:
   build_and_test:
-    executor: python/default
+    #executor: python/default
     working_directory: ~/workspace
-    #docker:
-    #  - image: circleci/python:latest
+    docker:
+      - image: circleci/python:latest
     #    restart: on-failure # Restart the container if it exits due to an error
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache      
+      #- python/load-cache Successfully runs when the cache is empty. Subsequent builds failed as pytest is not found in the cache
+      #- python/install-deps
+      #- python/save-cache      
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan      
-      #- run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt
       - run: pytest -v
       - run:
           name: Build docker image
