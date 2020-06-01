@@ -50,6 +50,9 @@ There are 7 test cases
 ```
 pytest -v
 ```
+# Continuous Integration:
+* Integrated with CircleCI
+
 # Start the application:
 ```
 python src/main.py
