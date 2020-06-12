@@ -2,6 +2,7 @@
 Python RestAPI using Flask Framework.
 
 # Database setup:
+* This project uses Postgres SQL database with SQLAlchemy ORM
 ## Install python modules
 ```
 cd src
