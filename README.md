@@ -62,6 +62,35 @@ python -m src.main
 	"password": "P@$$w0rd"
 }
 ```
+* Response:
+```
+{
+    "jwt_token": "token string"
+}
+```
+## Subsequent request header:
+* Key: `api-token`
+* Value: "jwt_token" value from login request
+
+## Create Author:
+* POST http://localhost:5555/api/v1/books/author
+```
+{
+    "email": "jk@email.com",
+    "firstname": "JK",
+    "lastname": "Rowing"
+}
+```
+## Create Book:
+* POST http://localhost:5555/api/v1/books/
+```
+{
+    "author_id": 1,
+    "isbn": "987654",
+    "page_count": "456",
+    "title": "My Second Book"
+}
+```
 ## Get Requests:
 * Headers:
 ```
@@ -71,5 +100,5 @@ Vaue: jwt_token from the login response
 * visit http://localhost:5555/api/v1/greeting
 * visit http://localhost:5555/api/v1/greeting?name=MickeyMouse
 * visit http://localhost:5555/api/v1/users
-* visit http://localhost:5555/api/v1/blogs
+* visit http://localhost:5555/api/v1/books
 * visit http://localhost:5555/api/v1/fibonacci/?n=10
