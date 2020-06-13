@@ -69,8 +69,10 @@ python -m src.main
 }
 ```
 ## Subsequent request header:
-* Key: `api-token`
-* Value: "jwt_token" value from login request
+```
+Key: api-key
+Vaue: jwt_token from the login response
+```
 
 ## Create Author:
 * POST http://localhost:5555/api/v1/books/author
@@ -101,4 +103,5 @@ Vaue: jwt_token from the login response
 * visit http://localhost:5555/api/v1/greeting?name=MickeyMouse
 * visit http://localhost:5555/api/v1/users
 * visit http://localhost:5555/api/v1/books
+* visit http://localhost:5555/api/v1/books/authors
 * visit http://localhost:5555/api/v1/fibonacci/?n=10
