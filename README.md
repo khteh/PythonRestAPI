@@ -1,8 +1,8 @@
 # PythonFlaskRestAPI
-Python RestAPI using Flask Framework.
+Python RestAPI using Flask web Framework and marshmallow for SerDes.
 
 # Database setup:
-* This project uses Postgres SQL database with SQLAlchemy ORM
+* This project uses MySQL database with SQLAlchemy ORM with marshmallow for object SerDes.
 ## Install python modules
 ```
 cd src
@@ -10,38 +10,24 @@ pipenv install
 cd test
 pipenv install
 ```
-## Setup environment:
-### Windows
-```
-set FLASK_ENV=development
-set DATABASE_URL=postgres://username:password@host:port/blogsdb
-set JWT_SECRET_KEY=yoursecretkey
-```
-### UNIX
-```
-export FLASK_ENV=development
-eport DATABASE_URL=postgres://username:password@host:port/blogs
-export JWT_SECRET_KEY=yoursecretkey
-```
 ## Create Database
-`$ createdb blogs`
+* Firstly, create an empty database "library" in MySQL 8.0
 
 ## Database Migration
-```
-cd PythonFlaskRestAPI\PythonFlaskRestAPI
-```
 * run migrations initialization with db init command:
 ```
-python manage.py db init
+python -m src.manage db init
 ```
 * Populate migrations files and generate users and blogs tables with our model changes:
 ```
-python manage.py db migrate
+python -m src.manage db migrate
 ```
 * Apply the changes to the db by running the following command:
 ```
-python manage.py db upgrade
+python -m src.manage db upgrade
 ```
+There will be 3 tables, "users", "books", and "authors" created in the MySQL database "library" after the `upgrade`.
+
 # Test using PyTest:
 
 * There are 7 test cases
@@ -56,7 +42,7 @@ pytest -v
 
 # Start the application:
 ```
-python src/main.py
+python -m src.main
 ```
 ## Create User:
 * POST http://localhost:5555/api/v1/users
