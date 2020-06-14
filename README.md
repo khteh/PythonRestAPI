@@ -75,7 +75,7 @@ Vaue: jwt_token from the login response
 ```
 
 ## Create Author:
-* POST http://localhost:5555/api/v1/books/author
+* POST http://localhost:5555/api/v1/authors/
 ```
 {
     "email": "jk@email.com",
