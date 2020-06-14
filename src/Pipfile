@@ -8,13 +8,15 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-sqlalchemy = "*"
-psycopg2 = "*"
 flask-migrate = "*"
 flask-script = "*"
-marshmallow = "*"
 flask-bcrypt = "*"
 pyjwt = "*"
 python-dotenv = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

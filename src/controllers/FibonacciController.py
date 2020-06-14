@@ -1,7 +1,7 @@
 from flask import request, json, Response, Blueprint
 from datetime import datetime
-from config import app_config
-from common.Response import custom_response
+from ..config import app_config
+from ..common.Response import custom_response
 import re
 fibonacci_api = Blueprint("fibonacci", __name__)
 

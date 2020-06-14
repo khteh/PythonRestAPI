@@ -1,32 +1,27 @@
 version: 2.1
-orbs:
-  python: circleci/python@0.3.0
+#orbs:
+#  python: circleci/python@0.3.0
 jobs:
   build_and_test:
-    executor: python/default
-    #working_directory: ~/workspace
-    #docker:
-    #  - image: circleci/python:latest
+    #executor: python/default
+    working_directory: ~/workspace
+    docker:
+      - image: circleci/python:latest
     #    restart: on-failure # Restart the container if it exits due to an error
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: false # Only available in paid plan          
       - checkout
       #- python/load-cache: #Successfully runs when the cache is empty. Subsequent builds failed as pytest is not found in the cache
       #    key: pip-v1
       - restore_cache:
-          key: v2-{{ checksum "requirements.txt" }}
-      - python/install-deps
+          key: v1-{{ checksum "requirements.txt" }}
+      #- python/install-deps
       #- python/save-cache:
       #    key: pip-v1
-      - save_cache:
-          key: v2-{{ checksum "requirements.txt" }}
-          paths:
-            - /home/circleci/.local/bin
-            - /home/circleci/.local/lib
-      - setup_remote_docker:
-          docker_layer_caching: false # Only available in paid plan      
-      #- run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt
       #- run: pip install -U pytest
-      - run: pytest -v
+      #- run: pytest -v
       - run:
           name: Build docker image
           command: |
@@ -38,6 +33,11 @@ jobs:
           name: Push images to docker hub
           command: |
             docker push khteh/pythonflaskrestapi:latest
+      - save_cache:
+          key: v1-{{ checksum "requirements.txt" }}
+          paths:
+            - /home/circleci/.local/bin
+            - /home/circleci/.local/lib
 workflows:
   main:
     jobs:

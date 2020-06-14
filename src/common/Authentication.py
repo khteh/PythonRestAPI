@@ -3,7 +3,7 @@ import os, sys
 import datetime
 from flask import json, Response, request, g
 from functools import wraps
-from models.UserModel import UserModel
+from ..models.UserModel import UserModel
 # https://github.com/jpadilla/pyjwt/blob/master/docs/usage.rst
 class Authentication():
     """
@@ -80,5 +80,5 @@ class Authentication():
             if not check_user:
                 return Response(mimetype="application/json", response=json.dumps({"error": "Invalid user!"}), status=400)
             g.user = {"id": user_id}
-            return func(*args, *kwargs)
+            return func(*args, **kwargs)
         return decorated_auth_required

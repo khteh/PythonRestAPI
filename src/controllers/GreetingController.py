@@ -1,6 +1,6 @@
 from flask import request, json, Response, Blueprint
 from datetime import datetime
-from config import app_config
+from ..config import app_config
 import re
 greeting_api = Blueprint("greeting", __name__)
 
