@@ -108,6 +108,6 @@ Vaue: jwt_token from the login response
 * visit http://localhost:5555/api/v1/greeting
 * visit http://localhost:5555/api/v1/greeting?name=MickeyMouse
 * visit http://localhost:5555/api/v1/users
+* visit http://localhost:5555/api/v1/authors
 * visit http://localhost:5555/api/v1/books
-* visit http://localhost:5555/api/v1/books/authors
 * visit http://localhost:5555/api/v1/fibonacci/?n=10
