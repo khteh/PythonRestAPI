@@ -88,10 +88,16 @@ Vaue: jwt_token from the login response
 ```
 {
     "author_id": 1,
-    "isbn": "987654",
-    "page_count": "456",
-    "title": "My Second Book"
+    "isbn": "123456",
+    "page_count": "123",
+    "title": "My First Book"
 }
+```
+## Delete an author:
+* Books table has a foreign key id to Authors.id and this is defined as required in BookSchema.
+* Therefore, when a DELETE RESTful operation is sent to the application to delete an author which has associated book:
+```
+mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot be null
 ```
 ## Get Requests:
 * Headers:
