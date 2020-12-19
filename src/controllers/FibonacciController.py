@@ -1,5 +1,6 @@
 from flask import request, json, Response, Blueprint
 from datetime import datetime
+from array import array
 from ..config import app_config
 from ..common.Response import custom_response
 import re
@@ -28,4 +29,8 @@ def fib(n):
         if n <= 1:
             return n
         else:
-            return fib(n-2) + fib(n-1)
+            #return fib(n-2) + fib(n-1)
+            result = array('Q', [0,1])
+            for i in range(2, n+1):
+                result[i % 2] = result[(i - 2) % 2] + result[(i - 1) % 2]
+            return result[n % 2]
