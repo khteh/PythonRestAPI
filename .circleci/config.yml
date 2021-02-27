@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            docker build -t khteh/pythonflaskrestapi:latest src
+            docker build -t khteh/pythonflaskrestapi:latest .
       - run:
           name: Login to docker hub
           command: docker login -u $DOCKER_USER -p $DOCKER_PASS
