@@ -7,3 +7,4 @@ flask-bcrypt
 pyjwt
 pytest
 pytest-flask
+psycopg2
