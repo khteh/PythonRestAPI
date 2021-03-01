@@ -11,6 +11,8 @@ if __name__ == '__main__':
         PORT = 8080
     env_name = os.getenv('ENV', "Please set ENV in .env")
     print(f"env_name: {env_name}, __name__: {__name__}, {HOST}:{PORT}")
+	# for v in re.findall(r'0x[0-9a-fA-F]+|\d+', value):
+	#    print(f"value: {int(v, 0)}")
     app = create_app(env_name)
     bcrypt.init_app(app)
     db.init_app(app)
