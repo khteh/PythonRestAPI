@@ -18,7 +18,7 @@ def create_app(env_name) -> Flask:
     Create App
     """
     # App initialization
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
     app.config.from_object(app_config[env_name])
     # initializing bcrypt
     bcrypt.init_app(app)
