@@ -32,7 +32,7 @@ There will be 3 tables, "users", "books", and "authors" created in the MySQL dat
 
 * There are 7 test cases
   - JWT token generation and decoding
-  - GreetingsController
+  - HomeController
   - FibonacciController
 ```
 pytest -v
@@ -45,7 +45,7 @@ pytest -v
 python -m src.main
 ```
 ## Create User:
-* POST http://localhost:5555/api/v1/users
+* POST http://localhost:8080/api/v1/users
 ```
 {
 	"firstname": "First Name",
@@ -55,7 +55,7 @@ python -m src.main
 }
 ```
 ## Login:
-* POST http://localhost:5555/api/v1/users/login
+* POST http://localhost:8080/api/v1/users/login
 ```
 {
 	"email": "firstname.lastname@email.com",
@@ -75,7 +75,7 @@ Vaue: jwt_token from the login response
 ```
 
 ## Create Author:
-* POST http://localhost:5555/api/v1/authors/
+* POST http://localhost:8080/api/v1/authors/
 ```
 {
     "email": "jk@email.com",
@@ -84,7 +84,7 @@ Vaue: jwt_token from the login response
 }
 ```
 ## Create Book:
-* POST http://localhost:5555/api/v1/books/
+* POST http://localhost:8080/api/v1/books/
 ```
 {
     "author_id": 1,
@@ -105,9 +105,7 @@ mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot b
 Key: api-key
 Vaue: jwt_token from the login response
 ```
-* visit http://localhost:5555/api/v1/greeting
-* visit http://localhost:5555/api/v1/greeting?name=MickeyMouse
-* visit http://localhost:5555/api/v1/users
-* visit http://localhost:5555/api/v1/authors
-* visit http://localhost:5555/api/v1/books
-* visit http://localhost:5555/api/v1/fibonacci/?n=10
+* visit http://localhost:8080
+* visit http://localhost:8080/api/v1/users
+* visit http://localhost:8080/api/v1/authors
+* visit http://localhost:8080/api/v1/books
