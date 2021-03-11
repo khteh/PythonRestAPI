@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<form action="{{url_for('home.index')}}" method="post">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<label>Name: </label>
+				</div>
+				<div class="col-md-8">
+					<input type="text" class="form-control" id="name" name="name">				
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button type="submit" class="btn btn-primary">Greet me!</button>
+			</div>
+		</div>
+	</form>
+	{% if greeting %}
+	<div class="container" style="margin-top: 10px">
+		<strong>{{ greeting }}</strong>
+	</div>
+	{% endif %}
+</div>
+{% endblock %}

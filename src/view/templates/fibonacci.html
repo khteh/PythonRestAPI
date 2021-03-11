@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<form action="{{url_for('fibonacci.fibonacci')}}" method="post">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2">
+					<label>N: </label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" class="form-control" id="n" name="n">
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button type="submit" class="btn btn-primary">Go!</button>
+			</div>
+		</div>
+	</form>
+	<div class="container" style="margin-top: 10px">
+		{% if error %}	
+		<div class="alert alert-warning alert-dismissible fade show">
+			<string>{{ error }}</strong>
+		</div>
+		{% elif fibonacci %}
+		<strong>{{ fibonacci }}</strong>		
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

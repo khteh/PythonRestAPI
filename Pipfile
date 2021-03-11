@@ -14,6 +14,9 @@ Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 Flask-Script = "*"
 Flask-Bcrypt = "*"
+Flask-CORS = "*"
+Flask-WTF = "*"
+wtforms = "*"
 PyJWT = "*"
 
 [requires]
