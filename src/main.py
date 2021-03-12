@@ -1,4 +1,4 @@
-import os
+import os, re
 from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_cors import CORS
@@ -16,8 +16,34 @@ if __name__ == '__main__':
 	# for v in re.findall(r'0x[0-9a-fA-F]+|\d+', value):
 	#    print(f"value: {int(v, 0)}")
     app = create_app(env_name)
-    CORS(app, supports_credentials=True)
+    CORS(app, supports_credentials = True)
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
+    regex = "^([\w\d\-_\s])+$"
+    #regex = "[a-zA-Z\d\-_ ]*"
+    if re.match(regex, "Hello World"):
+        print(f"Match!")
+    else:
+        print(f"No match!")
+    if re.match(regex, "Hello-World"):
+        print(f"Match!")
+    else:
+        print(f"No match!")
+    if re.match(regex, "Hello_World"):
+        print(f"Match!")
+    else:
+        print(f"No match!")
+    if re.match(regex, "Hello World 123"):
+        print(f"Match!")
+    else:
+        print(f"No match!")		
+    if re.match(regex, "Hello World!!!"):
+        print(f"Match!")
+    else:
+        print(f"No match!")		
+    if re.match(regex, "Hello World ~!@#$%^&*()_+"):
+        print(f"Match!")
+    else:
+        print(f"No match!")				
     app.run(HOST, PORT)

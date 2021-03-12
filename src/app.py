@@ -26,7 +26,7 @@ def create_app(env_name) -> Flask:
     wsgi_app = app.wsgi_app
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(fibonacci_blueprint, url_prefix="/fibonacci")
-    app.register_blueprint(user_blueprint, url_prefix="/api/v1/users")
+    app.register_blueprint(user_blueprint, url_prefix="/user")
     app.register_blueprint(author_blueprint, url_prefix="/api/v1/authors")
     app.register_blueprint(book_blueprint, url_prefix="/api/v1/books")
     return app
