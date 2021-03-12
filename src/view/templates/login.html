@@ -17,7 +17,7 @@
 												Please login to continue:
 										</h1>
 									</div>
-									<form method="POST" class="form-horizontal needs-validation" action="{{ url_for('user.login')}}">
+									<form method="POST" class="form-horizontal needs-validation" action="{{ url_for('auth.login')}}">
 										<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 										<div class="form-group row">
 											<div class="col-md-4">

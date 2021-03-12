@@ -6,6 +6,7 @@ from flask import Flask
 from flask import request
 from datetime import datetime
 from .config import app_config
+from .controllers.AuthenticationController import auth_api as auth_blueprint
 from .controllers.UserController import user_api as user_blueprint
 from .controllers.AuthorController import author_api as author_blueprint
 from .controllers.BookController import book_api as book_blueprint
@@ -26,7 +27,8 @@ def create_app(env_name) -> Flask:
     wsgi_app = app.wsgi_app
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(fibonacci_blueprint, url_prefix="/fibonacci")
-    app.register_blueprint(user_blueprint, url_prefix="/user")
+    app.register_blueprint(auth_blueprint, url_prefix="/auth")
+    app.register_blueprint(user_blueprint, url_prefix="/users")
     app.register_blueprint(author_blueprint, url_prefix="/api/v1/authors")
     app.register_blueprint(book_blueprint, url_prefix="/api/v1/books")
     return app
