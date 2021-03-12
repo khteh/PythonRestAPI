@@ -10,7 +10,7 @@ user_schema = UserSchema()
 def inject_now():
     return {'now': datetime.utcnow()}
 
-@user_api.route("/", methods=["POST"])
+@user_api.route("/create", methods=["POST"])
 def create():
     """
     Create User
@@ -40,7 +40,7 @@ def create():
         print(f"create() error! {errors}")		
         return custom_response(error, 500)
 
-@user_api.route("/")
+@user_api.route("/all")
 @Authentication.auth_required
 def get_all():
     return custom_response(user_schema.dump(UserModel.get_users(), many=True), 200)
@@ -93,9 +93,9 @@ def delete():
     print(f"User {g.user.get('id')} deleted successfully!")
     return custom_response({"message": f"User {g.user.get('id')} deleted successfully!"}, 204)
 
-@user_api.route("/me")
+@user_api.route("/")
 @Authentication.auth_required
-def me():
+def index():
     """
     Get me
     """
