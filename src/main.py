@@ -45,5 +45,46 @@ if __name__ == '__main__':
     if re.match(regex, "Hello World ~!@#$%^&*()_+"):
         print(f"Match!")
     else:
-        print(f"No match!")				
+        print(f"No match!")
+    emailRegex = "[\w.-]+@[\w.-]+.\w+"
+    email = ""
+    if re.match(emailRegex, email):
+        print(f"Vaild email: {email}")
+    else:
+        print(f"Invalid email: {email}")	
+    email = "a@b.c"
+    if re.match(emailRegex, email):
+        print(f"Vaild email: {email}")
+    else:
+        print(f"Invalid email: {email}")
+    email = "~!@#$%^&*()_+@b.c"
+    if re.match(emailRegex, email):
+        print(f"Valid email: {email}")
+    else:
+        print(f"Invalid email: {email}")
+    email = "~!#$%^&*()_+@b.c"
+    if re.match(emailRegex, email):
+        print(f"Valid email: {email}")
+    else:
+        print(f"Invalid email: {email}")		
+    email = "kokhow.teh@b.c"
+    if re.match(emailRegex, email):
+        print(f"Valid email: {email}")
+    else:
+        print(f"Invalid email: {email}")				
+    email = "kokhow teh@b.c"
+    if re.match(emailRegex, email):
+        print(f"Valid email: {email}")
+    else:
+        print(f"Invalid email: {email}")				
+    email = "kok-how_teh@b.c"
+    if re.match(emailRegex, email):
+        print(f"Valid email: {email}")
+    else:
+        print(f"Invalid email: {email}")				
+    email = "kok-how_teh@b.c.d"
+    if re.match(emailRegex, email):
+        print(f"Valid email: {email}")
+    else:
+        print(f"Invalid email: {email}")						
     app.run(HOST, PORT)

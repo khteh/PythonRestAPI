@@ -1,7 +1,7 @@
 import jwt
 import os, sys
 import datetime
-from flask import json, Response, request, g
+from flask import request, json, Response, Blueprint, g, render_template, flash, session
 from functools import wraps
 from ..models.UserModel import UserModel
 # https://github.com/jpadilla/pyjwt/blob/master/docs/usage.rst
@@ -69,16 +69,17 @@ class Authentication():
         """
         @wraps(func)
         def decorated_auth_required(*args, **kwargs):
-            if "api-token" not in request.headers:
-                return Response(mimetype="application/json", response=json.dumps({"error": "Please login to continue!"}), status=400)
-            token = request.headers.get("api-token")
-            data = Authentication.decode_token(token)
+            #if "api-token" not in request.headers:
+            if "token" not in session or not session["token"]:
+                return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Please login to continue")
+            #token = request.headers.get("api-token")
+            data = Authentication.decode_token(session["token"])
             if data["error"]:
                 return Response(mimetype="application/json", response=json.dumps(data["error"]), status=400)
             user_id = data["data"]["user_id"]
             check_user = UserModel.get_user(user_id)
             if not check_user:
-                return Response(mimetype="application/json", response=json.dumps({"error": "Invalid user!"}), status=400)
+                return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid user!")
             g.user = {"id": user_id}
             return func(*args, **kwargs)
         return decorated_auth_required

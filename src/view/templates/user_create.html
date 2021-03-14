@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<form action="{{url_for('user.create')}}" method="post">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<label>First Name: </label>
+				</div>
+				<div class="col-md-8">
+					<input type="text" class="form-control" id="firstname" name="firstname">				
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<div class="col-md-4">
+					<label>Last Name: </label>
+				</div>
+				<div class="col-md-8">
+					<input type="text" class="form-control" id="lastname" name="lastname">				
+				</div>
+			</div>			
+			<div class="row" style="margin-top: 10px">
+				<div class="col-md-4">
+					<label>Email: </label>
+				</div>
+				<div class="col-md-8">
+					<input type="text" class="form-control" id="email" name="email">				
+				</div>
+			</div>			
+			<div class="row" style="margin-top: 10px">
+				<div class="col-md-4">
+					<label>Password: </label>
+				</div>
+				<div class="col-md-8">
+					<input type="password" class="form-control" id="password" name="password">				
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button type="submit" class="btn btn-primary">Create</button>
+			</div>
+		</div>
+	</form>
+	<hr>
+	{% if error %}
+	<div class="alert alert-warning alert-dismissible fade show">
+		<string>{{ error }}</strong>
+	</div>
+	{% endif %}
+</div>
+{% endblock %}

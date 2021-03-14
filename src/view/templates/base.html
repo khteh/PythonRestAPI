@@ -40,12 +40,18 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active"><a class="nav-link" href="{{url_for('home.index')}}">Home <span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="{{url_for('fibonacci.fibonacci')}}">Fibonacci <span class="sr-only">(current)</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="{{url_for('users.index')}}">Users <span class="sr-only">(current)</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{url_for('user.index')}}">Users <span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="#">Authors <span class="sr-only">(current)</span></a></li>
 		<li class="nav-item"><a class="nav-link" href="#">Books <span class="sr-only">(current)</span></a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{{url_for('auth.login')}}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		{% if session['logged_in'] %}   
+		<!-- Logged in -->
+		<li><a href="{{url_for('auth.logout')}}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+		{% else %}
+		<!-- Not Logged in -->
+        <li><a href="{{url_for('auth.login')}}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>		
+		{% endif %}	  
       </ul>
     </div>
   </div>
