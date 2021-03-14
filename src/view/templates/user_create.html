@@ -5,37 +5,45 @@
 		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<label>First Name: </label>
 				</div>
-				<div class="col-md-8">
+				<div class="col-md-6">
 					<input type="text" class="form-control" id="firstname" name="firstname">				
 				</div>
 			</div>
 			<div class="row" style="margin-top: 10px">
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<label>Last Name: </label>
 				</div>
-				<div class="col-md-8">
+				<div class="col-md-6">
 					<input type="text" class="form-control" id="lastname" name="lastname">				
 				</div>
 			</div>			
 			<div class="row" style="margin-top: 10px">
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<label>Email: </label>
 				</div>
-				<div class="col-md-8">
+				<div class="col-md-6">
 					<input type="text" class="form-control" id="email" name="email">				
 				</div>
 			</div>			
 			<div class="row" style="margin-top: 10px">
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<label>Password: </label>
 				</div>
-				<div class="col-md-8">
+				<div class="col-md-6">
 					<input type="password" class="form-control" id="password" name="password">				
 				</div>
 			</div>
+			<div class="row" style="margin-top: 10px">
+				<div class="col-md-2">
+					<label>Retype Password: </label>
+				</div>
+				<div class="col-md-6">
+					<input type="password" class="form-control" id="password1" name="password1">
+				</div>
+			</div>			
 			<div class="row" style="margin-top: 10px">
 				<button type="submit" class="btn btn-primary">Create</button>
 			</div>

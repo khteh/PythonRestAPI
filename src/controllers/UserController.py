@@ -32,6 +32,9 @@ def create():
             if not request.form["password"]:
                flash("Please provide an valid password!")
                return render_template("user_create.html", error="Please provide an valid password!")
+            if request.form["password1"] or request.form["password"] != request.form["password1"]:
+               flash("Password mismatch!")
+               return render_template("user_create.html", error="Password mismatch!")
             req_data = {
                "firstname": request.form["firstname"],
 			   "lastname": request.form["lastname"],

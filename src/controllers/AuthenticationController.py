@@ -1,4 +1,4 @@
-from flask import request, json, Response, Blueprint, g, render_template, flash, session
+from flask import request, json, Response, Blueprint, g, render_template, flash, session, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
 from ..models.UserModel import UserModel, UserSchema
@@ -38,7 +38,7 @@ def login():
             session['logged_in'] = True
             session["token"] = token
             #return custom_response({"jwt_token": token}, 200)
-            return render_template("index.html", title="Welcom to Python Flask RESTful API")
+            return redirect(url_for("home.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	

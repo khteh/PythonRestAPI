@@ -30,7 +30,7 @@
 <body>
 <nav role="navigation" class="navbar navbar-fixed-top navbar-expand-sm bg-info navbar-inverse">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Logo</a>  
+    <a class="navbar-brand" href="{{url_for('home.index')}}">Logo</a>  
     <div class="navbar-header">
       <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#myNavbar">
         <span class="navbar-toggler-icon"></span>
@@ -38,7 +38,6 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active"><a class="nav-link" href="{{url_for('home.index')}}">Home <span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="{{url_for('fibonacci.fibonacci')}}">Fibonacci <span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="{{url_for('user.index')}}">Users <span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="#">Authors <span class="sr-only">(current)</span></a></li>

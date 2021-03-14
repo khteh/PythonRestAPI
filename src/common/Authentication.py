@@ -75,7 +75,7 @@ class Authentication():
             #token = request.headers.get("api-token")
             data = Authentication.decode_token(session["token"])
             if data["error"]:
-                return Response(mimetype="application/json", response=json.dumps(data["error"]), status=400)
+                return render_template("login.html", title="Welcom to Python Flask RESTful API", error=data["error"])
             user_id = data["data"]["user_id"]
             check_user = UserModel.get_user(user_id)
             if not check_user:
