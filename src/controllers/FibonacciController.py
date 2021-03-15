@@ -1,8 +1,10 @@
-from flask import request, json, Response, Blueprint, flash, render_template
+from flask import request, json, Response, Blueprint, flash, render_template, session
 from datetime import datetime
 from array import array
 from ..config import app_config
 from ..common.Response import custom_response
+from ..common.Authentication import Authentication
+from ..models.UserModel import UserModel
 import re
 fibonacci_api = Blueprint("fibonacci", __name__)
 @fibonacci_api.context_processor
@@ -13,13 +15,23 @@ def inject_now():
 def fibonacci():
     fibonacci = None
     error = None
+    user = None
+    if "logged_in" in session and session["logged_in"] and "token" in session and session["token"]:
+        data = Authentication.decode_token(session["token"])
+        if data["error"]:
+            return render_template("login.html", title="Welcom to Python Flask RESTful API", error=data["error"])
+        user_id = data["data"]["user_id"]
+        print(f"User: {user_id}")
+        user = UserModel.get_user(user_id)
+        if not user:
+            return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid user!")
     if request.method == "POST":
         if request.form['n']:
             n = request.form["n"]
             if n and n.strip():
                 if n.isnumeric():
                     try:
-                        fibonacci = "Hello there, fibonacci(" + n + "): " + str(fib(int(n)))
+                        fibonacci = f"Hello {('there' if not user else user.firstname)}, fibonacci(" + n + "): " + str(fib(int(n)))
                         """Renders a greetings page."""
                     except (Exception) as error:
                         error = "Exception {0}".format(error)
