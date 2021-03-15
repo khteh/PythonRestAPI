@@ -27,13 +27,13 @@ def create():
         try:
             emailRegex = "[\w.-]+@[\w.-]+.\w+"
             if not re.match(emailRegex, request.form["email"]):
-               flash("Please provide an valid email address!")
+               flash("Please provide an valid email address!", "danger")
                return render_template("user_create.html", error="Please provide an valid email address!")
             if not request.form["password"]:
-               flash("Please provide an valid password!")
+               flash("Please provide an valid password!", "danger")
                return render_template("user_create.html", error="Please provide an valid password!")
             if request.form["password1"] or request.form["password"] != request.form["password1"]:
-               flash("Password mismatch!")
+               flash("Password mismatch!", "danger")
                return render_template("user_create.html", error="Password mismatch!")
             req_data = {
                "firstname": request.form["firstname"],

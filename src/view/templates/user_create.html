@@ -50,10 +50,19 @@
 		</div>
 	</form>
 	<hr>
-	{% if error %}
-	<div class="alert alert-warning alert-dismissible fade show">
-		<string>{{ error }}</strong>
+	<div class="container">
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+		{% for category, message in messages %}
+		<div class="alert alert-{{ category }} alert-dismissable" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="close">
+			<span aria-hidden="true">x</span>
+			</button>
+			{{ message }}
+		</div>
+		{% endfor %}
+		{% endif %}
+		{% endwith %}
 	</div>
-	{% endif %}
 </div>
 {% endblock %}
