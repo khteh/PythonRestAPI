@@ -38,7 +38,7 @@ def create():
             if not request.form["password"]:
                 flash("Please provide an valid password!", "danger")
                 return redirect(url_for("user.create"))
-            if request.form["password1"] or request.form["password"] != request.form["password1"]:
+            if not request.form["password1"] or request.form["password"] != request.form["password1"]:
                 flash("Password mismatch!", "danger")
                 return redirect(url_for("user.create"))
             req_data = {

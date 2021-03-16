@@ -42,7 +42,7 @@ def index():
             clean_name = match_object.group(0)
         else:
             clean_name = "Friend!"
-        greeting = "Hello there, " + clean_name + "! It's " + formatted_now
+        greeting = f"Hello {clean_name}! It's {formatted_now}"
         """Renders a homes page."""
     except (Exception) as error:
         greeting = "Exception {0}".format(error)
