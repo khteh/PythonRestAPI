@@ -1,5 +1,5 @@
 import re
-from flask import request, json, Response, Blueprint, g, render_template, flash
+from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
 from ..models.UserModel import UserModel, UserSchema
@@ -25,16 +25,22 @@ def create():
     """
     if request.method == "POST":
         try:
+            if not request.form["firstname"]:
+                flash("Please provide firstname!", "danger")
+                return redirect(url_for("user.create"))
+            if not request.form["lastname"]:
+                flash("Please provide lastname!", "danger")
+                return redirect(url_for("user.create"))			   
             emailRegex = "[\w.-]+@[\w.-]+.\w+"
             if not re.match(emailRegex, request.form["email"]):
-               flash("Please provide an valid email address!", "danger")
-               return render_template("user_create.html", error="Please provide an valid email address!")
+                flash("Please provide an valid email address!", "danger")
+                return redirect(url_for("user.create"))
             if not request.form["password"]:
-               flash("Please provide an valid password!", "danger")
-               return render_template("user_create.html", error="Please provide an valid password!")
+                flash("Please provide an valid password!", "danger")
+                return redirect(url_for("user.create"))
             if request.form["password1"] or request.form["password"] != request.form["password1"]:
-               flash("Password mismatch!", "danger")
-               return render_template("user_create.html", error="Password mismatch!")
+                flash("Password mismatch!", "danger")
+                return redirect(url_for("user.create"))
             req_data = {
                "firstname": request.form["firstname"],
 			   "lastname": request.form["lastname"],
