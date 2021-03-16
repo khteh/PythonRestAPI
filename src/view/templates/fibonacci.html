@@ -17,5 +17,13 @@
 			</div>
 		</div>
 	</form>
+	{% if fibonacci %}
+	<hr>
+	<div class="container" style="margin-top: 10px">
+		<div class="alert alert-warning alert-dismissible fade show">
+			<string>{{ fibonacci }}</strong>
+		</div>
+	</div>
+	{% endif %}
 </div>
 {% endblock %}

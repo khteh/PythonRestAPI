@@ -62,10 +62,10 @@
     <div class="col-sm-10 text-left" style="margin-top: 10px">
 		{% block content %}
 		{% endblock %}
-		<hr>
 		<div class="container">
 			{% with messages = get_flashed_messages(with_categories=true) %}
 			{% if messages %}
+			<hr>			
 			{% for category, message in messages %}
 			<div class="alert alert-{{ category }} alert-dismissable" role="alert">
 				<button type="button" class="close" data-dismiss="alert" aria-label="close">
