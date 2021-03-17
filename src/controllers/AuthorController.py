@@ -28,20 +28,25 @@ def create():
         try:
             if not request.form["firstname"]:
                 flash("Please provide firstname!", "danger")
-                return redirect(url_for("user.create"))
+                return redirect(url_for("author.create"))
             if not request.form["lastname"]:
                 flash("Please provide lastname!", "danger")
-                return redirect(url_for("user.create"))			   
+                return redirect(url_for("author.create"))			   
             emailRegex = "[\w.-]+@[\w.-]+.\w+"
             if not re.match(emailRegex, request.form["email"]):
                 flash("Please provide an valid email address!", "danger")
-                return redirect(url_for("user.create"))		
+                return redirect(url_for("author.create"))		
+            phoneRegex = "^(\+\d{1,3}\-?)*(\d{8,10})$"
+            if not re.match(phoneRegex, request.form["phone"]):
+                flash("Please provide an valid phone number!", "danger")
+                return redirect(url_for("author.create"))					
             req_data = {
                "firstname": request.form["firstname"],
 			   "lastname": request.form["lastname"],
 			   "email": request.form["email"],
+			   "phone": request.form["phone"],
 			}
-            print(f"create() request data: {req_data}")
+            print(f"author.create() request data: {req_data}")
             data = author_schema.load(req_data)
             if not data:
                 flash(f"Invalid input!", "danger")
