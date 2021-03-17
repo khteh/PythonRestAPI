@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-	<form action="{{url_for('user.create')}}" method="post">
+	<form action="{{url_for('author.create')}}" method="post">
 		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
@@ -11,7 +11,7 @@
 			<input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" required="1">
 		</div>
 		<div class="input-group mb-3">
-			<input type="text" class="form-control" id="email" name="email" placeholder="User's Email" required="1">
+			<input type="text" class="form-control" id="email" name="email" placeholder="Author's Email" required="1">
 			<div class="input-group-append">
 				<span class="input-group-text">@example.com</span>
 			</div>
@@ -35,8 +35,8 @@
 		<div class="form-group" style="margin-top: 10px">
 			<label class="col-md-4 control-label" for="submit"></label>
 			<div class="col-md-8">
-				<button id="submit" name="submit" class="btn btn-primary" value="1">Create Profile</button>
-				<a href="{{url_for('user.index')}}" id="cancel" name="cancel" class="btn btn-secondary">Cancel</a>
+				<button id="submit" name="submit" class="btn btn-primary" value="1">Add Author</button>
+				<a href="{{url_for('author.index')}}" id="cancel" name="cancel" class="btn btn-secondary">Cancel</a>
 			</div>
 		</div>			
 	</form>

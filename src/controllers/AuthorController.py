@@ -1,34 +1,66 @@
-from flask import request, g, Blueprint, json, Response
+import re
+from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
+from datetime import datetime
 from ..common.Authentication import Authentication
 from ..common.Response import custom_response
 from ..models.AuthorModel import AuthorModel, AuthorSchema
-author_api = Blueprint("authors", __name__)
+author_api = Blueprint("author", __name__)
 author_schema = AuthorSchema()
-@author_api.route("/", methods=["POST"])
+@author_api.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
+
+@author_api.route("/index", methods=["GET"])
+def index():
+    """
+    Author Index page
+    """
+    return render_template("authors.html", title="Welcom to Python Flask RESTful API")
+
+@author_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required
 def create():
     """
     Create Author
     """
-    try:
-        req_data = request.get_json()
-        data = author_schema.load(req_data)
-        if not data:
-            message = {"error": "Invalid input!"}
-            return custom_response(message, 400)
-        author = author_schema.dump(AuthorModel.get_author_by_email(data.get("email")))
-        if author:
-            message = {"error": "Author already exists!"}
-            return custom_response(message, 400)
-        author = AuthorModel(data)
-        author.save()
-        return custom_response(author_schema.dump(author), 201)
-    except ValidationError as err:
-        errors = err.messages
-        valid_data = err.valid_data	
-        print(f"create() error! {errors}")		
-        return custom_response(errors, 500)
+    if request.method == "POST":	
+        try:
+            if not request.form["firstname"]:
+                flash("Please provide firstname!", "danger")
+                return redirect(url_for("user.create"))
+            if not request.form["lastname"]:
+                flash("Please provide lastname!", "danger")
+                return redirect(url_for("user.create"))			   
+            emailRegex = "[\w.-]+@[\w.-]+.\w+"
+            if not re.match(emailRegex, request.form["email"]):
+                flash("Please provide an valid email address!", "danger")
+                return redirect(url_for("user.create"))		
+            req_data = {
+               "firstname": request.form["firstname"],
+			   "lastname": request.form["lastname"],
+			   "email": request.form["email"],
+			}
+            print(f"create() request data: {req_data}")
+            data = author_schema.load(req_data)
+            if not data:
+                flash(f"Invalid input!", "danger")
+                return redirect(url_for("author.create"))
+            author = author_schema.dump(AuthorModel.get_author_by_email(data.get("email")))
+            if author:
+                flash(f"Trying to create an existing author!", "danger")
+                return redirect(url_for("author.create"))
+            author = AuthorModel(data)
+            author.save()
+            flash(f"Author created successfully!", "success")
+            return redirect(url_for("author.index"))
+        except ValidationError as err:
+            errors = err.messages
+            valid_data = err.valid_data	
+            print(f"create() error! {errors}")		
+            flash(f"Failed to create author! {err.messages}", "danger")
+            return redirect(url_for("author.create"))
+    return render_template("author_create.html", title="Welcom to Python Flask RESTful API")
 		
 @author_api.route("/<int:id>")
 @Authentication.auth_required
@@ -66,7 +98,7 @@ def get_by_email(email):
     """
     return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(email)), 200)
 
-@author_api.route("/")
+@author_api.route("/all")
 @Authentication.auth_required
 def get_all():
     """
@@ -74,7 +106,7 @@ def get_all():
     """
     return custom_response(author_schema.dump(AuthorModel.get_authors(), many=True), 200)
 
-@author_api.route("/<int:id>", methods=["PUT"])
+@author_api.route("/update/<int:id>", methods=["PUT"])
 @Authentication.auth_required
 def update(id):
     """
@@ -97,7 +129,7 @@ def update(id):
         print(f"Failed to update author {id} error! {errors}")		
         return custom_response(error, 500)
 
-@author_api.route("/<int:id>", methods=["DELETE"])
+@author_api.route("/delete/<int:id>", methods=["DELETE"])
 @Authentication.auth_required
 def delete(id):
     """

@@ -51,22 +51,26 @@ def create():
             data = user_schema.load(req_data)
 		    # Check if user already exists in the database
             if not data:
-                return render_template("user_create.html", error="Invalid input!")
+                flash(f"Invalid input!", "danger")
+                return redirect(url_for("user.create"))
             user = UserModel.get_user_by_email(data.get("email"))
             if user:
-                return render_template("user_create.html", error="User alread exists!")
+                flash(f"Trying to create an existing user!", "danger")
+                return redirect(url_for("user.create"))
             user = UserModel(data)
             user.save()
             ser_data = user_schema.dump(user) #.data
 		    #print(f"create() user id: {ser_data.get('id')}")
             token = Authentication.generate_token(ser_data.get("id"))
 		    #print(f"create() token: {token}")
-            return render_template("users.html")
+            flash(f"User created successfully!", "success")
+            return redirect(url_for("user.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")
-            return render_template("user_create.html", error=errors)
+            flash(f"Failed to create user! {err.messages}", "danger")
+            return redirect(url_for("user.create"))
     return render_template("user_create.html", title="Welcom to Python Flask RESTful API")
 
 @user_api.route("/all")
@@ -86,9 +90,9 @@ def get_user(id):
         return custom_response({"error": f"User {id} not found!"}, 400)
     return custom_response(user_schema.dump(user), 200)
 
-@user_api.route("/update", methods=["PUT"])
+@user_api.route("/update/<int:id>", methods=["PUT"])
 @Authentication.auth_required
-def update():
+def update(id):
     """
     Update me
     """
@@ -111,13 +115,19 @@ def update():
 
 @user_api.route("/delete/<int:id>", methods=["DELETE"])
 @Authentication.auth_required
-def delete():
+def delete(id):
     """
     Delete me
     """
-    user = UserModel.get_user(g.user.get("id"))
-    if not user:
-        raise Exception(f"User {g.user.get('id')} not found!")
-    user.delete()
-    print(f"User {g.user.get('id')} deleted successfully!")
+    try:
+        user = UserModel.get_user(g.user.get("id"))
+        if not user:
+            raise Exception(f"User {g.user.get('id')} not found!")
+        user.delete()
+        print(f"User {g.user.get('id')} deleted successfully!")
+    except ValidationError as err:
+        errors = err.messages
+        valid_data = err.valid_data	
+        print(f"create() error! {errors}")		
+        return custom_response(error, 500)		
     return custom_response({"message": f"User {g.user.get('id')} deleted successfully!"}, 204)

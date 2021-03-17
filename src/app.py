@@ -29,6 +29,6 @@ def create_app(env_name) -> Flask:
     app.register_blueprint(fibonacci_blueprint, url_prefix="/fibonacci")
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
     app.register_blueprint(user_blueprint, url_prefix="/users")
-    app.register_blueprint(author_blueprint, url_prefix="/api/v1/authors")
-    app.register_blueprint(book_blueprint, url_prefix="/api/v1/books")
+    app.register_blueprint(author_blueprint, url_prefix="/authors")
+    app.register_blueprint(book_blueprint, url_prefix="/books")
     return app
