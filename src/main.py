@@ -20,6 +20,13 @@ if __name__ == '__main__':
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
+    numberRegex = "^(\d)+$"
+    print("Match!") if re.match(numberRegex, "123") else print("No match!") # Should match
+    print("Match!") if re.match(numberRegex, "Hello World") else print("No match!") # Should NOT match	
+    print("Match!") if re.match(numberRegex, "123 ") else print("No match!") # Should NOT match	
+    print("Match!") if re.match(numberRegex, " 123") else print("No match!") # Should NOT match	
+    print("Match!") if re.match(numberRegex, "123.") else print("No match!") # Should NOT match	
+    print("Match!") if re.match(numberRegex, "123-") else print("No match!") # Should NOT match	
     regex = "^([\w\d\-_\s])+$"
     print("Match!") if re.match(regex, "Hello World") else print("No match!") # Should match
     print("Match!") if re.match(regex, "Hello-World") else print("No match!") # Should match

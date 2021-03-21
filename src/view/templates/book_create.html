@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<form action="{{url_for('book.create')}}" method="post">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<div class="input-group mb-3 col-md-8">
+		  <div class="input-group-prepend">
+			<label class="input-group-text" for="author">Author</label>
+		  </div>
+		  <select class="custom-select" id="author" name="author">
+			<option selected>Choose...</option>
+            {% for author in authors %}
+			<option value="{{author.id}}">{{author.firstname}}, {{author.lastname}}</option>
+			{% endfor %}
+		  </select>
+		</div>		
+		<div class="row" style="margin-top: 10px">
+			<div class="col-md-2">
+				<label>Title: </label>
+			</div>
+			<div class="col-md-6">
+				<input type="text" class="form-control" id="title" name="title" required="1">
+			</div>
+		</div>
+		<div class="row" style="margin-top: 10px">
+			<div class="col-md-2">
+				<label>ISBN-10 or ISBN-13: </label>
+			</div>
+			<div class="col-md-6">
+				<input type="text" class="form-control" id="isbn" name="isbn" required="1">
+			</div>
+		</div>
+		<div class="row" style="margin-top: 10px">
+			<div class="col-md-2">
+				<label>Page Count: </label>
+			</div>
+			<div class="col-md-6">
+				<input type="text" class="form-control" id="pages" name="pages" required="1">
+			</div>
+		</div>
+		<div class="form-group" style="margin-top: 10px">
+			<label class="col-md-4 control-label" for="submit"></label>
+			<div class="col-md-8">
+				<button id="submit" name="submit" class="btn btn-primary" value="1">Add book</button>
+				<a href="{{url_for('book.index')}}" id="cancel" name="cancel" class="btn btn-secondary">Cancel</a>
+			</div>
+		</div>			
+	</form>
+</div>
+{% endblock %}

@@ -39,7 +39,7 @@
         <li class="nav-item"><a class="nav-link" href="{{url_for('fibonacci.fibonacci')}}">Fibonacci <span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="{{url_for('user.index')}}">Users <span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="{{url_for('author.index')}}">Authors <span class="sr-only">(current)</span></a></li>
-		<li class="nav-item"><a class="nav-link" href="#">Books <span class="sr-only">(current)</span></a></li>
+		<li class="nav-item"><a class="nav-link" href="{{url_for('book.index')}}">Books <span class="sr-only">(current)</span></a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		{% if session['logged_in'] %}   
