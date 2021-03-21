@@ -18,6 +18,8 @@ Flask-CORS = "*"
 Flask-WTF = "*"
 wtforms = "*"
 PyJWT = "*"
+mysql-connector-python = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"

@@ -11,3 +11,5 @@ pyjwt
 pytest
 pytest-flask
 psycopg2
+mysql-connector-python
+python-dotenv

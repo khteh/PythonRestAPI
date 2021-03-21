@@ -30,9 +30,9 @@ class Authentication():
                     "user_id": user_id
 					# https://stackoverflow.com/questions/28418360/jwt-json-web-token-audience-aud-versus-client-id-whats-the-difference
                 }
-                return jwt.encode(payload, os.getenv("JWT_SECRET_KEY"), "HS512").decode("utf-8")
+                return jwt.encode(payload, os.getenv("JWT_SECRET_KEY"), "HS512")
             except Exception as e:
-                print("generate_token exception!")
+                print("generate_token() exception!")
                 print(type(e))    # the exception instance
                 print(e.args)     # arguments stored in .args
                 print(e)          # __str__ allows args to be printed directly,
@@ -48,7 +48,7 @@ class Authentication():
         result = {"data": {}, "error": {}}
         if token:
             try:
-                payload = jwt.decode(token, os.getenv("JWT_SECRET_KEY"), audience="urn:PythonFlaskRestAPI")
+                payload = jwt.decode(token, os.getenv("JWT_SECRET_KEY"), "HS512", audience="urn:PythonFlaskRestAPI")
                 result["data"] = {"user_id": payload["user_id"]}
                 return result
             except jwt.ExpiredSignatureError as expired:
