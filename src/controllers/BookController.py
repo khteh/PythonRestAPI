@@ -44,7 +44,8 @@ def create():
             numberRegex = "^(\d)+$"
             if not re.match(numberRegex, request.form["pages"]):
                 flash("Please provide an valid page count!", "danger")
-                return redirect(url_for("book.create"))									
+                return redirect(url_for("book.create"))
+            # https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s13.html
             isbnRegex = "^(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-●]){4})[-●0-9]{17}$)(?:97[89][-●]?)?[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$"
             if not re.match(isbnRegex, request.form["isbn"]):
                 flash("Please provide an valid ISBN!", "danger")
