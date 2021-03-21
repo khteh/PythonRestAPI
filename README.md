@@ -45,7 +45,7 @@ pytest -v
 python -m src.main
 ```
 ## Create User:
-* POST http://localhost:8080/api/v1/users
+* POST http://localhost:8080/users/create
 ```
 {
 	"firstname": "First Name",
@@ -55,7 +55,7 @@ python -m src.main
 }
 ```
 ## Login:
-* POST http://localhost:8080/api/v1/users/login
+* POST http://localhost:8080/users/login
 ```
 {
 	"email": "firstname.lastname@email.com",
@@ -75,7 +75,7 @@ Vaue: jwt_token from the login response
 ```
 
 ## Create Author:
-* POST http://localhost:8080/api/v1/authors/
+* POST http://localhost:8080/authors/create
 ```
 {
     "email": "jk@email.com",
@@ -84,7 +84,7 @@ Vaue: jwt_token from the login response
 }
 ```
 ## Create Book:
-* POST http://localhost:8080/api/v1/books/
+* POST http://localhost:8080/books/create
 ```
 {
     "author_id": 1,
@@ -106,6 +106,6 @@ Key: api-key
 Vaue: jwt_token from the login response
 ```
 * visit http://localhost:8080
-* visit http://localhost:8080/api/v1/users
-* visit http://localhost:8080/api/v1/authors
-* visit http://localhost:8080/api/v1/books
+* visit http://localhost:8080/users/all
+* visit http://localhost:8080/authors/all
+* visit http://localhost:8080/books/all
