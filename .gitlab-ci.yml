@@ -1,0 +1,12 @@
+build:
+  stage: build
+  only:
+    - develop
+  script:
+    - VERSION=`cat version`.$CI_JOB_ID
+    - echo $VERSION
+    - docker build -t khteh/pythonflaskrestapi:latest .
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
+    - docker push khteh/pythonflaskrestapi:latest
+  tags:
+    - pythonflaskrestapi
