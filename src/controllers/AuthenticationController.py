@@ -74,7 +74,10 @@ def login_oidc():
                     #greeting = requests.get('http://localhost:8080/greeting', headers=headers).text
                     #return render_template("index.html")
                     print(f"[Auth] UserId: {user_id}, UserName: {username}, Email: {email}, Roles: {roles}, Profile: {profile} logged in")
-                    return redirect(session["url"] if "url" in session else url_for("home.index"))
+                    if "url" in session and session["url"]:
+                        return redirect(session["url"])
+                    else:
+                        return redirect(url_for("home.index"))
                 except Exception as e:
                     print(f"Login fails! {str(e)}")
                     return render_template("login_error.html", error_message="Invalid credentials!")
@@ -105,6 +108,7 @@ def logout_oidc():
         print(f"[Auth] UserId: {session['user']['id']}, UserName: {session['user']['username']}, Email: {session['user']['email']} logged out")
         oidc.logout()
         session["user"] = None
+        session["url"] = None
     return redirect(url_for("home.index"))
 
 @auth_api.route("/profile")
