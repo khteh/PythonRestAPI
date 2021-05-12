@@ -2,8 +2,10 @@ import jwt
 import os, sys
 import datetime
 from flask import request, json, Response, Blueprint, g, render_template, flash, session
+from flask_oidc import OpenIDConnect
 from functools import wraps
 from ..models.UserModel import UserModel
+oidc = OpenIDConnect()
 # https://github.com/jpadilla/pyjwt/blob/master/docs/usage.rst
 class Authentication():
     """
@@ -83,3 +85,6 @@ class Authentication():
             g.user = {"id": user_id}
             return func(*args, **kwargs)
         return decorated_auth_required
+
+def isAuthenticated():
+    return oidc.user_loggedin and session["user"] and session["user"]["token"]
