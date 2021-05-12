@@ -4,6 +4,7 @@ from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_cors import CORS
 from .app import create_app
 from .models import db, bcrypt
+from .common.Authentication import oidc
 load_dotenv()
 if __name__ == '__main__':
     HOST = os.environ.get('SERVER_HOST', '0.0.0.0')
@@ -20,6 +21,7 @@ if __name__ == '__main__':
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
+    oidc.init_app(app)
     numberRegex = "^(\d)+$"
     print("Match!") if re.match(numberRegex, "123") else print("No match!") # Should match
     print("Match!") if re.match(numberRegex, "Hello World") else print("No match!") # Should NOT match	
