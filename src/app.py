@@ -32,3 +32,12 @@ def create_app(env_name) -> Flask:
     app.register_blueprint(author_blueprint, url_prefix="/authors")
     app.register_blueprint(book_blueprint, url_prefix="/books")
     return app
+
+def liveness():
+    pass
+
+def readiness():
+    try:
+        db.engine.execute('select 1')
+    except Exception:
+        raise HealthError(f"Failed to connect to the database!")
