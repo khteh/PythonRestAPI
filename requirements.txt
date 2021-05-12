@@ -5,6 +5,7 @@ flask-script
 flask-wtf
 flask-cors
 flask-oidc
+flask-healthz
 wtforms
 marshmallow
 flask-bcrypt
