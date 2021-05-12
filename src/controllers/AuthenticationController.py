@@ -1,6 +1,7 @@
 from flask import request, json, Response, Blueprint, g, render_template, flash, session, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
+from base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
 from ..models.UserModel import UserModel, UserSchema
 from ..common.Authentication import Authentication
 from ..common.Response import custom_response
@@ -61,14 +62,18 @@ def login_oidc():
             user_id = info.get('sub')
             if user_id in oidc.credentials_store:
                 try:
-                    from oauth2client.client import OAuth2Credentials
-                    access_token = OAuth2Credentials.from_json(oidc.credentials_store[user_id]).access_token
+                    access_token = oidc.get_access_token()
+                    pre, tkn, post = access_token.split('.')
+                    tkn += "=" * ((4 - len(tkn) % 4) % 4)
+                    token = json.loads(b64decode(tkn))
+                    #print(f"token: {token}")
+                    roles = token["realm_access"]["roles"]
                     headers = {'Authorization': 'Bearer %s' % (access_token)}
-                    session["user"] = {"id": user_id, "username": username, "email": email, "token": access_token}
+                    session["user"] = {"id": user_id, "username": username, "email": email, "token": access_token, "roles": roles}
                     # YOLO
                     #greeting = requests.get('http://localhost:8080/greeting', headers=headers).text
                     #return render_template("index.html")
-                    print(f"[Auth] UserId: {user_id}, UserName: {username}, Email: {email} logged in")
+                    print(f"[Auth] UserId: {user_id}, UserName: {username}, Email: {email}, Roles: {roles}, Profile: {profile} logged in")
                     return redirect(session["url"] if "url" in session else url_for("home.index"))
                 except Exception as e:
                     print(f"Login fails! {str(e)}")
