@@ -11,6 +11,7 @@ class Development(object):
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    OIDC_CLIENT_SECRETS = "manifests/oidc-secret.json"
 
 class Production(object):
     """
@@ -21,6 +22,7 @@ class Production(object):
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    OIDC_CLIENT_SECRETS = "manifests/oidc-secret.json"
 
 app_config = {
     "development": Development,
