@@ -1,7 +1,7 @@
 import jwt
 import os, sys
 import datetime
-from flask import request, json, Response, Blueprint, g, render_template, flash, session
+from flask import request, json, Response, Blueprint, g, render_template, flash, session, abort
 from flask_oidc import OpenIDConnect
 from functools import wraps
 from ..models.UserModel import UserModel
@@ -86,17 +86,18 @@ class Authentication():
             return func(*args, **kwargs)
         return decorated_auth_required
 
-        def isAuthenticated():
-            return oidc.user_loggedin and "user" in session and "token" in session["user"]
+    @staticmethod
+    def isAuthenticated():
+        return oidc.user_loggedin and "user" in session and "token" in session["user"]
 
-        @staticmethod
-        def require_role(role):
-            def decorated_require_role(func):
-                @wraps(func)
-                def wrapped_require_role(*args, **kwargs):
-                    if isAuthenticated() and role in session["user"]["roles"]:
-                        return func(*args, **kwargs)
-                    else:
-                        return abort(403)
-                return wrapped_require_role
-            return decorated_require_role
+    @staticmethod
+    def require_role(role):
+        def decorated_require_role(func):
+            @wraps(func)
+            def wrapped_require_role(*args, **kwargs):
+                if Authentication.isAuthenticated() and role in session["user"]["roles"]:
+                    return func(*args, **kwargs)
+                else:
+                    return abort(403)
+            return wrapped_require_role
+        return decorated_require_role
