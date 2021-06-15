@@ -1,6 +1,4 @@
-import jwt
-import os, sys
-import datetime
+import jwt, os, sys, datetime, logging
 from flask import request, json, Response, Blueprint, g, render_template, flash, session, abort
 from flask_oidc import OpenIDConnect
 from functools import wraps
@@ -81,6 +79,7 @@ class Authentication():
             user_id = data["data"]["user_id"]
             check_user = UserModel.get_user(user_id)
             if not check_user:
+                logging.warning(f"[Auth] Invalid user {user_id}!")
                 return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid user!")
             g.user = {"id": user_id}
             return func(*args, **kwargs)

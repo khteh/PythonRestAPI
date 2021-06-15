@@ -1,4 +1,4 @@
-import re
+import re, logging
 from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
@@ -58,11 +58,13 @@ def create():
             author = AuthorModel(data)
             author.save()
             flash(f"Author created successfully!", "success")
+            logging.info(f"User {g.user.id} created author successfully!")
             return redirect(url_for("author.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
-            print(f"create() error! {errors}")		
+            print(f"create() error! {errors}")
+            logging.error(f"User {g.user.id} failed to creat author! Exception: {errors}")
             flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
     return render_template("author_create.html", title="Welcom to Python Flask RESTful API")
@@ -127,11 +129,13 @@ def update(id):
         if not author:
             return custom_response({"error": f"Author {id} not found!"}, 404)
         author.update(data)
+        logging.info(f"User {g.user.id} updated author {id} successfully!")
         return custom_response(author_schema.dump(author), 200)
     except ValidationError as err:
         errors = err.messages
-        valid_data = err.valid_data	
+        valid_data = err.valid_data
         print(f"Failed to update author {id} error! {errors}")		
+        logging.error(f"User {g.user.id} failed to update author {id}! Exception: {errors}")
         return custom_response(error, 500)
 
 @author_api.route("/delete/<int:id>", methods=["DELETE"])
@@ -147,9 +151,11 @@ def delete(id):
         data = author_schema.dump(author)
         author.delete()
         print(f"Author {id} deleted successfully!")
+        logging.warning(f"User {g.user.id} deleted author {id} successfully!")
         return custom_response({"message": f"Author {id} deleted successfully!"}, 204)
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"Failed to delete author {id} error! {errors}")		
+        logging.error(f"User {g.user.id} failed to delete author {id}! Exception: {errors}")
         return custom_response(error, 500)

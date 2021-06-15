@@ -1,4 +1,4 @@
-import re
+import re, logging
 from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
@@ -102,15 +102,17 @@ def update(id):
         if not data:
             message = {"error": "Invalid input!"}
             return custom_response(message, 400)		
-        user = UserModel.get_user(g.user.get("id"))
+        user = UserModel.get_user(g.user['id'])
         if not user:
             raise Exception(f"User {g.user.get('id')} not found!")
         user.update(data)
+        logging.info(f"User {id} updated successfully!")
         return custom_response(user_schema.dump(user), 200)
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        print(f"create() error! {errors}")		
+        print(f"create() error! {errors}")
+        logging.error(f"Failed to update user {id}! Exception: {errors}")
         return custom_response(error, 500)
 
 @user_api.route("/delete/<int:id>", methods=["DELETE"])
@@ -120,14 +122,16 @@ def delete(id):
     Delete me
     """
     try:
-        user = UserModel.get_user(g.user.get("id"))
+        user = UserModel.get_user(g.user['id'])
         if not user:
             raise Exception(f"User {g.user.get('id')} not found!")
         user.delete()
+        logging.info(f"User {id} deleted successfully!")
         print(f"User {g.user.get('id')} deleted successfully!")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        print(f"create() error! {errors}")		
+        print(f"create() error! {errors}")
+        logging.error(f"Failed to delete user {id}! Exception: {errors}")
         return custom_response(error, 500)		
     return custom_response({"message": f"User {g.user.get('id')} deleted successfully!"}, 204)

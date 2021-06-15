@@ -1,4 +1,4 @@
-import os, re
+import os, re, logging
 from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_cors import CORS
@@ -95,4 +95,5 @@ if __name__ == '__main__':
     print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")		
     phone = "+123-"
     print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")			
+    logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')	
     app.run(HOST, PORT)

@@ -1,3 +1,4 @@
+import logging
 from flask import request, json, Response, Blueprint, g, render_template, flash, session, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
@@ -31,20 +32,24 @@ def login():
             user = UserModel.get_user_by_email(data.get("email"))
             if not user:
                 #return custom_response({"error": "Invalid user!"}, 400)
+                logging.warning(f"[Auth] Invalid user {data.get('email')}!")
                 return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid user!")
             if not user.check_hash(data.get("password")):
                 #return custom_response({"error": "Invalid email or password!"}, 400)
+                logging.warning(f"[Auth] Invalid email or password {data.get('email')}!")
                 return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid email or password!")
             ser_data = user_schema.dump(user)
             token = Authentication.generate_token(ser_data.get("id"))
             session['logged_in'] = True
             session["token"] = token
             #return custom_response({"jwt_token": token}, 200)
+            logging.info(f"[Auth] User {user.email} logged in")
             return redirect(url_for("home.index"))
         except ValidationError as err:
             errors = err.messages
-            valid_data = err.valid_data	
-            print(f"create() error! {errors}")		
+            valid_data = err.valid_data
+            logging.error(f"[Auth] login() error! {errors}")
+            print(f"login() error! {errors}")		
             return render_template("login.html", title="Welcom to Python Flask RESTful API", error=errors)
     return render_template("login.html", title="Welcom to Python Flask RESTful API")
 
@@ -95,6 +100,7 @@ def logout():
     User Logout
     """
     print(f"logout()")
+    logging.info(f"[Auth] User {g.user['id']} logged out")	
     g.user = {}	
     session['logged_in'] = False
     session["token"] = ""
@@ -117,7 +123,7 @@ def profile():
     """
     Get my profile
     """
-    user = UserModel.get_user(g.user.get("id"))
+    user = UserModel.get_user(g.user['id'])
     if not user:
         raise Exception(f"User {g.user.get('id')} not found!")
     return custom_response(user_schema.dump(user), 200)
