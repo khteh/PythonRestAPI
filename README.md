@@ -10,6 +10,12 @@ pipenv install
 cd test
 pipenv install
 ```
+## To use Flask CLI in virtual environment:
+* `python -m venv venv`
+* `. venv/bin/activate`
+* `flask <command>`
+* `deactivate` to leave the venv
+
 ## Create Database
 * Firstly, create an empty database "library" in MySQL 8.0
 
@@ -18,14 +24,28 @@ pipenv install
 ```
 python -m src.manage db init
 ```
+* OR (may need to be inside the venv):
+```
+flask db init
+```
 * Populate migrations files and generate users and blogs tables with our model changes:
 ```
 python -m src.manage db migrate
 ```
+* OR (may need to be inside the venv):
+```
+flask db migrate
+```
+
 * Apply the changes to the db by running the following command:
 ```
 python -m src.manage db upgrade
 ```
+* OR (may need to be inside the venv):
+```
+flask db upgrade
+```
+
 There will be 3 tables, "users", "books", and "authors" created in the MySQL database "library" after the `upgrade`.
 
 # Test using PyTest:
