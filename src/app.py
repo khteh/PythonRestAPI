@@ -21,9 +21,6 @@ def create_app(env_name) -> Flask:
     # App initialization
     app = Flask(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
     app.config.from_object(app_config[env_name])
-    # initializing bcrypt
-    bcrypt.init_app(app)
-    db.init_app(app)
     wsgi_app = app.wsgi_app
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(healthz, url_prefix="/healthz")
