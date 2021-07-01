@@ -29,6 +29,7 @@ def create_app(env_name) -> Flask:
     app.register_blueprint(user_blueprint, url_prefix="/users")
     app.register_blueprint(author_blueprint, url_prefix="/authors")
     app.register_blueprint(book_blueprint, url_prefix="/books")
+    db.init_app(app)
     return app
 
 def liveness():
