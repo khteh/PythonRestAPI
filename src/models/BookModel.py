@@ -46,7 +46,7 @@ class BookModel(db.Model):
         return BookModel.query.filter_by(title=title)
     @staticmethod
     def get_books_like(title):
-        return BookModel.query.with_entities(BookModel.title).filter(BookModel.name.ilike(f"%{title}%")).all()
+        return BookModel.query.with_entities(BookModel.title, BbookModel.isbn).filter(BookModel.name.ilike(f"%{title}%")).all()
     def __repl__(self): # return a printable representation of BookpostModel object, in this case, we're only returning the id
         return "<id {}".format(self.id)
 class BookSchema(Schema):
