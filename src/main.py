@@ -23,19 +23,24 @@ if __name__ == '__main__':
     db.init_app(app)
     oidc.init_app(app)
     numberRegex = "^(\d)+$"
-    print("Match!") if re.match(numberRegex, "123") else print("No match!") # Should match
-    print("Match!") if re.match(numberRegex, "Hello World") else print("No match!") # Should NOT match	
-    print("Match!") if re.match(numberRegex, "123 ") else print("No match!") # Should NOT match	
-    print("Match!") if re.match(numberRegex, " 123") else print("No match!") # Should NOT match	
-    print("Match!") if re.match(numberRegex, "123.") else print("No match!") # Should NOT match	
-    print("Match!") if re.match(numberRegex, "123-") else print("No match!") # Should NOT match	
+    print("numberRegex: Match!") if re.match(numberRegex, "123") else print("numberRegex: No match!") # Should match
+    print("numberRegex: Match!") if re.match(numberRegex, "Hello World") else print("numberRegex: No match!") # Should NOT match	
+    print("numberRegex: Match!") if re.match(numberRegex, "123 ") else print("numberRegex: No match!") # Should NOT match	
+    print("numberRegex: Match!") if re.match(numberRegex, " 123") else print("numberRegex: No match!") # Should NOT match	
+    print("numberRegex: Match!") if re.match(numberRegex, "123.") else print("numberRegex: No match!") # Should NOT match	
+    print("numberRegex: Match!") if re.match(numberRegex, "123-") else print("numberRegex: No match!") # Should NOT match	
     regex = "^([\w\d\-_\s])+$"
-    print("Match!") if re.match(regex, "Hello World") else print("No match!") # Should match
-    print("Match!") if re.match(regex, "Hello-World") else print("No match!") # Should match
-    print("Match!") if re.match(regex, "Hello_World") else print("No match!") # Should match
-    print("Match!") if re.match(regex, "Hello World 123") else print("No match!") # Should match
-    print("Match!") if re.match(regex, "Hello World!!!") else print("No match!") # Should NOT match
-    print("Match!") if re.match(regex, "Hello World ~!@#$%^&*()_+") else print("No match!") # Should NOT match
+    print("regex: Match!") if re.match(regex, "Hello World") else print("regex: No match!") # Should match
+    print("regex: Match!") if re.match(regex, "Hello-World") else print("regex: No match!") # Should match
+    print("regex: Match!") if re.match(regex, "Hello_World") else print("regex: No match!") # Should match
+    print("regex: Match!") if re.match(regex, "Hello World 123") else print("regex: No match!") # Should match
+    print("regex: Match!") if re.match(regex, "Hello World!!!") else print("regex: No match!") # Should NOT match
+    print("regex: Match!") if re.match(regex, "Hello World ~!@#$%^&*()_+") else print("regex: No match!") # Should NOT match
+    lettersRegex = "^([a-zA-Z]){0,10}$"
+    print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorld") else print("lettersRegex: No match!") # Should match
+    print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorl0") else print("lettersRegex: No match!") # Should NOT match due to number
+    print("lettersRegex: Match!") if re.match(lettersRegex, "Hello Worl") else print("lettersRegex: No match!") # Should NOT match due to space
+    print("lettersRegex: Match!") if re.match(lettersRegex, "Hello World") else print("lettersRegex: No match!") # Should NOT match due to length
     emailRegex = "[\w.-]+@[\w.-]+.\w+"
     email = ""
     print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
