@@ -1,4 +1,5 @@
 from marshmallow import fields, Schema
+from sqlalchemy.sql import func
 import datetime
 from . import db, bcrypt
 from .BookModel import BookSchema
@@ -25,8 +26,8 @@ class UserModel(db.Model):
         self.email = data.get("email")
         self.phone = data.get("phone")
         self.password = self.__generate_hash(data.get("password"))
-        self.created_at = datetime.datetime.utcnow()
-        self.modified_at = datetime.datetime.utcnow()
+        self.created_at = func.now()
+        self.modified_at = func.now()
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -35,7 +36,7 @@ class UserModel(db.Model):
             if key == "password":
                 value = self.__generate_hash(value)
             setattr(self, key, value)
-        self.modified_at = datetime.datetime.utcnow()
+        self.modified_at = func.now()
         db.session.commit()
     def delete(self):
         db.session.delete(self)

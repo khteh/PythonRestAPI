@@ -1,4 +1,5 @@
 from marshmallow import fields, Schema
+from sqlalchemy.sql import func
 from .BookModel import BookSchema
 import datetime
 from . import db, bcrypt
@@ -25,15 +26,15 @@ class AuthorModel(db.Model):
         self.lastname = data.get("lastname")
         self.email = data.get("email")
         self.phone = data.get("phone")
-        self.created_at = datetime.datetime.utcnow()
-        self.modified_at = datetime.datetime.utcnow()
+        self.created_at = func.now()
+        self.modified_at = func.now()
     def save(self):
         db.session.add(self)
         db.session.commit()
     def update(self, data):
         for key, item in data.items():
             setattr(self, key, item)
-        self.modified_at = datetime.datetime.utcnow()
+        self.modified_at = func.now()
         db.session.commit()
     def delete(self):
         db.session.delete(self)

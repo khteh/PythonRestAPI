@@ -1,5 +1,6 @@
 from . import db
 from marshmallow import fields, Schema
+from sqlalchemy.sql import func
 import datetime
 
 class BookModel(db.Model):
@@ -19,15 +20,15 @@ class BookModel(db.Model):
         self.title = data.get("title")
         self.isbn = data.get("isbn")
         self.page_count = data.get("page_count")
-        self.created_at = data.get("created_at")
-        self.modified_at = data.get("modified_at")
+        self.created_at = func.now()
+        self.modified_at = func.now()
     def save(self):
         db.session.add(self)
         db.session.commit()
     def update(self, data):
         for key, item in data.items():
             setattr(self, key, item)
-        self.modified_at = datetime.datetime.utcnow
+        self.modified_at = func.now()
         db.session.commit()
     def delete(self):
         db.session.delete(self)
