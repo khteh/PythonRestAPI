@@ -13,8 +13,8 @@ class AuthorModel(db.Model):
     lastname = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     phone = db.Column(db.String(15), unique=True, nullable=True)
-    created_at = db.Column(db.DateTime)
-    modified_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime(timezone=True))
+    modified_at = db.Column(db.DateTime(timezone=True))
     books = db.relationship("BookModel", backref="authors", lazy=True)	
     # Class constructor
     def __init__(self, data):
@@ -50,6 +50,9 @@ class AuthorModel(db.Model):
     @staticmethod
     def get_author_by_email(email):
         return AuthorModel.query.filter_by(email=email).first()
+    @staticmethod
+    def isExistingAuthor(email):
+        return AuthorModel.query.filter_by(email = email).count() > 0
     @staticmethod
     def get_authors_like(name):
         return AuthorModel.query.filter(AuthorModel.firstname.ilike(f"%{name}%"), AuthorModel.lastname.ilike(f"%{name}%")).all()

@@ -35,7 +35,7 @@ def fibonacci():
                         """Renders a greetings page."""
                     except (Exception) as error:
                         error = "Exception {0}".format(error)
-                        flash(f"Fibonacci {n} failed! {error}", "error")
+                        flash(f"Fibonacci {n} failed! {error}", "danger")
                         return render_template("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator")
         if not fibonacci:
             #error = custom_response({"error": "Please provide an 'N' for the fibonacci number!"}, 400)

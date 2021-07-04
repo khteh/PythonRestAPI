@@ -13,8 +13,8 @@ class UserModel(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     phone = db.Column(db.String(15), unique=True, nullable=True)
     password = db.Column(db.String(128), nullable=True)
-    created_at = db.Column(db.DateTime)
-    modified_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime(timezone=True))
+    modified_at = db.Column(db.DateTime(timezone=True))
     # Class constructor
     def __init__(self, data):
         """
@@ -50,6 +50,9 @@ class UserModel(db.Model):
     @staticmethod
     def get_user_by_email(email):
         return UserModel.query.filter_by(email=email).first()
+    @staticmethod
+    def isExistingUser(email):
+        return UserModel.query.filter_by(email = email).count() > 0
     @staticmethod
     def get_users():
         return UserModel.query.all()

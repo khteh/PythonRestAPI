@@ -1,4 +1,4 @@
-import re
+import re, logging
 from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from datetime import datetime
 from marshmallow import ValidationError
@@ -49,7 +49,10 @@ def create():
             isbnRegex = "^(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-●]){4})[-●0-9]{17}$)(?:97[89][-●]?)?[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$"
             if not re.match(isbnRegex, request.form["isbn"]):
                 flash("Please provide an valid ISBN!", "danger")
-                return redirect(url_for("book.create"))						
+                return redirect(url_for("book.create"))
+            if BookModel.isExistingBook(request.form["isbn"]):
+                flash(f"Trying to add an existing book {request.form['isbn']}!", "danger")
+                return redirect(url_for("book.create"))				
             req_data = {
                "isbn": request.form["isbn"],
 			   "title": request.form["title"],
@@ -74,14 +77,14 @@ def create():
             book = BookModel(data)
             book.save()
             flash(f"Book created successfully!", "success")
-            logging.info(f"User {g.user.id} created a book successfully!")
+            logging.info(f"User {g.user['id']} created a book successfully!")
             return redirect(url_for("book.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")		
             flash(f"Failed to create book! {err.messages}", "danger")
-            logging.error(f"User {g.user.id} failed to create a book! Exception: {errors}")
+            logging.error(f"User {g.user['id']} failed to create a book! Exception: {errors}")
             return redirect(url_for("book.create"))
     authors = author_schema.dump(AuthorModel.get_authors(), many=True)
     print(f"{len(authors)}")# authors: {json.dumps(authors)}")
@@ -177,13 +180,13 @@ def update(id):
         if not book:
             return custom_response({"error": f"Book {id} not found!"}, 404)
         book.update(data)
-        logging.info(f"User {g.user.id} updated book {id} successfully!")
+        logging.info(f"User {g.user['id']} updated book {id} successfully!")
         return custom_response(book_schema.dump(book), 200)
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"Failed to update book {id} error! {errors}")		
-        logging.error(f"User {g.user.id} failed to update book {id}! Exception: {errors}")
+        logging.error(f"User {g.user['id']} failed to update book {id}! Exception: {errors}")
         return custom_response(error, 500)
 
 @book_api.route("/<int:id>", methods=["DELETE"])
@@ -199,11 +202,11 @@ def delete(id):
         data = book_schema.dump(book)
         book.delete()
         print(f"Book {id} deleted successfully!")
-        logging.warning(f"User {g.user.id} deleted book {id} successfully!")
+        logging.warning(f"User {g.user['id']} deleted book {id} successfully!")
         return custom_response({"message": f"Book {id} deleted successfully!"}, 204)
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"Failed to delete book {id} error! {errors}")		
-        logging.error(f"User {g.user.id} failed to delete book {id}! Exception: {errors}")
+        logging.error(f"User {g.user['id']} failed to delete book {id}! Exception: {errors}")
         return custom_response(error, 500)

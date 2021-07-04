@@ -41,6 +41,9 @@ def create():
             if not request.form["password1"] or request.form["password"] != request.form["password1"]:
                 flash("Password mismatch!", "danger")
                 return redirect(url_for("user.create"))
+            if UserModel.isExistingUser(request.form['email']):
+                flash(f"Trying to register an existing user {request.form['email']}!", "danger")
+                return redirect(url_for("user.create"))							
             req_data = {
                "firstname": request.form["firstname"],
 			   "lastname": request.form["lastname"],

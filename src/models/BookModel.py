@@ -11,8 +11,8 @@ class BookModel(db.Model):
     title = db.Column(db.String(128), nullable=False)
     isbn = db.Column(db.String(255), nullable=False)
     page_count = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime)
-    modified_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime(timezone=True))
+    modified_at = db.Column(db.DateTime(timezone=True))
     author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
     def __init__(self, data):
         self.author_id = data.get("author_id")
@@ -44,6 +44,9 @@ class BookModel(db.Model):
     @staticmethod
     def get_books_by_title(title):
         return BookModel.query.filter_by(title=title)
+    @staticmethod
+    def isExistingBook(isbn):
+        return BookModel.query.filter_by(isbn = isbn).count() > 0
     @staticmethod
     def get_books_like(title):
         return BookModel.query.with_entities(BookModel.title, BbookModel.isbn).filter(BookModel.name.ilike(f"%{title}%")).all()
