@@ -16,7 +16,7 @@ def index():
     """
     User Index page
     """
-    return render_template("users.html", title="Welcom to Python Flask RESTful API")
+    return render_template("users.html", title="Welcome to Python Flask RESTful API")
 	
 @user_api.route("/create", methods=["GET","POST"])
 def create():
@@ -74,7 +74,7 @@ def create():
             print(f"create() error! {errors}")
             flash(f"Failed to create user! {err.messages}", "danger")
             return redirect(url_for("user.create"))
-    return render_template("user_create.html", title="Welcom to Python Flask RESTful API")
+    return render_template("user_create.html", title="Welcome to Python Flask RESTful API")
 
 @user_api.route("/all")
 @Authentication.auth_required

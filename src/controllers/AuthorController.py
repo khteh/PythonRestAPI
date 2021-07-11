@@ -16,7 +16,7 @@ def index():
     """
     Author Index page
     """
-    return render_template("authors.html", title="Welcom to Python Flask RESTful API")
+    return render_template("authors.html", title="Welcome to Python Flask RESTful API")
 
 @author_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required
@@ -70,7 +70,7 @@ def create():
             logging.error(f"User {g.user['id']} failed to creat author! Exception: {errors}")
             flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
-    return render_template("author_create.html", title="Welcom to Python Flask RESTful API")
+    return render_template("author_create.html", title="Welcome to Python Flask RESTful API")
 		
 @author_api.route("/<int:id>")
 @Authentication.auth_required

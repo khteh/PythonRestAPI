@@ -19,7 +19,7 @@ def index():
     """
     Book Index page
     """
-    return render_template("books.html", title="Welcom to Python Flask RESTful API")
+    return render_template("books.html", title="Welcome to Python Flask RESTful API")
 
 @book_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required
@@ -88,7 +88,7 @@ def create():
             return redirect(url_for("book.create"))
     authors = author_schema.dump(AuthorModel.get_authors(), many=True)
     print(f"{len(authors)}")# authors: {json.dumps(authors)}")
-    return render_template("book_create.html", title="Welcom to Python Flask RESTful API", authors = authors)
+    return render_template("book_create.html", title="Welcome to Python Flask RESTful API", authors = authors)
 	
 @book_api.route("/all")
 @Authentication.auth_required

@@ -24,20 +24,20 @@ def login():
             data = user_schema.load(req_data, partial=True)
             if not data:
                 message = {"error": "Invalid input!"}
-                return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid input!")
+                return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid input!")
                 #return custom_response(message, 400)
             if not data.get("email") or not data.get("password"):
                 #return custom_response({"error": "You need an email and password to login"}, 400)
-                return render_template("login.html", title="Welcom to Python Flask RESTful API", error="You need an email and password to login")
+                return render_template("login.html", title="Welcome to Python Flask RESTful API", error="You need an email and password to login")
             user = UserModel.get_user_by_email(data.get("email"))
             if not user:
                 #return custom_response({"error": "Invalid user!"}, 400)
                 logging.warning(f"[Auth] Invalid user {data.get('email')}!")
-                return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid user!")
+                return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
             if not user.check_hash(data.get("password")):
                 #return custom_response({"error": "Invalid email or password!"}, 400)
                 logging.warning(f"[Auth] Invalid email or password {data.get('email')}!")
-                return render_template("login.html", title="Welcom to Python Flask RESTful API", error="Invalid email or password!")
+                return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
             ser_data = user_schema.dump(user)
             token = Authentication.generate_token(ser_data.get("id"))
             session['logged_in'] = True
@@ -50,8 +50,8 @@ def login():
             valid_data = err.valid_data
             logging.error(f"[Auth] login() error! {errors}")
             print(f"login() error! {errors}")		
-            return render_template("login.html", title="Welcom to Python Flask RESTful API", error=errors)
-    return render_template("login.html", title="Welcom to Python Flask RESTful API")
+            return render_template("login.html", title="Welcome to Python Flask RESTful API", error=errors)
+    return render_template("login.html", title="Welcome to Python Flask RESTful API")
 
 @auth_api.route("/login_oidc", methods=["GET", "POST"])
 @oidc.require_login
@@ -104,7 +104,7 @@ def logout():
     g.user = {}	
     session['logged_in'] = False
     session["token"] = ""
-    return render_template("login.html", title="Welcom to Python Flask RESTful API")
+    return render_template("login.html", title="Welcome to Python Flask RESTful API")
 
 @auth_api.route('/logout_oidc')
 @oidc.require_login
