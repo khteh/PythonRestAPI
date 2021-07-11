@@ -15,7 +15,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" crossorigin="anonymous" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"></script>
-
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons" >
   <!-- https://datatables.net/download/ -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.10.25/datatables.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.10.25/datatables.js"></script>
@@ -45,10 +45,10 @@
       <ul class="nav navbar-nav ms-auto">
 		{% if session['logged_in'] %}   
 		<!-- Logged in -->
-		<li><a href="{{url_for('auth.logout')}}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>Logout</a></li>
+		<li><a href="{{url_for('auth.logout')}}" class="btn btn-default btn-sm"><span class="material-icons">logout</span></a></li>
 		{% else %}
 		<!-- Not Logged in -->
-        <li><a href="{{url_for('auth.login')}}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>Login</a></li>		
+        <li><a href="{{url_for('auth.login')}}" class="btn btn-default btn-sm"><span class="material-icons">login</span></a></li>		
 		{% endif %}	  
       </ul>
     </div>
