@@ -41,8 +41,8 @@
 		<div class="form-group" style="margin-top: 10px; margin-bottom: 10px">
 			<label class="col-md-4 control-label" for="submit"></label>
 			<div class="col-md-8">
-				<button id="submit" name="submit" class="btn btn-primary mdc-icon-button material-icons" value="1">library_books</button>
-				<a href="{{url_for('book.index')}}" id="cancel" name="cancel" class="btn btn-secondary mdc-icon-button material-icons">cancel</a>
+				<button id="submit" name="submit" class="btn btn-primary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Add book">library_books</button>
+				<a href="{{url_for('book.index')}}" id="cancel" name="cancel" class="btn btn-secondary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancel">cancel</a>
 			</div>
 		</div>			
 	</form>
