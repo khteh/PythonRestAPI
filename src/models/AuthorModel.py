@@ -58,6 +58,10 @@ class AuthorModel(db.Model):
     def get_authors_like(name):
         return AuthorModel.query.filter(AuthorModel.firstname.ilike(f"%{name}%"), AuthorModel.lastname.ilike(f"%{name}%")).all()
     @staticmethod
+    def hasBooks(email):
+        author = AuthorModel.quey.filter_by(email = email).first()
+        return author and author.books
+    @staticmethod
     def get_authors():
         return AuthorModel.query.all()
     def __repl__(self): # return a printable representation of AuthorModel object, in this case we're only returning the id
