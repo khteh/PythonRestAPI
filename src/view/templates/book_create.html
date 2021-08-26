@@ -15,31 +15,24 @@
 		  </select>
 		</div>		
 		<div class="row" style="margin-top: 10px">
-			<div class="col-md-2">
-				<label>Title: </label>
-			</div>
+			<label for="title" class="col-md-2 col-form-label d-flex text-right justify-content-end">Title:</label>
 			<div class="col-md-6">
 				<input type="text" class="form-control" id="title" name="title" required>
 			</div>
 		</div>
 		<div class="row" style="margin-top: 10px">
-			<div class="col-md-2">
-				<label>ISBN-10 or ISBN-13: </label>
-			</div>
+			<label for="isbn" class="col-md-2 col-form-label d-flex text-right justify-content-end">ISBN-10 or ISBN-13:</label>
 			<div class="col-md-6">
 				<input type="text" class="form-control" id="isbn" name="isbn" required>
 			</div>
 		</div>
 		<div class="row" style="margin-top: 10px">
-			<div class="col-md-2">
-				<label>Page Count: </label>
-			</div>
+			<label for="pages" class="col-md-2 col-form-label d-flex text-right justify-content-end">Page Count:</label>
 			<div class="col-md-6">
 				<input type="text" class="form-control" id="pages" name="pages" required>
 			</div>
 		</div>
 		<div class="form-group" style="margin-top: 10px; margin-bottom: 10px">
-			<label class="col-md-4 control-label" for="submit"></label>
 			<div class="col-md-8">
 				<button id="submit" name="submit" class="btn btn-primary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Add book">library_books</button>
 				<a href="{{url_for('book.index')}}" id="cancel" name="cancel" class="btn btn-secondary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancel">cancel</a>
