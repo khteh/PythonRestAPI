@@ -36,6 +36,14 @@ if __name__ == '__main__':
     print("regex: Match!") if re.match(regex, "Hello World 123") else print("regex: No match!") # Should match
     print("regex: Match!") if re.match(regex, "Hello World!!!") else print("regex: No match!") # Should NOT match
     print("regex: Match!") if re.match(regex, "Hello World ~!@#$%^&*()_+") else print("regex: No match!") # Should NOT match
+    regexMax = "^([\w\d\-_\s]){5,10}$"
+    print("regexMax: Match!") if re.match(regexMax, "Hello-Worl") else print("regexMax: No match!") # Should match
+    print("regexMax: Match!") if re.match(regexMax, "Hello_Worl") else print("regexMax: No match!") # Should match
+    print("regexMax: Match!") if re.match(regexMax, "HelloWorl8") else print("regexMax: No match!") # Should match
+    print("regexMax: Match!") if re.match(regexMax, "Helo") else print("regexMax: No match!") # Should NOT match
+    print("regexMax: Match!") if re.match(regexMax, "HelloWorl89") else print("regexMax: No match!") # Should NOT match
+    print("regexMax: Match!") if re.match(regexMax, "Hello World ~!@#$%^&*()_+") else print("regexMax: No match!") # Should NOT match
+
     lettersRegex = "^([a-zA-Z]){0,10}$"
     print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorld") else print("lettersRegex: No match!") # Should match
     print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorl0") else print("lettersRegex: No match!") # Should NOT match due to number
