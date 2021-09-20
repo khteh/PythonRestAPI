@@ -5,10 +5,9 @@ sys.path.insert(0, abspath(join(dirname(__file__), '../src')))
 from flask import Flask
 
 @pytest.fixture
-def app() -> Flask:
-    """ Provides an instance of our Flask app """
+def request():
     from app import create_app
-    return create_app("development")
+    return create_app("development").test_client()
 
 def pytest_generate_tests(metafunc):
         os.environ['JWT_SECRET_KEY'] = 'pythonflaskrestapipostgres'
