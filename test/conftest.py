@@ -5,7 +5,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '../src')))
 from flask import Flask
 
 @pytest.fixture
-def request():
+def client():
     from app import create_app
     return create_app("development").test_client()
 
