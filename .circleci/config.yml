@@ -13,6 +13,7 @@ jobs:
           key: v1-{{ checksum "requirements.txt" }}
       - run: pip install -r requirements.txt
       #- run: pytest -v # Error importing modules/packages using relative paths
+      - run: python -m pytest
       - run:
           name: Build docker image
           command: |
