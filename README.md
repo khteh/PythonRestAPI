@@ -55,7 +55,8 @@ There will be 3 tables, "users", "books", and "authors" created in the MySQL dat
   - HomeController
   - FibonacciController
 ```
-pytest -v
+$ pytest -v
+$ python -m pytest
 ```
 # Continuous Integration:
 * Integrated with CircleCI
