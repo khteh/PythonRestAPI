@@ -2,6 +2,7 @@ import os, re, logging
 from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_cors import CORS
+from flask_healthz import Healthz
 from .app import create_app
 from .models import db, bcrypt
 from .common.Authentication import oidc
@@ -17,6 +18,7 @@ if __name__ == '__main__':
 	# for v in re.findall(r'0x[0-9a-fA-F]+|\d+', value):
 	#    print(f"value: {int(v, 0)}")
     app = create_app(env_name)
+    Healthz(app, no_log=True)
     CORS(app, supports_credentials = True)
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
