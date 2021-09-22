@@ -2,7 +2,8 @@
 This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
-from flask import Flask, request
+import quart.flask_patch
+from quart import Quart, request
 from flask_healthz import HealthError
 from datetime import datetime
 from .config import app_config
@@ -14,14 +15,13 @@ from .controllers.HomeController import home_api as home_blueprint
 from .controllers.FibonacciController import fibonacci_api as fibonacci_blueprint
 from .models import db, bcrypt
 # Make the WSGI interface available at the top level so wfastcgi can get it.
-def create_app(env_name) -> Flask:
+def create_app(env_name) -> Quart:
     """
     Create App
     """
     # App initialization
-    app = Flask(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
+    app = Quart(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
     app.config.from_object(app_config[env_name])
-    wsgi_app = app.wsgi_app
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(fibonacci_blueprint, url_prefix="/fibonacci")
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
