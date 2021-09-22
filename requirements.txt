@@ -1,9 +1,11 @@
+quart
+hypercorn[h3]
 flask
 flask-sqlalchemy
 flask-migrate
 flask-script
 flask-wtf
-flask-cors
+quart-cors
 flask-oidc
 flask-healthz
 wtforms
