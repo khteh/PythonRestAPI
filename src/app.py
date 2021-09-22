@@ -3,7 +3,7 @@ This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
 from flask import Flask, request
-from flask_healthz import healthz, HealthError
+from flask_healthz import HealthError
 from datetime import datetime
 from .config import app_config
 from .controllers.AuthenticationController import auth_api as auth_blueprint
@@ -23,7 +23,6 @@ def create_app(env_name) -> Flask:
     app.config.from_object(app_config[env_name])
     wsgi_app = app.wsgi_app
     app.register_blueprint(home_blueprint, url_prefix="/")
-    app.register_blueprint(healthz, url_prefix="/healthz")
     app.register_blueprint(fibonacci_blueprint, url_prefix="/fibonacci")
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
     app.register_blueprint(user_blueprint, url_prefix="/users")
