@@ -1,5 +1,5 @@
 import re, logging
-from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
+from quart import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from datetime import datetime
 from marshmallow import ValidationError
 from ..common.Authentication import Authentication
@@ -15,84 +15,85 @@ def inject_now():
     return {'now': datetime.utcnow()}
 
 @book_api.route("/index", methods=["GET"])
-def index():
+async def index():
     """
     Book Index page
     """
-    return render_template("books.html", title="Welcome to Python Flask RESTful API")
+    return await render_template("books.html", title="Welcome to Python Flask RESTful API")
 
 @book_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required
-def create():
+async def create():
     """
     Create Book
     """
     if request.method == "POST":	
         try:
-            if not request.form["title"]:
-                flash("Please provide title!", "danger")
+            form = await request.form
+            if not form["title"]:
+                await flash("Please provide title!", "danger")
                 return redirect(url_for("book.create"))		
-            if not request.form["isbn"]:
-                flash("Please provide isbn!", "danger")
+            if not form["isbn"]:
+                await flash("Please provide isbn!", "danger")
                 return redirect(url_for("book.create"))						
-            if not request.form["pages"]:
-                flash("Please provide page count!", "danger")
+            if not form["pages"]:
+                await flash("Please provide page count!", "danger")
                 return redirect(url_for("book.create"))
-            if not request.form["author"] or (request.form["author"] == "Choose..."):
-                flash("Please provide author!", "danger")
+            if not form["author"] or (form["author"] == "Choose..."):
+                await flash("Please provide author!", "danger")
                 return redirect(url_for("book.create"))
             numberRegex = "^(\d)+$"
-            if not re.match(numberRegex, request.form["pages"]):
-                flash("Please provide an valid page count!", "danger")
+            if not re.match(numberRegex, form["pages"]):
+                await flash("Please provide an valid page count!", "danger")
                 return redirect(url_for("book.create"))
             # https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s13.html
             isbnRegex = "^(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-●]){4})[-●0-9]{17}$)(?:97[89][-●]?)?[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$"
-            if not re.match(isbnRegex, request.form["isbn"]):
-                flash("Please provide an valid ISBN!", "danger")
+            if not re.match(isbnRegex, form["isbn"]):
+                await flash("Please provide an valid ISBN!", "danger")
                 return redirect(url_for("book.create"))
-            if BookModel.isExistingBook(request.form["isbn"]):
-                flash(f"Trying to add an existing book {request.form['isbn']}!", "danger")
+            if BookModel.isExistingBook(form["isbn"]):
+                await flash(f"Trying to add an existing book {form['isbn']}!", "danger")
                 return redirect(url_for("book.create"))				
             req_data = {
-               "isbn": request.form["isbn"],
-			   "title": request.form["title"],
-			   "author_id": request.form["author"],
-			   "page_count": request.form["pages"],
+               "isbn": form["isbn"],
+			   "title": form["title"],
+			   "author_id": form["author"],
+			   "page_count": form["pages"],
 			}
             data = book_schema.load(req_data)
             if not data:
-                flash(f"Invalid input!", "danger")
+                await flash(f"Invalid input!", "danger")
                 return redirect(url_for("book.create"))
             book = book_schema.dump(BookModel.get_book_by_isbn(data.get("isbn")))
             if book:
                 isbn = book["isbn"]
-                flash(f"Book {isbn} already exists!", "danger")
+                await flash(f"Book {isbn} already exists!", "danger")
                 return redirect(url_for("book.create"))
             author_id = data["author_id"]
             author = author_schema.dump(AuthorModel.get_author(author_id))
             if not author:
-                flash(f"Invalid author!", "danger")
+                await flash(f"Invalid author!", "danger")
                 return redirect(url_for("book.create"))
             print(f"book.create(): {json.dumps(data)}")			
             book = BookModel(data)
             book.save()
-            flash(f"Book created successfully!", "success")
+            await flash(f"Book created successfully!", "success")
             logging.info(f"User {g.user['id']} created a book successfully!")
             return redirect(url_for("book.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")		
-            flash(f"Failed to create book! {err.messages}", "danger")
+            await flash(f"Failed to create book! {err.messages}", "danger")
             logging.error(f"User {g.user['id']} failed to create a book! Exception: {errors}")
             return redirect(url_for("book.create"))
     authors = author_schema.dump(AuthorModel.get_authors(), many=True)
     print(f"{len(authors)}")# authors: {json.dumps(authors)}")
-    return render_template("book_create.html", title="Welcome to Python Flask RESTful API", authors = authors)
+    return await render_template("book_create.html", title="Welcome to Python Flask RESTful API", authors = authors)
 	
 @book_api.route("/all")
 @Authentication.auth_required
-def get_all():
+async def get_all():
     """
     Get All Books
     """
@@ -100,7 +101,7 @@ def get_all():
 
 @book_api.route("/author/firstname/<string:firstname>")
 @Authentication.auth_required
-def get_all_by_author_firstname(firstname):
+async def get_all_by_author_firstname(firstname):
     """
     Get All Books by auhor's firstname
     """
@@ -111,7 +112,7 @@ def get_all_by_author_firstname(firstname):
 
 @book_api.route("/author/lastname/<string:lastname>")
 @Authentication.auth_required
-def get_all_by_author_lastname(lastname):
+async def get_all_by_author_lastname(lastname):
     """
     Get All Books by auhor's lastname
     """
@@ -122,7 +123,7 @@ def get_all_by_author_lastname(lastname):
 
 @book_api.route("/author/email/<string:email>")
 @Authentication.auth_required
-def get_all_by_author_email(email):
+async def get_all_by_author_email(email):
     """
     Get All Books by auhor's email
     """
@@ -133,7 +134,7 @@ def get_all_by_author_email(email):
 
 @book_api.route("/<int:id>")
 @Authentication.auth_required
-def get_book(id):
+async def get_book(id):
     """
     Get Book 'id'
     """
@@ -144,7 +145,7 @@ def get_book(id):
 	
 @book_api.route("/isbn/<string:isbn>")
 @Authentication.auth_required
-def get_book_by_isbn(isbn):
+async def get_book_by_isbn(isbn):
     """
     Get Book 'isbn'
     """
@@ -155,7 +156,7 @@ def get_book_by_isbn(isbn):
 	
 @book_api.route("/title/<string:title>")
 @Authentication.auth_required
-def get_book_by_title(title):
+async def get_book_by_title(title):
     """
     Get Book 'title'
     """
@@ -166,7 +167,7 @@ def get_book_by_title(title):
 
 @book_api.route("/<int:id>", methods=["PUT"])
 @Authentication.auth_required
-def update(id):
+async def update(id):
     """
     Update Book 'id'
     """
@@ -191,7 +192,7 @@ def update(id):
 
 @book_api.route("/<int:id>", methods=["DELETE"])
 @Authentication.auth_required
-def delete(id):
+async def delete(id):
     """
     Delete Book 'id'
     """

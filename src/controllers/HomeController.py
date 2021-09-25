@@ -1,4 +1,4 @@
-from flask import request, json, Response, Blueprint, render_template, flash, g, session
+from quart import request, json, Response, Blueprint, render_template, flash, g, session
 from datetime import datetime
 from ..config import app_config
 from ..common.Authentication import Authentication
@@ -11,7 +11,7 @@ def inject_now():
 
 @home_api.route("/")
 @home_api.route("/index")
-def index():
+async def index():
     #print("homeController hello")
     greeting = None
     now = datetime.now()
@@ -22,15 +22,15 @@ def index():
     if "logged_in" not in session or not session["logged_in"] or "token" not in session or not session["token"]:
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
-        return render_template("index.html", title="Welcome to Python Flask RESTful API", greeting=greeting)	
+        return await render_template("index.html", title="Welcome to Python Flask RESTful API", greeting=greeting)	
     data = Authentication.decode_token(session["token"])
     if data["error"]:
-        return render_template("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
+        return await render_template("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
     user_id = data["data"]["user_id"]
     print(f"User: {user_id}")
     user = UserModel.get_user(user_id)
     if not user:
-        return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")           
+        return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")           
     try:
         print("Get user name...")
         print(f"Firstname: {user.firstname}, Lastname: {user.lastname}")
@@ -49,4 +49,4 @@ def index():
     if not greeting:
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
-    return render_template("index.html", title="Welcome to Python Flask RESTful API", greeting=greeting)
+    return await render_template("index.html", title="Welcome to Python Flask RESTful API", greeting=greeting)

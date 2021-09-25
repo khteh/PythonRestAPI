@@ -1,14 +1,14 @@
 import quart.flask_patch
 import os, re, logging
+from quart_cors import cors
 from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from flask_cors import CORS
 from flask_healthz import Healthz
 from .app import create_app
 from .models import db, bcrypt
 from .common.Authentication import oidc
 load_dotenv()
-app = create_app(env_name)
+app = create_app(os.environ.get("ENVIRONMENT"))
 app = cors(app, allow_credentials=True, allow_origin="https://localhost:8080")
 Healthz(app, no_log=True)
 csrf = CSRFProtect(app)

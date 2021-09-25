@@ -1,26 +1,30 @@
 [[source]]
-name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-
-[dev-packages]
+name = "pypi"
 
 [packages]
+flask-oidc = "*"
+flask-healthz = "*"
 marshmallow = "*"
-pytest = "*"
-pytest-flask = "*"
+psycopg2-binary = "*"
+mysql-connector-python = "*"
+python-dotenv = "*"
+Quart = "*"
+Hypercorn = {extras = ["h3"], version = "*"}
 Flask = "*"
 Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 Flask-Script = "*"
-Flask-Bcrypt = "*"
-Flask-CORS = "*"
 Flask-WTF = "*"
-flask-healthz = "*"
-wtforms = "*"
+Quart-CORS = "*"
+WTForms = "*"
+Flask-Bcrypt = "*"
 PyJWT = "*"
-mysql-connector-python = "*"
-python-dotenv = "*"
+
+[dev-packages]
+pytest = "*"
+pytest-flask = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"

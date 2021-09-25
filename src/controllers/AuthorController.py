@@ -1,5 +1,5 @@
 import re, logging
-from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
+from quart import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
 from ..common.Authentication import Authentication
@@ -12,55 +12,56 @@ def inject_now():
     return {'now': datetime.utcnow()}
 
 @author_api.route("/index", methods=["GET"])
-def index():
+async def index():
     """
     Author Index page
     """
-    return render_template("authors.html", title="Welcome to Python Flask RESTful API")
+    return await render_template("authors.html", title="Welcome to Python Flask RESTful API")
 
 @author_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required
-def create():
+async def create():
     """
     Create Author
     """
     if request.method == "POST":	
         try:
-            if not request.form["firstname"]:
-                flash("Please provide firstname!", "danger")
+            form = await request.form
+            if not form["firstname"]:
+                await flash("Please provide firstname!", "danger")
                 return redirect(url_for("author.create"))
-            if not request.form["lastname"]:
-                flash("Please provide lastname!", "danger")
+            if not form["lastname"]:
+                await flash("Please provide lastname!", "danger")
                 return redirect(url_for("author.create"))			   
             emailRegex = "[\w.-]+@[\w.-]+.\w+"
-            if not re.match(emailRegex, request.form["email"]):
-                flash("Please provide an valid email address!", "danger")
+            if not re.match(emailRegex, form["email"]):
+                await flash("Please provide an valid email address!", "danger")
                 return redirect(url_for("author.create"))		
             phoneRegex = "^(\+\d{1,3}\-?)*(\d{8,10})$"
-            if not re.match(phoneRegex, request.form["phone"]):
-                flash("Please provide an valid phone number!", "danger")
+            if not re.match(phoneRegex, form["phone"]):
+                await flash("Please provide an valid phone number!", "danger")
                 return redirect(url_for("author.create"))
-            if AuthorModel.isExistingAuthor(request.form['email']):
-                flash(f"Trying to add an existing author {request.form['email']}!", "danger")
+            if AuthorModel.isExistingAuthor(form['email']):
+                await flash(f"Trying to add an existing author {form['email']}!", "danger")
                 return redirect(url_for("author.create"))			
             req_data = {
-               "firstname": request.form["firstname"],
-			   "lastname": request.form["lastname"],
-			   "email": request.form["email"],
-			   "phone": request.form["phone"],
+               "firstname": form["firstname"],
+			   "lastname": form["lastname"],
+			   "email": form["email"],
+			   "phone": form["phone"],
 			}
             print(f"author.create() request data: {req_data}")
             data = author_schema.load(req_data)
             if not data:
-                flash(f"Invalid input!", "danger")
+                await flash(f"Invalid input!", "danger")
                 return redirect(url_for("author.create"))
             author = author_schema.dump(AuthorModel.get_author_by_email(data.get("email")))
             if author:
-                flash(f"Trying to create an existing author!", "danger")
+                await flash(f"Trying to create an existing author!", "danger")
                 return redirect(url_for("author.create"))
             author = AuthorModel(data)
             author.save()
-            flash(f"Author created successfully!", "success")
+            await flash(f"Author created successfully!", "success")
             logging.info(f"User {g.user['id']} created author successfully!")
             return redirect(url_for("author.index"))
         except ValidationError as err:
@@ -68,13 +69,13 @@ def create():
             valid_data = err.valid_data	
             print(f"create() error! {errors}")
             logging.error(f"User {g.user['id']} failed to creat author! Exception: {errors}")
-            flash(f"Failed to create author! {err.messages}", "danger")
+            await flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
-    return render_template("author_create.html", title="Welcome to Python Flask RESTful API")
+    return await render_template("author_create.html", title="Welcome to Python Flask RESTful API")
 		
 @author_api.route("/<int:id>")
 @Authentication.auth_required
-def get_author(id):
+async def get_author(id):
     """
     Get Auhor 'id'
     """
@@ -85,7 +86,7 @@ def get_author(id):
 
 @author_api.route("/firstname/<string:firstname>")
 @Authentication.auth_required
-def get_by_firstname(firstname):
+async def get_by_firstname(firstname):
     """
     Get Author by firstname
     """
@@ -94,7 +95,7 @@ def get_by_firstname(firstname):
 
 @author_api.route("/lastname/<string:lastname>")
 @Authentication.auth_required
-def get_by_lastname(lastname):
+async def get_by_lastname(lastname):
     """
     Get Author by lastname
     """
@@ -102,7 +103,7 @@ def get_by_lastname(lastname):
 
 @author_api.route("/email/<string:email>")
 @Authentication.auth_required
-def get_by_email(email):
+async def get_by_email(email):
     """
     Get Author by email
     """
@@ -110,7 +111,7 @@ def get_by_email(email):
 
 @author_api.route("/all")
 @Authentication.auth_required
-def get_all():
+async def get_all():
     """
     Get All Authors
     """
@@ -118,7 +119,7 @@ def get_all():
 
 @author_api.route("/update/<int:id>", methods=["PUT"])
 @Authentication.auth_required
-def update(id):
+async def update(id):
     """
     Update Author 'id'
     """
@@ -143,7 +144,7 @@ def update(id):
 
 @author_api.route("/delete/<int:id>", methods=["DELETE"])
 @Authentication.auth_required
-def delete(id):
+async def delete(id):
     """
     Delete Author 'id'
     """

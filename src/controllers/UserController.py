@@ -1,5 +1,5 @@
 import re, logging
-from flask import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
+from quart import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
 from ..models.UserModel import UserModel, UserSchema
@@ -12,53 +12,54 @@ def inject_now():
     return {'now': datetime.utcnow()}
 
 @user_api.route("/index", methods=["GET"])
-def index():
+async def index():
     """
     User Index page
     """
-    return render_template("users.html", title="Welcome to Python Flask RESTful API")
+    return await render_template("users.html", title="Welcome to Python Flask RESTful API")
 	
 @user_api.route("/create", methods=["GET","POST"])
-def create():
+async def create():
     """
     Create User
     """
     if request.method == "POST":
         try:
-            if not request.form["firstname"]:
-                flash("Please provide firstname!", "danger")
+            form = await request.form
+            if not form["firstname"]:
+                await flash("Please provide firstname!", "danger")
                 return redirect(url_for("user.create"))
-            if not request.form["lastname"]:
-                flash("Please provide lastname!", "danger")
+            if not form["lastname"]:
+                await flash("Please provide lastname!", "danger")
                 return redirect(url_for("user.create"))			   
             emailRegex = "[\w.-]+@[\w.-]+.\w+"
-            if not re.match(emailRegex, request.form["email"]):
-                flash("Please provide an valid email address!", "danger")
+            if not re.match(emailRegex, form["email"]):
+                await flash("Please provide an valid email address!", "danger")
                 return redirect(url_for("user.create"))
-            if not request.form["password"]:
-                flash("Please provide an valid password!", "danger")
+            if not form["password"]:
+                await flash("Please provide an valid password!", "danger")
                 return redirect(url_for("user.create"))
-            if not request.form["password1"] or request.form["password"] != request.form["password1"]:
-                flash("Password mismatch!", "danger")
+            if not form["password1"] or form["password"] != form["password1"]:
+                await flash("Password mismatch!", "danger")
                 return redirect(url_for("user.create"))
-            if UserModel.isExistingUser(request.form['email']):
-                flash(f"Trying to register an existing user {request.form['email']}!", "danger")
+            if UserModel.isExistingUser(form['email']):
+                await flash(f"Trying to register an existing user {form['email']}!", "danger")
                 return redirect(url_for("user.create"))							
             req_data = {
-               "firstname": request.form["firstname"],
-			   "lastname": request.form["lastname"],
-			   "email": request.form["email"],
-               "password": request.form["password"]
+               "firstname": form["firstname"],
+			   "lastname": form["lastname"],
+			   "email": form["email"],
+               "password": form["password"]
 			}
             print(f"create() request data: {req_data}")
             data = user_schema.load(req_data)
 		    # Check if user already exists in the database
             if not data:
-                flash(f"Invalid input!", "danger")
+                await flash(f"Invalid input!", "danger")
                 return redirect(url_for("user.create"))
             user = UserModel.get_user_by_email(data.get("email"))
             if user:
-                flash(f"Trying to create an existing user!", "danger")
+                await flash(f"Trying to create an existing user!", "danger")
                 return redirect(url_for("user.create"))
             user = UserModel(data)
             user.save()
@@ -66,24 +67,24 @@ def create():
 		    #print(f"create() user id: {ser_data.get('id')}")
             token = Authentication.generate_token(ser_data.get("id"))
 		    #print(f"create() token: {token}")
-            flash(f"User created successfully!", "success")
+            await flash(f"User created successfully!", "success")
             return redirect(url_for("user.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")
-            flash(f"Failed to create user! {err.messages}", "danger")
+            await flash(f"Failed to create user! {err.messages}", "danger")
             return redirect(url_for("user.create"))
-    return render_template("user_create.html", title="Welcome to Python Flask RESTful API")
+    return await render_template("user_create.html", title="Welcome to Python Flask RESTful API")
 
 @user_api.route("/all")
 @Authentication.auth_required
-def get_all():
+async def get_all():
     return custom_response(user_schema.dump(UserModel.get_users(), many=True), 200)
 
 @user_api.route("/<int:id>", methods=["GET"])
 @Authentication.auth_required
-def get_user(id):
+async def get_user(id):
     """
     Get a user
     """
@@ -95,7 +96,7 @@ def get_user(id):
 
 @user_api.route("/update/<int:id>", methods=["PUT"])
 @Authentication.auth_required
-def update(id):
+async def update(id):
     """
     Update me
     """
@@ -120,7 +121,7 @@ def update(id):
 
 @user_api.route("/delete/<int:id>", methods=["DELETE"])
 @Authentication.auth_required
-def delete(id):
+async def delete(id):
     """
     Delete me
     """
