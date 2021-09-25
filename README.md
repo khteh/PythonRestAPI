@@ -66,7 +66,7 @@ $ python -m pytest
 * `./quart.sh`
 
 ## Create User:
-* POST http://localhost:8080/users/create
+* POST https://localhost:8080/users/create
 ```
 {
 	"firstname": "First Name",
@@ -76,7 +76,7 @@ $ python -m pytest
 }
 ```
 ## Login:
-* POST http://localhost:8080/users/login
+* POST https://localhost:8080/users/login
 ```
 {
 	"email": "firstname.lastname@email.com",
@@ -96,7 +96,7 @@ Vaue: jwt_token from the login response
 ```
 
 ## Create Author:
-* POST http://localhost:8080/authors/create
+* POST https://localhost:8080/authors/create
 ```
 {
     "email": "jk@email.com",
@@ -105,7 +105,7 @@ Vaue: jwt_token from the login response
 }
 ```
 ## Create Book:
-* POST http://localhost:8080/books/create
+* POST https://localhost:8080/books/create
 ```
 {
     "author_id": 1,
