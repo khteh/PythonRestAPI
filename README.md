@@ -1,5 +1,5 @@
 # PythonFlaskRestAPI
-Python RestAPI using Flask web Framework and marshmallow for SerDes.
+Python RestAPI using Quart ASGI framework and marshmallow for SerDes.
 
 # Database setup:
 * This project uses MySQL database with SQLAlchemy ORM with marshmallow for object SerDes.
@@ -62,9 +62,9 @@ $ python -m pytest
 * Integrated with CircleCI
 
 # Start the application:
-```
-python -m src.main
-```
+* `pipenv shell`
+* `./quart.sh`
+
 ## Create User:
 * POST http://localhost:8080/users/create
 ```
@@ -126,7 +126,8 @@ mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot b
 Key: api-key
 Vaue: jwt_token from the login response
 ```
-* visit http://localhost:8080
-* visit http://localhost:8080/users/all
-* visit http://localhost:8080/authors/all
-* visit http://localhost:8080/books/all
+* visit https://localhost:8080
+* visit https://localhost:8080/fibonacci/
+* visit https://localhost:8080/users/all
+* visit https://localhost:8080/authors/all
+* visit https://localhost:8080/books/all
