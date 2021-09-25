@@ -1,5 +1,5 @@
 # PythonFlaskRestAPI
-Python RestAPI using Quart ASGI framework and marshmallow for SerDes.
+Python RestAPI using Quart ASGI framework. It runs on HTTP/2 and will be HTTP/3 when mainstream browsers support it in the near future.
 
 # Database setup:
 * This project uses MySQL database with SQLAlchemy ORM with marshmallow for object SerDes.
