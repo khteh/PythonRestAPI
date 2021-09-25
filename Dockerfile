@@ -4,6 +4,7 @@ WORKDIR /app
 ADD src src
 ADD Pipfile Pipfile
 ADD Pipfile.lock Pipfile.lock
+RUN pip install pipenv
 RUN pipenv install
 RUN openssl req -new -newkey rsa:4096 -x509 -nodes -days 365 -keyout server.key -out server.crt -subj "/C=SG/ST=Singapore/L=Singapore /O=Kok How Pte. Ltd./OU=PythonFlaskRestAPI/CN=localhost/emailAddress=funcoolgeek@gmail.com" -passin pass:PythonFlaskRestAPI
 EXPOSE 8080 4433
