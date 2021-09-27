@@ -1,9 +1,9 @@
-    {
-        "ENV": "development",
+{
+	"ENV": "development",
         "DEBUG": true,
         "TESTING": true,
         "SECRET_KEY": "PythonFlaskRestAPI",
-        "SQLALCHEMY_DATABASE_URI": "mysql://guest:P@SSw0rd@localhost:30001/libarary",
+        "SQLALCHEMY_DATABASE_URI": "mysql+pymysql://guest:P*ssw0rd@localhost:30001/library",
         "DB_USERNAME": "guest",
         "DB_PASSWORD": "P*ssw0rd",
         "DB_HOST": "localhost:30001",
@@ -20,4 +20,4 @@
         "OIDC_SCOPES": ["openid", "email", "profile", "roles"],
         "OIDC_INTROSPECTION_AUTH_METHOD": "client_secret_post",
         "OIDC_TOKEN_TYPE_HINT": "access_token"
-    }
+}
