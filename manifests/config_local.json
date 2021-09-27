@@ -1,0 +1,23 @@
+    {
+        "ENV": "development",
+        "DEBUG": true,
+        "TESTING": true,
+        "SECRET_KEY": "PythonFlaskRestAPI",
+        "SQLALCHEMY_DATABASE_URI": "mysql://guest:P@SSw0rd@localhost:30001/libarary",
+        "DB_USERNAME": "guest",
+        "DB_PASSWORD": "P*ssw0rd",
+        "DB_HOST": "localhost:30001",
+        "DB_DATABASE": "library",
+        "HEALTHZ": {
+                    "live": "src.app.liveness",
+                    "ready": "src.app.readiness"
+                },
+        "OIDC_CLIENT_SECRETS": "/tmp/oidc-secret.json",
+        "OIDC_ID_TOKEN_COOKIE_SECURE": false,
+        "OIDC_USER_INFO_ENABLED": true,
+        "OIDC_REQUIRE_VERIFIED_EMAIL": false,
+        "OIDC_OPENID_REALM": "OneClick",
+        "OIDC_SCOPES": ["openid", "email", "profile", "roles"],
+        "OIDC_INTROSPECTION_AUTH_METHOD": "client_secret_post",
+        "OIDC_TOKEN_TYPE_HINT": "access_token"
+    }

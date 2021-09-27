@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: auth-config
+  name: python-config
 data:
   config.json: |
     {
@@ -9,6 +9,7 @@ data:
         "DEBUG": true,
         "TESTING": true,
         "SECRET_KEY": "PythonFlaskRestAPI",
+        "SQLALCHEMY_TRACK_MODIFICATIONS": false,
         "HEALTHZ": {
                     "live": "src.app.liveness",
                     "ready": "src.app.readiness"

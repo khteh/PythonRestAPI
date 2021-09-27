@@ -1,6 +1,5 @@
 from quart import request, json, Response, Blueprint, render_template, flash, g, session
 from datetime import datetime
-from ..config import app_config
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
 import re

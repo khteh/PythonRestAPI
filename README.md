@@ -22,31 +22,12 @@ pipenv install
 ## Database Migration
 * run migrations initialization with db init command:
 ```
-python -m src.manage db init
+$ pipenv run alembic init migrations
+$ cp alembic_migrations_env.py migrations/env.py
+$ pipenv run alembic revision --autogenerate -m "Initial migration"
+$ pipenv run alembic upgrade head
 ```
-* OR (may need to be inside the venv):
-```
-flask db init
-```
-* Populate migrations files and generate users and blogs tables with our model changes:
-```
-python -m src.manage db migrate
-```
-* OR (may need to be inside the venv):
-```
-flask db migrate
-```
-
-* Apply the changes to the db by running the following command:
-```
-python -m src.manage db upgrade
-```
-* OR (may need to be inside the venv):
-```
-flask db upgrade
-```
-
-There will be 3 tables, "users", "books", and "authors" created in the MySQL database "library" after the `upgrade`.
+* There will be 3 tables, "users", "books", and "authors" created in the MySQL database "library" after the `upgrade`.
 
 # Test using PyTest:
 

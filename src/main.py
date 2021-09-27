@@ -13,7 +13,7 @@ app = cors(app, allow_credentials=True, allow_origin="https://localhost:8080")
 Healthz(app, no_log=True)
 csrf = CSRFProtect(app)
 bcrypt.init_app(app)
-oidc.init_app(app)
+#oidc.init_app(app)
 
 numberRegex = "^(\d)+$"
 print("numberRegex: Match!") if re.match(numberRegex, "123") else print("numberRegex: No match!") # Should match

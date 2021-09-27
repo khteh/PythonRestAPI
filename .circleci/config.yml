@@ -17,14 +17,14 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            docker build -t khteh/pythonflaskrestapi:latest .
+            docker build -t khteh/pythonrestapi:latest .
       - run:
           name: Login to docker hub
           command: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run:
           name: Push images to docker hub
           command: |
-            docker push khteh/pythonflaskrestapi:latest
+            docker push khteh/pythonrestapi:latest
       - save_cache:
           key: v1-{{ checksum "requirements.txt" }}
           paths:

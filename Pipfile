@@ -8,7 +8,7 @@ flask-oidc = "*"
 flask-healthz = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
-mysql-connector-python = "*"
+PyMySQL = {extras = ["rsa"], version = "*"}
 python-dotenv = "*"
 Quart = "*"
 Hypercorn = {extras = ["h3"], version = "*"}
@@ -21,6 +21,7 @@ Quart-CORS = "*"
 WTForms = "*"
 Flask-Bcrypt = "*"
 PyJWT = "*"
+alembic = "*"
 
 [dev-packages]
 pytest = "*"

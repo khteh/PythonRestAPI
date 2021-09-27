@@ -2,7 +2,6 @@ from quart import request, json, Response, Blueprint, flash, render_template, se
 from quart.utils import run_sync
 from datetime import datetime
 from array import array
-from ..config import app_config
 from ..common.Response import custom_response
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
