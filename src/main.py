@@ -13,6 +13,7 @@ app = cors(app, allow_credentials=True, allow_origin="https://localhost:8080")
 Healthz(app, no_log=True)
 csrf = CSRFProtect(app)
 bcrypt.init_app(app)
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')	
 #oidc.init_app(app)
 
 numberRegex = "^(\d)+$"
@@ -105,5 +106,4 @@ phone = "+123-HelloWorld"
 print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")		
 phone = "+123-"
 print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")			
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')	
 #app.run(HOST, PORT)

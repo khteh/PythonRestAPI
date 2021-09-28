@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: python-config
+  name: pythonrestapi
 data:
   config.json: |
     {
-        "ENV": "development",
+        "ENVIRONMENT": "development",
         "DEBUG": true,
         "TESTING": true,
-        "SECRET_KEY": "PythonFlaskRestAPI",
+        "SECRET_KEY": "PythonRestAPI",
         "SQLALCHEMY_TRACK_MODIFICATIONS": false,
         "HEALTHZ": {
                     "live": "src.app.liveness",

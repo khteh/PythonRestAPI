@@ -2,7 +2,7 @@
 This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
-import quart.flask_patch, json, logging
+import quart.flask_patch, json, logging, os
 from quart import Quart, request
 from flask_healthz import HealthError
 from datetime import datetime

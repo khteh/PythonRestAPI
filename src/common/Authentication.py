@@ -1,5 +1,5 @@
 import jwt, os, sys, datetime, logging
-from flask import request, json, Response, Blueprint, g, render_template, flash, session, abort
+from quart import request, json, Response, Blueprint, g, render_template, flash, session, abort, current_app
 from flask_oidc import OpenIDConnect
 from functools import wraps
 from ..models.UserModel import UserModel
@@ -15,7 +15,7 @@ class Authentication():
         Generate Token
         """
         #print(f"generate_token(): user_id: {user_id}")
-        if not os.getenv("JWT_SECRET_KEY"):
+        if not current_app.config["JWT_SECRET_KEY"]:
             raise Exception("Invalid user id!")
         if user_id:
             try:
@@ -30,7 +30,7 @@ class Authentication():
                     "user_id": user_id
 					# https://stackoverflow.com/questions/28418360/jwt-json-web-token-audience-aud-versus-client-id-whats-the-difference
                 }
-                return jwt.encode(payload, os.getenv("JWT_SECRET_KEY"), "HS512")
+                return jwt.encode(payload, current_app.config["JWT_SECRET_KEY"], "HS512")
             except Exception as e:
                 print("generate_token() exception!")
                 print(type(e))    # the exception instance
@@ -48,7 +48,7 @@ class Authentication():
         result = {"data": {}, "error": {}}
         if token:
             try:
-                payload = jwt.decode(token, os.getenv("JWT_SECRET_KEY"), "HS512", audience="urn:PythonFlaskRestAPI")
+                payload = jwt.decode(token, current_app.config["JWT_SECRET_KEY"], "HS512", audience="urn:PythonFlaskRestAPI")
                 result["data"] = {"user_id": payload["user_id"]}
                 return result
             except jwt.ExpiredSignatureError as expired:
