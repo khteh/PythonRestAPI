@@ -10,11 +10,6 @@ pipenv install
 cd test
 pipenv install
 ```
-## To use Flask CLI in virtual environment:
-* `python -m venv venv`
-* `. venv/bin/activate`
-* `flask <command>`
-* `deactivate` to leave the venv
 
 ## Create Database
 * Firstly, create an empty database "library" in MySQL 8.0
@@ -43,7 +38,6 @@ $ python -m pytest
 * Integrated with CircleCI
 
 # Start the application:
-* `pipenv shell`
 * `./quart.sh`
 
 ## Create User:
