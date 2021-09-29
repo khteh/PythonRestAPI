@@ -1,5 +1,5 @@
 import re, logging
-from quart import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
+from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
 from ..models.UserModel import UserModel, UserSchema
@@ -101,14 +101,14 @@ async def update(id):
     Update me
     """
     try:
-        req_data = request.get_json()
+        req_data = await request.get_json()
         data = user_schema.load(req_data, partial=True)
         if not data:
             message = {"error": "Invalid input!"}
             return custom_response(message, 400)		
-        user = UserModel.get_user(g.user['id'])
+        user = UserModel.get_user(id)
         if not user:
-            raise Exception(f"User {g.user.get('id')} not found!")
+            raise Exception(f"User {id} not found!")
         user.update(data)
         logging.info(f"User {id} updated successfully!")
         return custom_response(user_schema.dump(user), 200)
@@ -126,16 +126,16 @@ async def delete(id):
     Delete me
     """
     try:
-        user = UserModel.get_user(g.user['id'])
+        user = UserModel.get_user(id)
         if not user:
-            raise Exception(f"User {g.user.get('id')} not found!")
+            raise Exception(f"User {id} not found!")
         user.delete()
         logging.info(f"User {id} deleted successfully!")
-        print(f"User {g.user.get('id')} deleted successfully!")
+        print(f"User {id} deleted successfully!")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"create() error! {errors}")
         logging.error(f"Failed to delete user {id}! Exception: {errors}")
         return custom_response(error, 500)		
-    return custom_response({"message": f"User {g.user.get('id')} deleted successfully!"}, 204)
+    return custom_response({"message": f"User {id} deleted successfully!"}, 204)

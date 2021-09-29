@@ -1,8 +1,8 @@
 import logging
-from quart import request, json, Response, Blueprint, g, render_template, flash, session, redirect, url_for
+from quart import request, json, Blueprint, session, render_template, session, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime
-from base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
+from base64 import b64decode
 from ..models.UserModel import UserModel, UserSchema
 from ..common.Authentication import Authentication
 from ..common.Response import custom_response
@@ -41,8 +41,7 @@ async def login():
                 return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
             ser_data = user_schema.dump(user)
             token = Authentication.generate_token(ser_data.get("id"))
-            session['logged_in'] = True
-            session["token"] = token
+            session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": token}
             #return custom_response({"jwt_token": token}, 200)
             data["lastlogin"] = datetime.utcnow()
             user.update(data)
@@ -103,11 +102,9 @@ async def logout():
     User Logout
     """
     print(f"logout()")
-    logging.info(f"[Auth] User {g.user['id']} logged out")	
-    g.user = {}	
-    session['logged_in'] = False
-    session["token"] = ""
-    return await render_template("login.html", title="Welcome to Python Flask RESTful API")
+    logging.info(f"[Auth] User {session['user']['email']} logged out")	
+    session["user"] = None
+    return redirect(url_for("home.index"))
 
 @auth_api.route('/logout_oidc')
 @oidc.require_login
@@ -126,7 +123,7 @@ async def profile():
     """
     Get my profile
     """
-    user = UserModel.get_user(g.user['id'])
+    user = UserModel.get_user(session["user"]["id"])
     if not user:
-        raise Exception(f"User {g.user.get('id')} not found!")
+        raise Exception(f"User {session['user']['id']} not found!")
     return custom_response(user_schema.dump(user), 200)

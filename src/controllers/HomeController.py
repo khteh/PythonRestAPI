@@ -1,4 +1,4 @@
-from quart import request, json, Response, Blueprint, render_template, flash, g, session
+from quart import Blueprint, render_template, session
 from datetime import datetime
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
@@ -18,11 +18,11 @@ async def index():
     formatted_now = now.strftime("%A, %d %B, %Y at %X")
     #if request.method == "POST":
     user = None
-    if "logged_in" not in session or not session["logged_in"] or "token" not in session or not session["token"]:
+    if "user" not in session or not session["user"] or not session["user"]["token"]:
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
         return await render_template("index.html", title="Welcome to Python RESTful API", greeting=greeting)	
-    data = Authentication.decode_token(session["token"])
+    data = Authentication.decode_token(session["user"]["token"])
     if data["error"]:
         return await render_template("login.html", title="Welcome to Python RESTful API", error=data["error"])
     user_id = data["data"]["user_id"]

@@ -1,4 +1,4 @@
-from quart import request, json, Response, Blueprint, flash, render_template, session
+from quart import request, session, Blueprint, flash, render_template, session
 from quart.utils import run_sync
 from datetime import datetime
 from array import array
@@ -16,8 +16,8 @@ async def fibonacci():
     fibonacci = None
     error = None
     user = None
-    if "logged_in" in session and session["logged_in"] and "token" in session and session["token"]:
-        data = Authentication.decode_token(session["token"])
+    if "user" in session and session["user"] and session["user"]["token"]:
+        data = Authentication.decode_token(session["user"]["token"])
         if data["error"]:
             return await render_template("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
         user_id = data["data"]["user_id"]

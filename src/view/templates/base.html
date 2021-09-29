@@ -56,7 +56,7 @@
 		      <li class="nav-item"><a id="book" class="nav-link" href="{{url_for('book.index')}}">Books</a></li>
         </ul>
         <ul class="nav navbar-nav ms-auto">
-		    {% if session['logged_in'] %}   
+		    {% if session["user"] %}   
 		    <!-- Logged in -->
 		      <li><a href="{{url_for('auth.logout')}}" class="btn btn-default btn-sm"><span class="material-icons">logout</span></a></li>
 		    {% else %}

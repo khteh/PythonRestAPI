@@ -1,5 +1,5 @@
 import re, logging
-from quart import request, json, Response, Blueprint, g, render_template, flash, redirect, url_for
+from quart import request, json, Blueprint, session, render_template, flash, redirect, url_for
 from datetime import datetime
 from marshmallow import ValidationError
 from ..common.Authentication import Authentication
@@ -30,16 +30,16 @@ async def create():
     if request.method == "POST":	
         try:
             form = await request.form
-            if not form["title"]:
+            if "title" not in form or not form["title"]:
                 await flash("Please provide title!", "danger")
                 return redirect(url_for("book.create"))		
-            if not form["isbn"]:
+            if "isbn" not in form or not form["isbn"]:
                 await flash("Please provide isbn!", "danger")
                 return redirect(url_for("book.create"))						
-            if not form["pages"]:
+            if "pages" not in form or not form["pages"]:
                 await flash("Please provide page count!", "danger")
                 return redirect(url_for("book.create"))
-            if not form["author"] or (form["author"] == "Choose..."):
+            if "author" not in form or not form["author"]:
                 await flash("Please provide author!", "danger")
                 return redirect(url_for("book.create"))
             numberRegex = "^(\d)+$"
@@ -78,14 +78,14 @@ async def create():
             book = BookModel(data)
             book.save()
             await flash(f"Book created successfully!", "success")
-            logging.info(f"User {g.user['id']} created a book successfully!")
+            logging.info(f"User {session['user']['email']} created a book successfully!")
             return redirect(url_for("book.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")		
             await flash(f"Failed to create book! {err.messages}", "danger")
-            logging.error(f"User {g.user['id']} failed to create a book! Exception: {errors}")
+            logging.error(f"User {session['user']['email']} failed to create a book! Exception: {errors}")
             return redirect(url_for("book.create"))
     authors = author_schema.dump(AuthorModel.get_authors(), many=True)
     print(f"{len(authors)}")# authors: {json.dumps(authors)}")
@@ -175,7 +175,7 @@ async def update(id):
     Update Book 'id'
     """
     try:
-        req_data = request.get_json()
+        req_data = await request.get_json()
         data = book_schema.load(req_data, partial=True)
         if not data:
             message = {"error": "Invalid input!"}
@@ -184,13 +184,13 @@ async def update(id):
         if not book:
             return custom_response({"error": f"Book {id} not found!"}, 404)
         book.update(data)
-        logging.info(f"User {g.user['id']} updated book {id} successfully!")
+        logging.info(f"User {session['user']['email']} updated book {id} successfully!")
         return custom_response(book_schema.dump(book), 200)
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"Failed to update book {id} error! {errors}")		
-        logging.error(f"User {g.user['id']} failed to update book {id}! Exception: {errors}")
+        logging.error(f"User {session['user']['email']} failed to update book {id}! Exception: {errors}")
         return custom_response(error, 500)
 
 @book_api.route("/<int:id>", methods=["DELETE"])
@@ -206,11 +206,11 @@ async def delete(id):
         data = book_schema.dump(book)
         book.delete()
         print(f"Book {id} deleted successfully!")
-        logging.warning(f"User {g.user['id']} deleted book {id} successfully!")
+        logging.warning(f"User {session['user']['email']} deleted book {id} successfully!")
         return custom_response({"message": f"Book {id} deleted successfully!"}, 204)
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"Failed to delete book {id} error! {errors}")		
-        logging.error(f"User {g.user['id']} failed to delete book {id}! Exception: {errors}")
+        logging.error(f"User {session['user']['email']} failed to delete book {id}! Exception: {errors}")
         return custom_response(error, 500)

@@ -1,5 +1,5 @@
-import jwt, os, sys, datetime, logging
-from quart import request, json, Response, Blueprint, g, render_template, flash, session, abort, current_app
+import jwt, datetime, logging
+from quart import json, Response, session, render_template, session, abort, current_app
 from flask_oidc import OpenIDConnect
 from functools import wraps
 from ..models.UserModel import UserModel
@@ -70,10 +70,10 @@ class Authentication():
         @wraps(func)
         def decorated_auth_required(*args, **kwargs):
             #if "api-token" not in request.headers:
-            if "token" not in session or not session["token"]:
+            if "user" not in session or not session["user"] or not session["user"]["token"]:
                 return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Please login to continue")
             #token = request.headers.get("api-token")
-            data = Authentication.decode_token(session["token"])
+            data = Authentication.decode_token(session["user"]["token"])
             if data["error"]:
                 return render_template("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
             user_id = data["data"]["user_id"]
@@ -81,7 +81,6 @@ class Authentication():
             if not check_user:
                 logging.warning(f"[Auth] Invalid user {user_id}!")
                 return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
-            g.user = {"id": user_id}
             return func(*args, **kwargs)
         return decorated_auth_required
 
