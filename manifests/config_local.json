@@ -1,5 +1,5 @@
 {
-	"ENV": "development",
+	"ENVIRONMENT": "development",
         "DEBUG": true,
         "TESTING": true,
         "SECRET_KEY": "PythonRestAPI",

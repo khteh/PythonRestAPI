@@ -14,15 +14,12 @@ from .controllers.HomeController import home_api as home_blueprint
 from .controllers.FibonacciController import fibonacci_api as fibonacci_blueprint
 from .models import db, bcrypt
 # Make the WSGI interface available at the top level so wfastcgi can get it.
-def create_app(env_name) -> Quart:
+def create_app() -> Quart:
     """
     Create App
     """
     # App initialization
     app = Quart(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
-    #if hasattr(app.config, "from_file"):
-    #    app.config.from_file("/etc/pythonrestapi_config.json", load=json.load)
-    #else:
     app.config.from_json("/etc/pythonrestapi_config.json", "r")
     if "SQLALCHEMY_DATABASE_URI" not in app.config:
         app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@svc-mysql/library"
