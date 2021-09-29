@@ -16,7 +16,10 @@ async def index():
     """
     Author Index page
     """
-    return await render_template("authors.html", title="Welcome to Python Flask RESTful API")
+    authors = AuthorModel.get_authors()
+    for author in authors:
+        author.bookcount = author.bookCount()
+    return await render_template("authors.html", title="Welcome to Python RESTful API", authors=authors)
 
 @author_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required

@@ -39,6 +39,10 @@ class AuthorModel(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+    def hasBooks(self):
+        return self.books
+    def bookCount(self):
+        return len(list(self.books))
     @staticmethod
     def get_author(id):
         return AuthorModel.query.get(id)
@@ -57,10 +61,6 @@ class AuthorModel(db.Model):
     @staticmethod
     def get_authors_like(name):
         return AuthorModel.query.filter(AuthorModel.firstname.ilike(f"%{name}%"), AuthorModel.lastname.ilike(f"%{name}%")).all()
-    @staticmethod
-    def hasBooks(email):
-        author = AuthorModel.quey.filter_by(email = email).first()
-        return author and author.books
     @staticmethod
     def get_authors():
         return AuthorModel.query.all()

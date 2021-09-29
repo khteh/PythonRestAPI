@@ -2,6 +2,38 @@
 {% block leftnav %}
 <div class="container">
 	<p><a href="{{url_for('author.create')}}">Add</a></p>
-    <p><a href="{{url_for('author.get_all')}}">List</a></p>
+</div>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="container" style="margin-top: 10px">
+        <h2>List of authors: </h2>
+    </div>
+    {% if authors %}
+    <div class="table-responsive container" style="overflow-y:auto; margin-top: 10px; margin-bottom: 10px">
+        <table id="authors" class="table table-hover table-bordered table-sm table-striped display nowrap" cellspacing="0" width="100%">
+            <thead class="thead-light">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Book #</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for author in authors %}
+                <tr>
+                    <td>{{ author["firstname"]}}</td>
+                    <td>{{ author["lastname"]}}</td>
+                    <td>{{ author["email"]}}</td>
+                    <td>{{ author["phone"]}}</td>
+                    <td><a href="{{ url_for('book.get_all_by_author_email', email=author['email'])}}">{{ author["bookcount"]}}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

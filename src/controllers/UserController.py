@@ -16,7 +16,7 @@ async def index():
     """
     User Index page
     """
-    return await render_template("users.html", title="Welcome to Python Flask RESTful API")
+    return await render_template("users.html", title="Welcome to Python RESTful API", users=UserModel.get_users())
 	
 @user_api.route("/create", methods=["GET","POST"])
 async def create():

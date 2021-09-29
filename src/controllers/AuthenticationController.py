@@ -44,6 +44,8 @@ async def login():
             session['logged_in'] = True
             session["token"] = token
             #return custom_response({"jwt_token": token}, 200)
+            data["lastlogin"] = datetime.utcnow()
+            user.update(data)
             logging.info(f"[Auth] User {user.email} logged in")
             return redirect(url_for("home.index"))
         except ValidationError as err:

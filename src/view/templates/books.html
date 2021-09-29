@@ -2,6 +2,40 @@
 {% block leftnav %}
 <div class="container">
 	<p><a href="{{url_for('book.create')}}">Add</a></p>
-    <p><a href="{{url_for('book.get_all')}}">List</a></p>
+</div>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="container" style="margin-top: 10px">
+    {% if author %}
+        <h2>List of books by author {{ author["firstname"] }}, {{ author["lastname"] }}: </h2>
+    {% else %}
+        <h2>List of books: </h2>
+    {% endif %}
+    </div>
+    {% if books %}
+    <div class="table-responsive container" style="overflow-y:auto; margin-top: 10px; margin-bottom: 10px">
+        <table id="books" class="table table-hover table-bordered table-sm table-striped display nowrap" cellspacing="0" width="100%">
+            <thead class="thead-light">
+                <tr>
+                    <th>Title</th>
+                    <th>ISBN</th>
+                    <th>Page #</th>
+                    <th>Author ID</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>{{ book["title"]}}</td>
+                    <td>{{ book["isbn"]}}</td>
+                    <td>{{ book["page_count"]}}</td>
+                    <td>{{ book["author_id"]}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

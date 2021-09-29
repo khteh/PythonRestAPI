@@ -19,7 +19,7 @@ async def index():
     """
     Book Index page
     """
-    return await render_template("books.html", title="Welcome to Python Flask RESTful API")
+    return await render_template("books.html", title="Welcome to Python RESTful API", books=BookModel.get_books())
 
 @book_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required
@@ -127,10 +127,13 @@ async def get_all_by_author_email(email):
     """
     Get All Books by auhor's email
     """
-    author = author_schema.dump(AuthorModel.get_author_by_email(email))
+    author = AuthorModel.get_author_by_email(email)
     if not author:
-        return custom_response({"error": f"Author {email} not found!"}, 404)
-    return custom_response(book_schema.dump(author["books"], many=True), 200)
+        #return custom_response({"error": f"Author {email} not found!"}, 404)
+        await flash(f"Invalid author {email}!", "danger")
+        return await render_template("books.html", title="Welcome to Python RESTAPI")
+    #return custom_response(book_schema.dump(author["books"], many=True), 200)
+    return await render_template("books.html", title="Welcome to Python RESTAPI", books=author.books, author=author)
 
 @book_api.route("/<int:id>")
 @Authentication.auth_required

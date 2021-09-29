@@ -14,6 +14,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
     phone = db.Column(db.String(15), unique=True, nullable=True, index=True)
     password = db.Column(db.String(128), nullable=True)
+    lastlogin = db.Column(db.DateTime(timezone=True), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True))
     modified_at = db.Column(db.DateTime(timezone=True))
     # Class constructor
@@ -69,5 +70,6 @@ class UserSchema(Schema):
     email = fields.Email(required=True)
     phone = fields.Str(required=False)
     password = fields.Str(required=True)
+    lastlogin = fields.DateTime(required=False)
     created_at = fields.DateTime(dump_only=True)
     modified_at = fields.DateTime(dump_only=True)
