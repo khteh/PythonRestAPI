@@ -1,41 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
+	<div class="container text-center" style="margin-top: 10px">
+		<h2>Add a new book</h2>
+	</div>
 	<form action="{{url_for('book.create')}}" method="post">
 		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-		<div class="input-group mb-3 col-md-8">
-		  <div class="input-group-prepend">
-			<label class="input-group-text" for="author">Author</label>
-		  </div>
-		  <select class="custom-select" id="author" name="author">
-			<option selected>Choose...</option>
-            {% for author in authors %}
-			<option value="{{author.id}}">{{author.firstname}}, {{author.lastname}}</option>
-			{% endfor %}
-		  </select>
+		<div class="row justify-content-md-center" style="margin-top: 10px">
+			<label for="author" class="col-md-4 col-form-label d-flex text-right justify-content-end">Author:</label>
+			<div class="col-md-1"></div>
+			<div class="col-md-6">
+				<select class="form-control" id="author" name="author">
+					<option value="none" selected disabled hidden>Select an author</option>
+					{% for author in authors %}
+					<option value="{{author.id}}">{{author.firstname}}, {{author.lastname}}</option>
+					{% endfor %}
+				</select>
+			</div>
 		</div>		
-		<div class="row" style="margin-top: 10px">
-			<label for="title" class="col-md-2 col-form-label d-flex text-right justify-content-end">Title:</label>
+		<div class="row justify-content-md-center" style="margin-top: 10px">
+			<label for="title" class="col-md-4 col-form-label d-flex text-right justify-content-end">Title:</label>
+			<div class="col-md-1"></div>
 			<div class="col-md-6">
 				<input type="text" class="form-control" id="title" name="title" required>
 			</div>
 		</div>
-		<div class="row" style="margin-top: 10px">
-			<label for="isbn" class="col-md-2 col-form-label d-flex text-right justify-content-end">ISBN-10 or ISBN-13:</label>
+		<div class="row justify-content-md-center" style="margin-top: 10px">
+			<label for="isbn" class="col-md-4 col-form-label d-flex text-right justify-content-end">ISBN-10 or ISBN-13:</label>
+			<div class="col-md-1"></div>
 			<div class="col-md-6">
 				<input type="text" class="form-control" id="isbn" name="isbn" required>
 			</div>
 		</div>
-		<div class="row" style="margin-top: 10px">
-			<label for="pages" class="col-md-2 col-form-label d-flex text-right justify-content-end">Page Count:</label>
+		<div class="row justify-content-md-center" style="margin-top: 10px">
+			<label for="pages" class="col-md-4 col-form-label d-flex text-right justify-content-end">Page Count:</label>
+			<div class="col-md-1"></div>
 			<div class="col-md-6">
 				<input type="text" class="form-control" id="pages" name="pages" required>
 			</div>
 		</div>
-		<div class="form-group" style="margin-top: 10px; margin-bottom: 10px">
-			<div class="col-md-8">
-				<button id="submit" name="submit" class="btn btn-primary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Add book">library_books</button>
-				<a href="{{url_for('book.index')}}" id="cancel" name="cancel" class="btn btn-secondary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancel">cancel</a>
+		<div class="form-group text-center" style="margin-top: 10px; margin-bottom: 10px">
+			<div class="row justify-content-md-center">
+				<div class="col-md-auto text-center">
+					<button id="submit" name="submit" class="btn btn-primary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Add book">library_books</button>
+					<a href="{{url_for('book.index')}}" id="cancel" name="cancel" class="btn btn-secondary mdc-icon-button material-icons" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancel">cancel</a>
+				</div>
 			</div>
 		</div>			
 	</form>
