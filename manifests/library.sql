@@ -34,7 +34,7 @@ CREATE TABLE `alembic_version` (
 
 LOCK TABLES `alembic_version` WRITE;
 /*!40000 ALTER TABLE `alembic_version` DISABLE KEYS */;
-INSERT INTO `alembic_version` VALUES ('c8fac49602e6');
+INSERT INTO `alembic_version` VALUES ('f5dadd6b2c17');
 /*!40000 ALTER TABLE `alembic_version` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +56,7 @@ CREATE TABLE `authors` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_authors_email` (`email`),
   UNIQUE KEY `ix_authors_phone` (`phone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,6 +65,7 @@ CREATE TABLE `authors` (
 
 LOCK TABLES `authors` WRITE;
 /*!40000 ALTER TABLE `authors` DISABLE KEYS */;
+INSERT INTO `authors` VALUES (1,'JK','Rowing','jk@rowing.com','+49123456789','2021-09-28 05:31:56','2021-09-28 05:31:56'),(2,'Nick','Bostrom','nick@email.com','+49987654321','2021-09-29 02:48:54','2021-09-29 02:48:54'),(3,'Chade Meng','Tan','chademeng.tan@gmail.com','+123456789','2021-09-29 03:45:09','2021-09-29 03:45:09');
 /*!40000 ALTER TABLE `authors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +87,7 @@ CREATE TABLE `books` (
   PRIMARY KEY (`id`),
   KEY `author_id` (`author_id`),
   CONSTRAINT `books_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,6 +96,7 @@ CREATE TABLE `books` (
 
 LOCK TABLES `books` WRITE;
 /*!40000 ALTER TABLE `books` DISABLE KEYS */;
+INSERT INTO `books` VALUES (1,'Harry Porter','978-0-596-52068-7',123,'2021-09-28 05:32:12','2021-09-28 05:32:12',1),(2,'Superintelligence','978-1-501-22774-5',350,'2021-09-29 02:56:57','2021-09-29 02:56:57',2),(3,'Search Inside Yourself','0062116932',350,'2021-09-29 03:45:48','2021-09-29 03:45:48',3);
 /*!40000 ALTER TABLE `books` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,10 +116,11 @@ CREATE TABLE `users` (
   `password` varchar(128) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `modified_at` datetime DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_users_email` (`email`),
   UNIQUE KEY `ix_users_phone` (`phone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,6 +129,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (4,'Kok How','Teh','khteh@email.com',NULL,'$2b$10$Elwn.qDv5W7v0SI98n8IZev.B0xEO0pX/WJbecKDyMMYdS3Z3Gt.W','2021-09-28 05:31:03','2021-09-29 04:08:52','2021-09-29 04:08:53'),(5,'Mickey','Mouse','mickey@email.com',NULL,'$2b$10$Pd6DOA8S03P8Su6PhrzbY.ImbV1zFMNQjBJqRxWmHTz6xm84dqhuq','2021-09-28 05:31:37','2021-09-28 05:31:37',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -138,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-09-27 10:45:57
+-- Dump completed on 2021-09-29  4:11:46
