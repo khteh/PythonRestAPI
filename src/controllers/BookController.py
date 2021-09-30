@@ -22,7 +22,7 @@ async def index():
     return await render_template("books.html", title="Welcome to Python RESTful API", books=BookModel.get_books())
 
 @book_api.route("/create", methods=["GET", "POST"])
-@Authentication.auth_required
+@Authentication.auth_required("book.create")
 async def create():
     """
     Create Book
@@ -74,25 +74,24 @@ async def create():
             if not author:
                 await flash(f"Invalid author!", "danger")
                 return redirect(url_for("book.create"))
-            print(f"book.create(): {json.dumps(data)}")			
+            print(f"book.create(): {json.dumps(data)}")
             book = BookModel(data)
             book.save()
-            await flash(f"Book created successfully!", "success")
-            logging.info(f"User {session['user']['email']} created a book successfully!")
+            await flash(f"Book {book.title} created successfully!", "success")
+            logging.info(f"User {session['user']['email']} created book {book.title} successfully!")
             return redirect(url_for("book.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")		
             await flash(f"Failed to create book! {err.messages}", "danger")
-            logging.error(f"User {session['user']['email']} failed to create a book! Exception: {errors}")
+            logging.error(f"User {session['user']['email']} failed to create book! Exception: {errors}")
             return redirect(url_for("book.create"))
     authors = author_schema.dump(AuthorModel.get_authors(), many=True)
-    print(f"{len(authors)}")# authors: {json.dumps(authors)}")
     return await render_template("book_create.html", title="Welcome to Python Flask RESTful API", authors = authors)
 	
 @book_api.route("/all")
-@Authentication.auth_required
+@Authentication.auth_required("book.get_all")
 async def get_all():
     """
     Get All Books
@@ -100,7 +99,7 @@ async def get_all():
     return custom_response(book_schema.dump(BookModel.get_books(), many=True), 200)
 
 @book_api.route("/author/firstname/<string:firstname>")
-@Authentication.auth_required
+@Authentication.auth_required("book.get_all_by_author_firstname")
 async def get_all_by_author_firstname(firstname):
     """
     Get All Books by auhor's firstname
@@ -111,7 +110,7 @@ async def get_all_by_author_firstname(firstname):
     return custom_response(book_schema.dump(author["books"], many=True), 200)
 
 @book_api.route("/author/lastname/<string:lastname>")
-@Authentication.auth_required
+@Authentication.auth_required("book.get_all_by_author_lastname")
 async def get_all_by_author_lastname(lastname):
     """
     Get All Books by auhor's lastname
@@ -122,7 +121,7 @@ async def get_all_by_author_lastname(lastname):
     return custom_response(book_schema.dump(author["books"], many=True), 200)
 
 @book_api.route("/author/email/<string:email>")
-@Authentication.auth_required
+@Authentication.auth_required("book.get_all_by_author_email")
 async def get_all_by_author_email(email):
     """
     Get All Books by auhor's email
@@ -136,7 +135,7 @@ async def get_all_by_author_email(email):
     return await render_template("books.html", title="Welcome to Python RESTAPI", books=author.books, author=author)
 
 @book_api.route("/<int:id>")
-@Authentication.auth_required
+@Authentication.auth_required("book.get_book")
 async def get_book(id):
     """
     Get Book 'id'
@@ -147,7 +146,7 @@ async def get_book(id):
     return custom_response(book_schema.dump(book), 200)
 	
 @book_api.route("/isbn/<string:isbn>")
-@Authentication.auth_required
+@Authentication.auth_required("book.get_book_by_isbn")
 async def get_book_by_isbn(isbn):
     """
     Get Book 'isbn'
@@ -158,7 +157,7 @@ async def get_book_by_isbn(isbn):
     return custom_response(book_schema.dump(book), 200)
 	
 @book_api.route("/title/<string:title>")
-@Authentication.auth_required
+@Authentication.auth_required("book.get_book_by_title")
 async def get_book_by_title(title):
     """
     Get Book 'title'
@@ -169,7 +168,7 @@ async def get_book_by_title(title):
     return custom_response(book_schema.dump(book), 200)
 
 @book_api.route("/<int:id>", methods=["PUT"])
-@Authentication.auth_required
+@Authentication.auth_required("book.update")
 async def update(id):
     """
     Update Book 'id'
@@ -178,23 +177,24 @@ async def update(id):
         req_data = await request.get_json()
         data = book_schema.load(req_data, partial=True)
         if not data:
-            message = {"error": "Invalid input!"}
-            return custom_response(message, 400)		
+            await flash(f"Failed to update book {id} with invalid input data!", "warning")
+            return redirect(url_for("book.index"))
         book = BookModel.get_book(id)
         if not book:
-            return custom_response({"error": f"Book {id} not found!"}, 404)
+            await flash(f"Trying to update non-existing book {id}!", "warning")
+            return redirect(url_for("book.index"))
         book.update(data)
         logging.info(f"User {session['user']['email']} updated book {id} successfully!")
-        return custom_response(book_schema.dump(book), 200)
+        await flash(f"Book {book.title} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        print(f"Failed to update book {id} error! {errors}")		
         logging.error(f"User {session['user']['email']} failed to update book {id}! Exception: {errors}")
-        return custom_response(error, 500)
+        await flash(f"Failed to update book {id}! Exception: {errors}", "danger")
+    return redirect(url_for("book.index"))
 
 @book_api.route("/<int:id>", methods=["DELETE"])
-@Authentication.auth_required
+@Authentication.auth_required("book.delete")
 async def delete(id):
     """
     Delete Book 'id'
@@ -202,15 +202,14 @@ async def delete(id):
     try:
         book = BookModel.get_book(id)
         if not book:
-            return custom_response({"error": f"Book {id} not found!"}, 404)
-        data = book_schema.dump(book)
+            await flash(f"Trying to delete non-existing book {id}!", "warning")
+            return redirect(url_for("book.index"))
         book.delete()
-        print(f"Book {id} deleted successfully!")
-        logging.warning(f"User {session['user']['email']} deleted book {id} successfully!")
-        return custom_response({"message": f"Book {id} deleted successfully!"}, 204)
+        logging.warning(f"User {session['user']['email']} deleted book {book.title} successfully!")
+        await flash(f"Book {book.title} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        print(f"Failed to delete book {id} error! {errors}")		
         logging.error(f"User {session['user']['email']} failed to delete book {id}! Exception: {errors}")
-        return custom_response(error, 500)
+        await flash(f"Failed to delete book {id}! Exception: {errors}", "danger")
+    return redirect(url_for("book.index"))

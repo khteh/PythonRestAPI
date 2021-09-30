@@ -67,23 +67,23 @@ async def create():
 		    #print(f"create() user id: {ser_data.get('id')}")
             token = Authentication.generate_token(ser_data.get("id"))
 		    #print(f"create() token: {token}")
-            await flash(f"User created successfully!", "success")
+            await flash(f"User {session['user']['email']} created user {user.email} successfully!", "success")
             return redirect(url_for("user.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")
-            await flash(f"Failed to create user! {err.messages}", "danger")
+            await flash(f"User {session['user']['email']} failed to create user! {err.messages}", "danger")
             return redirect(url_for("user.create"))
     return await render_template("user_create.html", title="Welcome to Python Flask RESTful API")
 
 @user_api.route("/all")
-@Authentication.auth_required
+@Authentication.auth_required("user.get_all")
 async def get_all():
     return custom_response(user_schema.dump(UserModel.get_users(), many=True), 200)
 
 @user_api.route("/<int:id>", methods=["GET"])
-@Authentication.auth_required
+@Authentication.auth_required("user.get_user")
 async def get_user(id):
     """
     Get a user
@@ -95,47 +95,49 @@ async def get_user(id):
     return custom_response(user_schema.dump(user), 200)
 
 @user_api.route("/update/<int:id>", methods=["PUT"])
-@Authentication.auth_required
+@Authentication.auth_required("user.update")
 async def update(id):
     """
-    Update me
+    Update user 'id'
     """
     try:
         req_data = await request.get_json()
         data = user_schema.load(req_data, partial=True)
         if not data:
-            message = {"error": "Invalid input!"}
-            return custom_response(message, 400)		
+            await flash(f"Failed to update user {id} with invalid input data!", "warning")
+            return redirect(url_for("user.index"))
         user = UserModel.get_user(id)
         if not user:
-            raise Exception(f"User {id} not found!")
+            await flash(f"Trying to update non-existing user {id}!", "warning")
+            return redirect(url_for("user.index"))
         user.update(data)
-        logging.info(f"User {id} updated successfully!")
-        return custom_response(user_schema.dump(user), 200)
+        logging.info(f"User {session['user']['email']} updated user {id} successfully!")
+        await flash(f"User {id} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        print(f"create() error! {errors}")
-        logging.error(f"Failed to update user {id}! Exception: {errors}")
-        return custom_response(error, 500)
+        logging.error(f"User {session['user']['email']} failed to update user {id}! Exception: {errors}")
+        await flash(f"Failed to update user {id}! Exception: {errors}!", "danger")
+    return redirect(url_for("user.index"))
 
 @user_api.route("/delete/<int:id>", methods=["DELETE"])
-@Authentication.auth_required
+@Authentication.auth_required("user.delete")
 async def delete(id):
     """
-    Delete me
+    Delete user 'id'
     """
     try:
         user = UserModel.get_user(id)
         if not user:
-            raise Exception(f"User {id} not found!")
+            await flash(f"Trying to delete non-existing user {id}!", "warning")
+            return redirect(url_for("user.index"))
         user.delete()
-        logging.info(f"User {id} deleted successfully!")
-        print(f"User {id} deleted successfully!")
+        logging.info(f"User {session['user']['email']} deleted user {id} successfully!")
+        await flash(f"User {id} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"create() error! {errors}")
-        logging.error(f"Failed to delete user {id}! Exception: {errors}")
-        return custom_response(error, 500)		
-    return custom_response({"message": f"User {id} deleted successfully!"}, 204)
+        logging.error(f"User {session['user']['email']} failed to delete user {id}! Exception: {errors}")
+        await flash(f"Failed to delete user {id}! Exception: {errors}", "danger")
+    return redirect(url_for("user.index"))

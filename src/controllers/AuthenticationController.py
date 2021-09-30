@@ -46,7 +46,10 @@ async def login():
             data["lastlogin"] = datetime.utcnow()
             user.update(data)
             logging.info(f"[Auth] User {user.email} logged in")
-            return redirect(url_for("home.index"))
+            if "url" in session and session["url"]:
+                return redirect(session["url"])
+            else:
+                return redirect(url_for("home.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data
@@ -96,13 +99,14 @@ async def login_oidc():
         return await render_template("login_error.html", error_message="Invalid credentials!")
 
 @auth_api.route("/logout")
-@Authentication.auth_required
+@Authentication.auth_required(None)
 async def logout():
     """
     User Logout
     """
     print(f"logout()")
-    logging.info(f"[Auth] User {session['user']['email']} logged out")	
+    logging.info(f"[Auth] User {session['user']['email']} logged out")
+    session["url"] = None
     session["user"] = None
     return redirect(url_for("home.index"))
 
@@ -118,7 +122,7 @@ async def logout_oidc():
     return redirect(url_for("home.index"))
 
 @auth_api.route("/profile")
-@Authentication.auth_required
+@Authentication.auth_required("auth.profile")
 async def profile():
     """
     Get my profile

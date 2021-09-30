@@ -1,5 +1,5 @@
 import jwt, datetime, logging
-from quart import json, Response, session, render_template, session, abort, current_app
+from quart import json, Response, session, redirect, url_for, session, flash, abort, current_app
 from flask_oidc import OpenIDConnect
 from functools import wraps
 from ..models.UserModel import UserModel
@@ -63,26 +63,33 @@ class Authentication():
         else:
             raise Exception("Invalid token!")
     @staticmethod
-    def auth_required(func):
-        """
-        Authentication required
-        """
-        @wraps(func)
-        def decorated_auth_required(*args, **kwargs):
-            #if "api-token" not in request.headers:
-            if "user" not in session or not session["user"] or not session["user"]["token"]:
-                return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Please login to continue")
-            #token = request.headers.get("api-token")
-            data = Authentication.decode_token(session["user"]["token"])
-            if data["error"]:
-                return render_template("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
-            user_id = data["data"]["user_id"]
-            check_user = UserModel.get_user(user_id)
-            if not check_user:
-                logging.warning(f"[Auth] Invalid user {user_id}!")
-                return render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
-            return func(*args, **kwargs)
-        return decorated_auth_required
+    def auth_required(url):
+        def actual_auth_required(func):
+            """
+            Authentication required
+            """
+            @wraps(func)
+            def decorated_auth_required(*args, **kwargs):
+                session["url"] = url_for(url, *args, **kwargs) if url else url
+                #if "api-token" not in request.headers:
+                if "user" not in session or not session["user"] or not session["user"]["token"]:
+                    #await flash(f"Please login to continue.", "info")
+                    return redirect(url_for("auth.login"))
+                #token = request.headers.get("api-token")
+                data = Authentication.decode_token(session["user"]["token"])
+                if data["error"]:
+                    logging.warning(f"[Auth] error: {data['error']}!")                
+                    #await flash(f"{data['error']}", "danger")
+                    return redirect(url_for("auth.login"))
+                user_id = data["data"]["user_id"]
+                check_user = UserModel.get_user(user_id)
+                if not check_user:
+                    logging.warning(f"[Auth] Invalid user {user_id}!")
+                    #await flash(f"Invalid username and/or password!", "danger")
+                    return redirect(url_for("auth.login"))
+                return func(*args, **kwargs)
+            return decorated_auth_required
+        return actual_auth_required
 
     @staticmethod
     def isAuthenticated():

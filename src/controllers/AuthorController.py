@@ -22,7 +22,7 @@ async def index():
     return await render_template("authors.html", title="Welcome to Python RESTful API", authors=authors)
 
 @author_api.route("/create", methods=["GET", "POST"])
-@Authentication.auth_required
+@Authentication.auth_required("author.create")
 async def create():
     """
     Create Author
@@ -64,20 +64,19 @@ async def create():
                 return redirect(url_for("author.create"))
             author = AuthorModel(data)
             author.save()
-            await flash(f"Author created successfully!", "success")
-            logging.info(f"User {session['user']['email']} created author successfully!")
+            await flash(f"Author {author.firstname}, {author.lastname} created successfully!", "success")
+            logging.info(f"User {session['user']['email']} created author {author.email} successfully!")
             return redirect(url_for("author.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
-            print(f"create() error! {errors}")
             logging.error(f"User {session['user']['email']} failed to creat author! Exception: {errors}")
             await flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
     return await render_template("author_create.html", title="Welcome to Python Flask RESTful API")
 		
 @author_api.route("/<int:id>")
-@Authentication.auth_required
+@Authentication.auth_required("author.get_author")
 async def get_author(id):
     """
     Get Auhor 'id'
@@ -88,7 +87,7 @@ async def get_author(id):
     return custom_response(author_schema.dump(author), 200)
 
 @author_api.route("/firstname/<string:firstname>")
-@Authentication.auth_required
+@Authentication.auth_required("author.get_by_firstname")
 async def get_by_firstname(firstname):
     """
     Get Author by firstname
@@ -97,7 +96,7 @@ async def get_by_firstname(firstname):
     return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(firstname)), 200)
 
 @author_api.route("/lastname/<string:lastname>")
-@Authentication.auth_required
+@Authentication.auth_required("author.get_by_lastname")
 async def get_by_lastname(lastname):
     """
     Get Author by lastname
@@ -105,7 +104,7 @@ async def get_by_lastname(lastname):
     return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(lastname)), 200)
 
 @author_api.route("/email/<string:email>")
-@Authentication.auth_required
+@Authentication.auth_required("author.get_by_email")
 async def get_by_email(email):
     """
     Get Author by email
@@ -113,7 +112,7 @@ async def get_by_email(email):
     return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(email)), 200)
 
 @author_api.route("/all")
-@Authentication.auth_required
+@Authentication.auth_required("author.get_all")
 async def get_all():
     """
     Get All Authors
@@ -121,7 +120,7 @@ async def get_all():
     return custom_response(author_schema.dump(AuthorModel.get_authors(), many=True), 200)
 
 @author_api.route("/update/<int:id>", methods=["PUT"])
-@Authentication.auth_required
+@Authentication.auth_required("author.update")
 async def update(id):
     """
     Update Author 'id'
@@ -130,23 +129,24 @@ async def update(id):
         req_data = await request.get_json()
         data = author_schema.load(req_data, partial=True)
         if not data:
-            message = {"error": "Invalid input!"}
-            return custom_response(message, 400)		
+            await flash(f"Failed to update author {id} with invalid input data!", "warning")
+            return redirect(url_for("author.index"))
         author = AuthorModel.get_author(id)
         if not author:
-            return custom_response({"error": f"Author {id} not found!"}, 404)
+            await flash(f"Trying to update non-existing author {id}!", "warning")
+            return redirect(url_for("author.index"))
         author.update(data)
-        logging.info(f"User {session['user']['email']} updated author {id} successfully!")
-        return custom_response(author_schema.dump(author), 200)
+        logging.info(f"User {session['user']['email']} updated author {author.email} successfully!")
+        await flash(f"Author {author.firstname}, {author.lastname} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data
-        print(f"Failed to update author {id} error! {errors}")		
         logging.error(f"User {session['user']['email']} failed to update author {id}! Exception: {errors}")
-        return custom_response(error, 500)
+        await flash(f"Failed to update author {id}! Exception: {errors}", "danger")
+    return redirect(url_for("author.index"))
 
 @author_api.route("/delete/<int:id>", methods=["DELETE"])
-@Authentication.auth_required
+@Authentication.auth_required("author.delete")
 async def delete(id):
     """
     Delete Author 'id'
@@ -154,15 +154,15 @@ async def delete(id):
     try:
         author = AuthorModel.get_author(id)
         if not author:
-            return custom_response({"error": f"Author {id} not found!"}, 404)
-        data = author_schema.dump(author)
+            await flash(f"Trying to delete non-existing author {id}!", "warning")
+            return redirect(url_for("author.index"))
         author.delete()
-        print(f"Author {id} deleted successfully!")
-        logging.warning(f"User {session['user']['email']} deleted author {id} successfully!")
-        return custom_response({"message": f"Author {id} deleted successfully!"}, 204)
+        logging.warning(f"User {session['user']['email']} deleted author {author.email} successfully!")
+        await flash(f"Author {author.firstname}, {author.lastname} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"Failed to delete author {id} error! {errors}")		
         logging.error(f"User {session['user']['email']} failed to delete author {id}! Exception: {errors}")
-        return custom_response(error, 500)
+        await flash(f"Failed to delete author {id}! Exception: {errors}", "danger")
+    return redirect(url_for("user.index"))
