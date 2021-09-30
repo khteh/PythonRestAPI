@@ -18,7 +18,6 @@ pipenv install
 * run migrations initialization with db init command:
 ```
 $ pipenv run alembic init migrations
-$ cp alembic_migrations_env.py migrations/env.py
 $ pipenv run alembic revision --autogenerate -m "Initial migration"
 $ pipenv run alembic upgrade head
 ```
