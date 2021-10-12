@@ -50,7 +50,7 @@ def fib(n):
             return n
         else:
             #return fib(n-2) + fib(n-1)
-            result = array('Q', [0,1])
+            result = array('Q', [0,1]) # https://docs.python.org/3/library/array.html
             for i in range(2, n+1):
                 result[i % 2] = result[(i - 2) % 2] + result[(i - 1) % 2]
             return result[n % 2]
