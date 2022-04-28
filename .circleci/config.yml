@@ -7,7 +7,7 @@ jobs:
     #    restart: on-failure # Restart the container if it exits due to an error
     steps:
       - setup_remote_docker:
-          docker_layer_caching: true # Only available in paid plan          
+          docker_layer_caching: true
       - checkout
       - restore_cache:
           key: v1-{{ checksum "requirements.txt" }}
