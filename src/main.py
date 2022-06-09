@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_healthz import Healthz
 from .app import create_app
 from .models import db, bcrypt
-from .common.Authentication import oidc
+#from .common.Authentication import oidc
 load_dotenv()
 app = create_app()
 app = cors(app, allow_credentials=True, allow_origin="https://localhost:8080")

@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask-oidc = "*"
 flask-healthz = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
@@ -22,10 +21,12 @@ WTForms = "*"
 Flask-Bcrypt = "*"
 PyJWT = "*"
 alembic = "*"
+itsdangerous = "*"
+flask-oidc = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-flask = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
