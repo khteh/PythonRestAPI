@@ -10,8 +10,7 @@ jobs:
           docker_layer_caching: true
       - checkout
       - restore_cache:
-          key: v1-{{ checksum "requirements.txt" }}
-      #- run: pip install -r requirements.txt
+          key: v1-{{ checksum "Pipfile.lock" }}
       - run: pipenv install
       #- run: pytest -v # Error importing modules/packages using relative paths
       #- run: python -m pytest
@@ -25,7 +24,7 @@ jobs:
           name: Push images to docker hub
           command: docker push khteh/pythonrestapi:latest
       - save_cache:
-          key: v1-{{ checksum "requirements.txt" }}
+          key: v1-{{ checksum "Pipfile.lock" }}
           paths:
             - /home/circleci/.local/bin
             - /home/circleci/.local/lib
