@@ -11,7 +11,8 @@ jobs:
       - checkout
       - restore_cache:
           key: v1-{{ checksum "requirements.txt" }}
-      - run: pip install -r requirements.txt
+      #- run: pip install -r requirements.txt
+      - run: pipenv install
       #- run: pytest -v # Error importing modules/packages using relative paths
       #- run: python -m pytest
       - run:
