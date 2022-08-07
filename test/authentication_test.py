@@ -1,5 +1,5 @@
-import pytest, json
-import os, sys
+import pytest
+import sys
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '../src')))
 from common.Authentication import Authentication
