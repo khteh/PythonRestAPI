@@ -1,8 +1,5 @@
-import logging
-import os
-import re
-
 import quart.flask_patch
+import logging, os, re
 from dotenv import load_dotenv
 from flask_healthz import Healthz
 from flask_wtf.csrf import CSRFError, CSRFProtect
