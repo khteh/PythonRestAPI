@@ -6,8 +6,6 @@ name = "pypi"
 [packages]
 flask-healthz = "*"
 marshmallow = "*"
-psycopg2-binary = "*"
-PyMySQL = {extras = ["rsa"], version = "*"}
 python-dotenv = "*"
 Quart = "*"
 Hypercorn = {extras = ["h3"], version = "*"}
@@ -22,7 +20,9 @@ Flask-Bcrypt = "*"
 PyJWT = "*"
 alembic = "*"
 itsdangerous = "*"
-flask-oidc = "*"
+flask-oidc = {ref = "refs/pull/144/head", git = "https://github.com/puiterwijk/flask-oidc.git"}
+psycopg = {extras = ["binary"], version = "*"}
+psycopg2-binary = "*"
 
 [dev-packages]
 pytest = "*"

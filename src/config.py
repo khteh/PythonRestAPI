@@ -9,7 +9,8 @@ class Development(object):
     DEBUG = True
     TESTING = False
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
-    SQLALCHEMY_DATABASE_URI = f"mysql://{os.environ.get('MYSQL_USER')}:{os.environ.get('MYSQL_PASSWORD')}@svc-mysql/library"
+    #SQLALCHEMY_DATABASE_URI = f"mysql://{os.environ.get('MYSQL_USER')}:{os.environ.get('MYSQL_PASSWORD')}@svc-mysql/library"
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{os.environ.get('MYSQL_USER')}:{os.environ.get('MYSQL_PASSWORD')}@svc-mysql/library"
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     OIDC_CLIENT_SECRETS = "manifests/oidc-secret.json"
 
@@ -19,7 +20,8 @@ class Production(object):
     """
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = f"mysql://{os.environ.get('MYSQL_USER')}:{os.environ.get('MYSQL_PASSWORD')}@svc-mysql/library"
+    #SQLALCHEMY_DATABASE_URI = f"mysql://{os.environ.get('MYSQL_USER')}:{os.environ.get('MYSQL_PASSWORD')}@svc-mysql/library"
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{os.environ.get('MYSQL_USER')}:{os.environ.get('MYSQL_PASSWORD')}@svc-mysql/library"
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     OIDC_CLIENT_SECRETS = "manifests/oidc-secret.json"
 

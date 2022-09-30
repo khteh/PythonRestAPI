@@ -4,10 +4,10 @@
         "TESTING": true,
         "SECRET_KEY": "PythonRestAPI",
         "JWT_SECRET_KEY": "PythonRestAPI",
-        "SQLALCHEMY_DATABASE_URI": "mysql+pymysql://guest:P*ssw0rd@localhost:30001/library",
+        "SQLALCHEMY_DATABASE_URI": "postgresql://guest:P%40$$w0rd@10.152.183.150:5432/library",
         "DB_USERNAME": "guest",
-        "DB_PASSWORD": "P*ssw0rd",
-        "DB_HOST": "localhost:30001",
+        "DB_PASSWORD": "P@$$w0rd",
+        "DB_HOST": "10.152.183.150:5432",
         "DB_DATABASE": "library",
         "HEALTHZ": {
                     "live": "src.app.liveness",
