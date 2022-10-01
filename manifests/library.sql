@@ -1,145 +1,299 @@
--- MySQL dump 10.13  Distrib 8.0.26, for Linux (x86_64)
 --
--- Host: localhost    Database: library
--- ------------------------------------------------------
--- Server version	8.0.26
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `alembic_version`
+-- PostgreSQL database dump
 --
 
-DROP TABLE IF EXISTS `alembic_version`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `alembic_version` (
-  `version_num` varchar(32) NOT NULL,
-  PRIMARY KEY (`version_num`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- Dumped from database version 14.5 (Debian 14.5-1.pgdg110+1)
+-- Dumped by pg_dump version 14.5 (Debian 14.5-1.pgdg110+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
 
 --
--- Dumping data for table `alembic_version`
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: guest
 --
 
-LOCK TABLES `alembic_version` WRITE;
-/*!40000 ALTER TABLE `alembic_version` DISABLE KEYS */;
-INSERT INTO `alembic_version` VALUES ('f5dadd6b2c17');
-/*!40000 ALTER TABLE `alembic_version` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO guest;
 
 --
--- Table structure for table `authors`
+-- Name: authors; Type: TABLE; Schema: public; Owner: guest
 --
 
-DROP TABLE IF EXISTS `authors`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `authors` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `firstname` varchar(128) NOT NULL,
-  `lastname` varchar(128) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(15) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `modified_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ix_authors_email` (`email`),
-  UNIQUE KEY `ix_authors_phone` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE public.authors (
+    id integer NOT NULL,
+    firstname character varying(128) NOT NULL,
+    lastname character varying(128) NOT NULL,
+    email character varying(255) NOT NULL,
+    phone character varying(15),
+    created_at timestamp with time zone,
+    modified_at timestamp with time zone
+);
+
+
+ALTER TABLE public.authors OWNER TO guest;
 
 --
--- Dumping data for table `authors`
+-- Name: authors_id_seq; Type: SEQUENCE; Schema: public; Owner: guest
 --
 
-LOCK TABLES `authors` WRITE;
-/*!40000 ALTER TABLE `authors` DISABLE KEYS */;
-INSERT INTO `authors` VALUES (1,'JK','Rowing','jk@rowing.com','+49123456789','2021-09-28 05:31:56','2021-09-28 05:31:56'),(2,'Nick','Bostrom','nick@email.com','+49987654321','2021-09-29 02:48:54','2021-09-29 02:48:54'),(3,'Chade Meng','Tan','chademeng.tan@gmail.com','+123456789','2021-09-29 03:45:09','2021-09-29 03:45:09');
-/*!40000 ALTER TABLE `authors` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE SEQUENCE public.authors_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.authors_id_seq OWNER TO guest;
 
 --
--- Table structure for table `books`
+-- Name: authors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: guest
 --
 
-DROP TABLE IF EXISTS `books`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `books` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(128) NOT NULL,
-  `isbn` varchar(255) NOT NULL,
-  `page_count` int NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `modified_at` datetime DEFAULT NULL,
-  `author_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `author_id` (`author_id`),
-  CONSTRAINT `books_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+ALTER SEQUENCE public.authors_id_seq OWNED BY public.authors.id;
+
 
 --
--- Dumping data for table `books`
+-- Name: books; Type: TABLE; Schema: public; Owner: guest
 --
 
-LOCK TABLES `books` WRITE;
-/*!40000 ALTER TABLE `books` DISABLE KEYS */;
-INSERT INTO `books` VALUES (1,'Harry Porter','978-0-596-52068-7',123,'2021-09-28 05:32:12','2021-09-28 05:32:12',1),(2,'Superintelligence','978-1-501-22774-5',350,'2021-09-29 02:56:57','2021-09-29 02:56:57',2),(3,'Search Inside Yourself','0062116932',350,'2021-09-29 03:45:48','2021-09-29 03:45:48',3);
-/*!40000 ALTER TABLE `books` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE public.books (
+    id integer NOT NULL,
+    title character varying(128) NOT NULL,
+    isbn character varying(255) NOT NULL,
+    page_count integer NOT NULL,
+    created_at timestamp with time zone,
+    modified_at timestamp with time zone,
+    author_id integer NOT NULL
+);
+
+
+ALTER TABLE public.books OWNER TO guest;
 
 --
--- Table structure for table `users`
+-- Name: books_id_seq; Type: SEQUENCE; Schema: public; Owner: guest
 --
 
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `firstname` varchar(128) NOT NULL,
-  `lastname` varchar(128) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(15) DEFAULT NULL,
-  `password` varchar(128) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `modified_at` datetime DEFAULT NULL,
-  `lastlogin` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ix_users_email` (`email`),
-  UNIQUE KEY `ix_users_phone` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE SEQUENCE public.books_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.books_id_seq OWNER TO guest;
 
 --
--- Dumping data for table `users`
+-- Name: books_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: guest
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (4,'Kok How','Teh','khteh@email.com',NULL,'$2b$10$Elwn.qDv5W7v0SI98n8IZev.B0xEO0pX/WJbecKDyMMYdS3Z3Gt.W','2021-09-28 05:31:03','2021-09-29 04:08:52','2021-09-29 04:08:53'),(5,'Mickey','Mouse','mickey@email.com',NULL,'$2b$10$Pd6DOA8S03P8Su6PhrzbY.ImbV1zFMNQjBJqRxWmHTz6xm84dqhuq','2021-09-28 05:31:37','2021-09-28 05:31:37',NULL);
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+ALTER SEQUENCE public.books_id_seq OWNED BY public.books.id;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-09-29  4:11:46
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: guest
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    firstname character varying(128) NOT NULL,
+    lastname character varying(128) NOT NULL,
+    email character varying(255) NOT NULL,
+    phone character varying(15),
+    password character varying(128),
+    lastlogin timestamp with time zone,
+    created_at timestamp with time zone,
+    modified_at timestamp with time zone
+);
+
+
+ALTER TABLE public.users OWNER TO guest;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: guest
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO guest;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: guest
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: authors id; Type: DEFAULT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.authors ALTER COLUMN id SET DEFAULT nextval('public.authors_id_seq'::regclass);
+
+
+--
+-- Name: books id; Type: DEFAULT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.books ALTER COLUMN id SET DEFAULT nextval('public.books_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: guest
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+a4691bb6ae7d
+\.
+
+
+--
+-- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: guest
+--
+
+COPY public.authors (id, firstname, lastname, email, phone, created_at, modified_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: books; Type: TABLE DATA; Schema: public; Owner: guest
+--
+
+COPY public.books (id, title, isbn, page_count, created_at, modified_at, author_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: guest
+--
+
+COPY public.users (id, firstname, lastname, email, phone, password, lastlogin, created_at, modified_at) FROM stdin;
+\.
+
+
+--
+-- Name: authors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: guest
+--
+
+SELECT pg_catalog.setval('public.authors_id_seq', 1, false);
+
+
+--
+-- Name: books_id_seq; Type: SEQUENCE SET; Schema: public; Owner: guest
+--
+
+SELECT pg_catalog.setval('public.books_id_seq', 1, false);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: guest
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.authors
+    ADD CONSTRAINT authors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.books
+    ADD CONSTRAINT books_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ix_authors_email; Type: INDEX; Schema: public; Owner: guest
+--
+
+CREATE UNIQUE INDEX ix_authors_email ON public.authors USING btree (email);
+
+
+--
+-- Name: ix_authors_phone; Type: INDEX; Schema: public; Owner: guest
+--
+
+CREATE UNIQUE INDEX ix_authors_phone ON public.authors USING btree (phone);
+
+
+--
+-- Name: ix_users_email; Type: INDEX; Schema: public; Owner: guest
+--
+
+CREATE UNIQUE INDEX ix_users_email ON public.users USING btree (email);
+
+
+--
+-- Name: ix_users_phone; Type: INDEX; Schema: public; Owner: guest
+--
+
+CREATE UNIQUE INDEX ix_users_phone ON public.users USING btree (phone);
+
+
+--
+-- Name: books books_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: guest
+--
+
+ALTER TABLE ONLY public.books
+    ADD CONSTRAINT books_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.authors(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

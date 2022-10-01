@@ -15,5 +15,4 @@ pyjwt
 pytest
 pytest-flask
 psycopg2-binary
-mysql-connector-python
 python-dotenv

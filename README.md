@@ -4,7 +4,7 @@ Python RestAPI using Quart ASGI framework. It runs on HTTP/2 and will be HTTP/3 
 
 # Database setup:
 
-- This project uses MySQL database with SQLAlchemy ORM with marshmallow for object SerDes.
+- This project uses PostgreSQL database with SQLAlchemy ORM with marshmallow for object SerDes.
 
 ## Install python modules
 
@@ -18,7 +18,7 @@ $ pipenv install --python=/path/to/python
 
 ## Create Database
 
-- Firstly, create an empty database "library" in MySQL 8.0
+- Firstly, create an empty database "library" in PostgreSQL
 
 ## Database Migration
 
@@ -30,7 +30,7 @@ $ pipenv run alembic revision --autogenerate -m "Initial migration"
 $ pipenv run alembic upgrade head
 ```
 
-- There will be 3 tables, "users", "books", and "authors" created in the MySQL database "library" after the `upgrade`.
+- There will be 3 tables, "users", "books", and "authors" created in the PostgreSQL database "library" after the `upgrade`.
 
 # Test using PyTest:
 
