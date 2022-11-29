@@ -48,7 +48,6 @@ print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorl0") else print
 print("lettersRegex: Match!") if re.match(lettersRegex, "Hello Worl") else print("lettersRegex: No match!") # Should NOT match due to space
 print("lettersRegex: Match!") if re.match(lettersRegex, "Hello World") else print("lettersRegex: No match!") # Should NOT match due to length
 
-#emailRegex = "[\w.-]+@[\w.-]+.\w+"
 emailRegex = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
 email = ""
 print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
