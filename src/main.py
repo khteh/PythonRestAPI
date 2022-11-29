@@ -48,8 +48,20 @@ print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorl0") else print
 print("lettersRegex: Match!") if re.match(lettersRegex, "Hello Worl") else print("lettersRegex: No match!") # Should NOT match due to space
 print("lettersRegex: Match!") if re.match(lettersRegex, "Hello World") else print("lettersRegex: No match!") # Should NOT match due to length
 
-emailRegex = "[\w.-]+@[\w.-]+.\w+"
+emailRegex = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
 email = ""
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = ".@."
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "-@-"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "a@"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "a@b"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "ab@de"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "abc@def"
 print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
 email = "a@b.c"
 print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
@@ -65,6 +77,21 @@ email = "kok-how_teh@b.c"
 print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
 email = "kok-how_teh@b.c.d"
 print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "123@456"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "123@ntu.edu.sg"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "funcoolgeek@gmail.com"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "teh_k_h@gmail.com"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "teh-k.h@gmail.com"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "teh-k.h@gmail.co.uk"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+email = "teh k h@gmail.com"
+print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+
 regex = "^(\d{8,10})$"
 print("Match!") if re.match(regex, "1234567") else print("No match!") # Should NOT match
 print("Match!") if re.match(regex, "12345678") else print("No match!")
