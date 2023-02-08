@@ -35,7 +35,6 @@ config.set_section_option(section, "DB_USERNAME", json_config["DB_USERNAME"])
 config.set_section_option(section, "DB_PASSWORD", urllib.parse.quote_plus(json_config['DB_PASSWORD']).replace("%", "%%"))
 config.set_section_option(section, "DB_HOST", json_config["DB_HOST"])
 config.set_section_option(section, "DB_DATABASE", json_config["DB_DATABASE"])
-#config.set_section_option(section, "DB_DATABASE_URL", urllib.parse.quote_plus(json_config["SQLALCHEMY_DATABASE_URI"]))
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
 
