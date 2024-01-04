@@ -1,7 +1,7 @@
 {
     "editor.codeActionsOnSave": {
-        "source.organizeImports": false,
-        "source.fixAll": true,
-        "source.fixAll.unusedImports": false
+        "source.organizeImports": "never",
+        "source.fixAll": "explicit",
+        "source.fixAll.unusedImports": "never"
     }
 }
