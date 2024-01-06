@@ -1,4 +1,4 @@
-import quart.flask_patch
+import quart_flask_patch
 import logging, os, re
 from dotenv import load_dotenv
 from flask_healthz import Healthz

@@ -23,10 +23,11 @@ itsdangerous = "*"
 flask-oidc = {ref = "refs/pull/144/head", git = "https://github.com/puiterwijk/flask-oidc.git"}
 psycopg = {extras = ["binary"], version = "*"}
 psycopg2-binary = "*"
+quart-flask-patch = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-flask = "*"
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"
