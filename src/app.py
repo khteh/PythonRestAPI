@@ -20,7 +20,7 @@ def create_app() -> Quart:
     """
     # App initialization
     app = Quart(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
-    app.config.from_json("/etc/pythonrestapi_config.json", "r")
+    app.config.from_file("/etc/pythonrestapi_config.json", json.load)
     if "SQLALCHEMY_DATABASE_URI" not in app.config:
         app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{os.getenv('POSTGRESQL_USER')}:{os.getenv('POSTGRESQL_PASSWORD')}@svc-postgresql/library"
     app.register_blueprint(home_blueprint, url_prefix="/")
@@ -33,7 +33,7 @@ def create_app() -> Quart:
     return app
 
 def liveness():
-    pass
+    pass 
 
 def readiness():
     try:

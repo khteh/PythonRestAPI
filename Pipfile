@@ -9,7 +9,6 @@ marshmallow = "*"
 python-dotenv = "*"
 Quart = "*"
 Hypercorn = {extras = ["h3"], version = "*"}
-Flask = "*"
 Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 Flask-Script = "*"

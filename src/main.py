@@ -11,7 +11,7 @@ from src.models import bcrypt, db
 #from .common.Authentication import oidc
 load_dotenv()
 app = create_app()
-app = cors(app, allow_credentials=True, allow_origin="https://localhost:8080")
+app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
 Healthz(app, no_log=True)
 csrf = CSRFProtect(app)
 bcrypt.init_app(app)
