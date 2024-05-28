@@ -1,0 +1,10 @@
+accesslog = "-"
+alt_svc_headers = ["h3=\":443\"; ma=3600, h3-29=\":443\"; ma=3600"]
+bind = "0.0.0.0:4433"
+certfile = "server.crt"
+keyfile = "server.key"
+errorlog = "-"
+server_names = ["khteh.dev"]
+quic_bind = "0.0.0.0:4433"
+insecure_bind = "0.0.0.0:8080"
+worker_class = "trio"
