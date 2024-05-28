@@ -23,6 +23,7 @@ flask-oidc = {ref = "refs/pull/144/head", git = "https://github.com/puiterwijk/f
 psycopg = {extras = ["binary"], version = "*"}
 psycopg2-binary = "*"
 quart-flask-patch = "*"
+trio = "*"
 
 [dev-packages]
 pytest = "*"
