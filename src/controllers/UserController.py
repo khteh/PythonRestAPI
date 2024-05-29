@@ -32,7 +32,7 @@ async def create():
             if not form["lastname"]:
                 await flash("Please provide lastname!", "danger")
                 return redirect(url_for("user.create"))			   
-            emailRegex = "[\w.-]+@[\w.-]+.\w+"
+            emailRegex = r"[\w.-]+@[\w.-]+.\w+"
             if not re.match(emailRegex, form["email"]):
                 await flash("Please provide an valid email address!", "danger")
                 return redirect(url_for("user.create"))

@@ -8,7 +8,6 @@ flask-healthz = "*"
 marshmallow = "*"
 python-dotenv = "*"
 Quart = "*"
-Hypercorn = {extras = ["h3"], version = "*"}
 Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 Flask-Script = "*"
@@ -23,7 +22,7 @@ flask-oidc = {ref = "refs/pull/144/head", git = "https://github.com/puiterwijk/f
 psycopg = {extras = ["binary"], version = "*"}
 psycopg2-binary = "*"
 quart-flask-patch = "*"
-trio = "*"
+hypercorn = {extras = ["trio"], version = "*"}
 
 [dev-packages]
 pytest = "*"

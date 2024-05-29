@@ -42,7 +42,7 @@ async def create():
             if "author" not in form or not form["author"]:
                 await flash("Please provide author!", "danger")
                 return redirect(url_for("book.create"))
-            numberRegex = "^(\d)+$"
+            numberRegex = r"^(\d)+$"
             if not re.match(numberRegex, form["pages"]):
                 await flash("Please provide an valid page count!", "danger")
                 return redirect(url_for("book.create"))

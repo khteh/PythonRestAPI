@@ -36,11 +36,11 @@ async def create():
             if "lastname" not in form or not form["lastname"]:
                 await flash("Please provide lastname!", "danger")
                 return redirect(url_for("author.create"))			   
-            emailRegex = "[\w.-]+@[\w.-]+.\w+"
+            emailRegex = r"[\w.-]+@[\w.-]+.\w+"
             if "email" not in form or not re.match(emailRegex, form["email"]):
                 await flash("Please provide an valid email address!", "danger")
                 return redirect(url_for("author.create"))		
-            phoneRegex = "^(\+\d{1,3}\-?)*(\d{8,10})$"
+            phoneRegex = r"^(\+\d{1,3}\-?)*(\d{8,10})$"
             if "phone" not in form or not re.match(phoneRegex, form["phone"]):
                 await flash("Please provide an valid phone number!", "danger")
                 return redirect(url_for("author.create"))
