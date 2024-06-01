@@ -1,10 +1,12 @@
 accesslog = "/var/log/pythonrestapi"
 errorlog = "/var/log/pythonrestapi"
+loglevel = "INFO"
 alt_svc_headers = ["h3=\":443\"; ma=3600, h3-29=\":443\"; ma=3600"]
 quic_bind = "0.0.0.0:4433"
 bind = "0.0.0.0:4433"
 insecure_bind = "0.0.0.0:8080"
-certfile = "server.crt"
-keyfile = "server.key"
+certfile = "/tmp/server.crt"
+keyfile = "/tmp/server.key"
 #server_names = ["pythonrestapi"]
-worker_class = "trio"
+worker_class = "asyncio"
+workers = "100"
