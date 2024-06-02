@@ -1,118 +1,87 @@
-import logging, os, re
-numberRegex = r"^(\d)+$"
-print("numberRegex: Match!") if re.match(numberRegex, "123") else print("numberRegex: No match!") # Should match
-print("numberRegex: Match!") if re.match(numberRegex, "Hello World") else print("numberRegex: No match!") # Should NOT match	
-print("numberRegex: Match!") if re.match(numberRegex, "123 ") else print("numberRegex: No match!") # Should NOT match	
-print("numberRegex: Match!") if re.match(numberRegex, " 123") else print("numberRegex: No match!") # Should NOT match	
-print("numberRegex: Match!") if re.match(numberRegex, "123.") else print("numberRegex: No match!") # Should NOT match	
-print("numberRegex: Match!") if re.match(numberRegex, "123-") else print("numberRegex: No match!") # Should NOT match	
+import pytest, logging, os, re
+def test_numnerRegex():
+    numberRegex = r"^(\d)+$"
+    assert re.match(numberRegex, "123")
+    assert not re.match(numberRegex, "Hello World")
+    assert not re.match(numberRegex, "123 ")
+    assert not re.match(numberRegex, " 123")
+    assert not re.match(numberRegex, "123.")
+    assert not re.match(numberRegex, "123-")
 
-regex = r"^([\w\d\-_\s])+$"
-print("regex: Match!") if re.match(regex, "Hello World") else print("regex: No match!") # Should match
-print("regex: Match!") if re.match(regex, "Hello-World") else print("regex: No match!") # Should match
-print("regex: Match!") if re.match(regex, "Hello_World") else print("regex: No match!") # Should match
-print("regex: Match!") if re.match(regex, "Hello World 123") else print("regex: No match!") # Should match
-print("regex: Match!") if re.match(regex, "Hello World!!!") else print("regex: No match!") # Should NOT match
-print("regex: Match!") if re.match(regex, "Hello World ~!@#$%^&*()_+") else print("regex: No match!") # Should NOT match
+def test_stringRegex():
+    regex = r"^([\w\d\-_\s])+$"
+    assert re.match(regex, "Hello World")
+    assert re.match(regex, "Hello-World")
+    assert re.match(regex, "Hello_World")
+    assert re.match(regex, "Hello World 123")
+    assert not re.match(regex, "Hello World!!!")
+    assert not re.match(regex, "Hello World ~!@#$%^&*()_+")
 
-regexMax = r"^([\w\d\-_\s]){5,10}$"
-print("regexMax: Match!") if re.match(regexMax, "Hello-Worl") else print("regexMax: No match!") # Should match
-print("regexMax: Match!") if re.match(regexMax, "Hello_Worl") else print("regexMax: No match!") # Should match
-print("regexMax: Match!") if re.match(regexMax, "HelloWorl8") else print("regexMax: No match!") # Should match
-print("regexMax: Match!") if re.match(regexMax, "Helo") else print("regexMax: No match!") # Should NOT match
-print("regexMax: Match!") if re.match(regexMax, "HelloWorl89") else print("regexMax: No match!") # Should NOT match
-print("regexMax: Match!") if re.match(regexMax, "Hello World ~!@#$%^&*()_+") else print("regexMax: No match!") # Should NOT match
+def test_stringRegexMax():
+    regexMax = r"^([\w\d\-_\s]){5,10}$"
+    assert re.match(regexMax, "Hello-Worl")
+    assert re.match(regexMax, "Hello_Worl")
+    assert re.match(regexMax, "HelloWorl8")
+    assert not re.match(regexMax, "Helo")
+    assert not re.match(regexMax, "HelloWorl89")
+    assert not re.match(regexMax, "Hello World ~!@#$%^&*()_+")
 
-lettersRegex = r"^([a-zA-Z]){0,10}$"
-print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorld") else print("lettersRegex: No match!") # Should match
-print("lettersRegex: Match!") if re.match(lettersRegex, "HelloWorl0") else print("lettersRegex: No match!") # Should NOT match due to number
-print("lettersRegex: Match!") if re.match(lettersRegex, "Hello Worl") else print("lettersRegex: No match!") # Should NOT match due to space
-print("lettersRegex: Match!") if re.match(lettersRegex, "Hello World") else print("lettersRegex: No match!") # Should NOT match due to length
+def test_lettersRegex():
+    lettersRegex = r"^([a-zA-Z]){0,10}$"
+    assert re.match(lettersRegex, "HelloWorld")
+    assert not re.match(lettersRegex, "HelloWorl0") # Should NOT match due to number
+    assert not re.match(lettersRegex, "Hello Worl") # Should NOT match due to space
+    assert not re.match(lettersRegex, "Hello World") # Should NOT match due to length
 
-emailRegex = r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-email = ""
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = ".@."
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "-@-"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "a@"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "a@b"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "ab@de"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "abc@def"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "a@b.c"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "~!@#$%^&*()_+@b.c"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "~!#$%^&*()_+@b.c"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "kokhow.teh@b.c"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "kokhow teh@b.c"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "kok-how_teh@b.c"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "kok-how_teh@b.c.d"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "123@456"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "123@ntu.edu.sg"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "funcoolgeek@gmail.com"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "teh_k_h@gmail.com"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "teh-k.h@gmail.com"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "teh-k.h@gmail.co.uk"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
-email = "teh k h@gmail.com"
-print(f"Valid email: {email}") if re.match(emailRegex, email) else print(f"Invalid email: {email}")
+def test_emailRegex():
+    emailRegex = r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+    assert not re.match(emailRegex, "")
+    assert not re.match(emailRegex, ".@.")
+    assert not re.match(emailRegex, "-@-")
+    assert not re.match(emailRegex, "a@")
+    assert not re.match(emailRegex, "a@b")
+    assert not re.match(emailRegex, "ab@de")
+    assert not re.match(emailRegex, "abc@def")
+    assert not re.match(emailRegex, "a@b.c")
+    assert not re.match(emailRegex, "~!@#$%^&*()_+@b.c")
+    assert not re.match(emailRegex, "~!#$%^&*()_+@b.c")
+    assert not re.match(emailRegex, "kokhow.teh@b.c")
+    assert not re.match(emailRegex, "kokhow teh@b.c")
+    assert not re.match(emailRegex, "kok-how_teh@b.c")
+    assert not re.match(emailRegex, "kok-how_teh@b.c.d")
+    assert not re.match(emailRegex, "123@456")
+    assert re.match(emailRegex, "123@ntu.edu.sg")
+    assert re.match(emailRegex, "me@gmail.com")
+    assert re.match(emailRegex, "tan_k_h@gmail.com")
+    assert re.match(emailRegex, "tan-k.h@gmail.com")
+    assert re.match(emailRegex, "tan-k.h@gmail.co.uk")
+    assert not re.match(emailRegex, "tan k h@gmail.com")
 
-regex = r"^(\d{8,10})$"
-print("Match!") if re.match(regex, "1234567") else print("No match!") # Should NOT match
-print("Match!") if re.match(regex, "12345678") else print("No match!")
-print("Match!") if re.match(regex, "123456789") else print("No match!")
-print("Match!") if re.match(regex, "1234567890") else print("No match!")
-print("Match!") if re.match(regex, "12345678901") else print("No match!") # Should NOT match
+def test_numericRegex():
+    regex = r"^(\d{8,10})$"
+    assert not re.match(regex, "1234567")
+    assert re.match(regex, "12345678")
+    assert re.match(regex, "123456789")
+    assert re.match(regex, "1234567890")
+    assert not re.match(regex, "12345678901")
 
-# 91234567, +123-1234567890
-phoneRegex = r"^(\+\d{1,3}\-?)*(\d{8,10})$"
-phone = "1234567" # Invalid due to length < 8
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")
-phone = "12345678"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")
-phone = "1234567890"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")
-phone = "12345678901" # Invalid due to length > 10
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")
-phone = "+6512345678"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")	
-phone = "+65-12345678"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")		
-phone = "+ab-91234567"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")			
-phone = "+65 91234567" # Invalid due to space
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")
-phone = "+123-1234567" # Invalid due to length < 8
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")					
-phone = "+123-12345678"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")
-phone = "+123-1234567890"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")	
-phone = "+123-12345678901" # Invalid due to length > 10
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")		
-phone = "+-1234567890" # Invalid due to country code < 1
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")	
-phone = "-1234567890" # Invalid due to country code < 1
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")	
-phone = "+1234-1234567890" # Invalid due to country code > 3
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")	
-phone = "+123-HelloWorld"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")		
-phone = "+123-"
-print(f"Valid phone: {phone}") if re.match(phoneRegex, phone) else print(f"Invalid phone: {phone}")			
+def test_phoneNumberRegex():
+    # 91234567, +123-1234567890
+    phoneRegex = r"^(\+\d{1,3}\-?)*(\d{8,10})$"
+    assert not re.match(phoneRegex, "1234567") # Invalid due to length < 8
+    assert re.match(phoneRegex, "12345678")
+    assert re.match(phoneRegex, "1234567890")
+    assert not re.match(phoneRegex, "12345678901") # Invalid due to length > 10
+    assert re.match(phoneRegex, "+6512345678")
+    assert re.match(phoneRegex, "+65-12345678")
+    assert not re.match(phoneRegex, "+ab-91234567")
+    assert not re.match(phoneRegex, "+65 91234567") # Invalid due to space
+    assert not re.match(phoneRegex, "+123-1234567") # Invalid due to length < 8
+    assert re.match(phoneRegex, "+123-12345678")
+    assert re.match(phoneRegex, "+123-1234567890")
+    assert not re.match(phoneRegex, "+123-12345678901") # Invalid due to length > 10
+    assert not re.match(phoneRegex, "+-1234567890") # Invalid due to country code < 1
+    assert not re.match(phoneRegex, "-1234567890") # Invalid due to country code < 1
+    assert not re.match(phoneRegex, "+1234-1234567890") # Invalid due to country code > 3
+    assert not re.match(phoneRegex, "+123-HelloWorld")
+    assert not re.match(phoneRegex, "+123-")
