@@ -1,4 +1,7 @@
 import pytest, logging, os, re
+"""
+$ pytest regex_test.py
+"""
 def test_numnerRegex():
     numberRegex = r"^(\d)+$"
     assert re.match(numberRegex, "123")
@@ -85,3 +88,7 @@ def test_phoneNumberRegex():
     assert not re.match(phoneRegex, "+1234-1234567890") # Invalid due to country code > 3
     assert not re.match(phoneRegex, "+123-HelloWorld")
     assert not re.match(phoneRegex, "+123-")
+
+def test_SringContainsAlphabets():
+    assert re.search('[a-zA-Z]',"Hello World!!! 123")
+    assert not re.search('[a-zA-Z]',"123")
