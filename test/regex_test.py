@@ -1,93 +1,122 @@
 import pytest, logging, os, re
+from re import Match
 """
 $ pytest regex_test.py
 """
-def test_numnerRegex():
+NUMBER_REGEX_TEST_CASES = [
+    ("123", True),
+    ("Hello World", False),
+    ("123 ", False),
+    (" 123", False),
+    ("123.", False),
+    ("123-", False),
+    ("-123", False),
+]
+@pytest.mark.parametrize("data, expected", NUMBER_REGEX_TEST_CASES)
+def test_numberRegex(data, expected):
     numberRegex = r"^(\d)+$"
-    assert re.match(numberRegex, "123")
-    assert not re.match(numberRegex, "Hello World")
-    assert not re.match(numberRegex, "123 ")
-    assert not re.match(numberRegex, " 123")
-    assert not re.match(numberRegex, "123.")
-    assert not re.match(numberRegex, "123-")
+    assert expected == bool(re.match(numberRegex, data))
 
-def test_stringRegex():
+STRING_REGEX_TEST_CASES = [
+    ("Hello World", True),
+    ("Hello-World", True),
+    ("Hello_World", True),
+    ("Hello World 123", True),
+    ("Hello World!!!", False),
+    ("Hello World ~!@#$%^&*()_+", False),
+]
+@pytest.mark.parametrize("data, expected", STRING_REGEX_TEST_CASES)
+def test_stringRegex(data, expected):
     regex = r"^([\w\d\-_\s])+$"
-    assert re.match(regex, "Hello World")
-    assert re.match(regex, "Hello-World")
-    assert re.match(regex, "Hello_World")
-    assert re.match(regex, "Hello World 123")
-    assert not re.match(regex, "Hello World!!!")
-    assert not re.match(regex, "Hello World ~!@#$%^&*()_+")
+    assert expected == bool(re.match(regex, data))
 
-def test_stringRegexMax():
-    regexMax = r"^([\w\d\-_\s]){5,10}$"
-    assert re.match(regexMax, "Hello-Worl")
-    assert re.match(regexMax, "Hello_Worl")
-    assert re.match(regexMax, "HelloWorl8")
-    assert not re.match(regexMax, "Helo")
-    assert not re.match(regexMax, "HelloWorl89")
-    assert not re.match(regexMax, "Hello World ~!@#$%^&*()_+")
+STRING_LENGTH_REGEX_TEST_CASES = [
+    ("Hello-Worl", True),
+    ("Hello-Worl", True),
+    ("HelloWorl8", True),
+    ("Helo", False),
+    ("HelloWorl89", False),
+    ("Hello World ~!@#$%^&*()_+", False),
+]
+@pytest.mark.parametrize("data, expected", STRING_LENGTH_REGEX_TEST_CASES)
+def test_stringLengthRegex(data, expected):
+    regex = r"^([\w\d\-_\s]){5,10}$"
+    assert expected == bool(re.match(regex, data))
 
-def test_lettersRegex():
+LETTERS_REGEX_TEST_CASES = [
+    ("HelloWorld", True),
+    ("HelloWorl0", False),# Should NOT match due to number
+    ("Hello Worl", False),# Should NOT match due to space
+    ("Hello World", False), # Should NOT match due to length
+]
+@pytest.mark.parametrize("data, expected", LETTERS_REGEX_TEST_CASES)
+def test_lettersRegex(data, expected):
     lettersRegex = r"^([a-zA-Z]){0,10}$"
-    assert re.match(lettersRegex, "HelloWorld")
-    assert not re.match(lettersRegex, "HelloWorl0") # Should NOT match due to number
-    assert not re.match(lettersRegex, "Hello Worl") # Should NOT match due to space
-    assert not re.match(lettersRegex, "Hello World") # Should NOT match due to length
+    assert expected == bool(re.match(lettersRegex, data))
 
-def test_emailRegex():
+EMAIL_REGEX_TEST_CASES = [
+    ("", False),
+    (".@.", False),
+    ("-@-", False),
+    ("a@", False),
+    ("ab@de", False),
+    ("abc@def", False),
+    ("a@b.c", False),
+    ("~!@#$%^&*()_+@b.c", False),
+    ("~!#$%^&*()_+@b.c", False),
+    ("kokhow.teh@b.c", False),
+    ("kokhow teh@b.c", False),
+    ("kok-how_teh@b.c", False),
+    ("kok-how_teh@b.c.d", False),
+    ("123@456", False),
+    ("123@ntu.edu.sg", True),
+    ("me@gmail.com", True),
+    ("tan_k_h@gmail.com", True),
+    ("tan-k.h@gmail.com", True),
+    ("tan-k.h@gmail.co.uk", True),
+    ("tan k h@gmail.com", False)
+]
+@pytest.mark.parametrize("data, expected", EMAIL_REGEX_TEST_CASES)
+def test_emailRegex(data, expected):
     emailRegex = r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-    assert not re.match(emailRegex, "")
-    assert not re.match(emailRegex, ".@.")
-    assert not re.match(emailRegex, "-@-")
-    assert not re.match(emailRegex, "a@")
-    assert not re.match(emailRegex, "a@b")
-    assert not re.match(emailRegex, "ab@de")
-    assert not re.match(emailRegex, "abc@def")
-    assert not re.match(emailRegex, "a@b.c")
-    assert not re.match(emailRegex, "~!@#$%^&*()_+@b.c")
-    assert not re.match(emailRegex, "~!#$%^&*()_+@b.c")
-    assert not re.match(emailRegex, "kokhow.teh@b.c")
-    assert not re.match(emailRegex, "kokhow teh@b.c")
-    assert not re.match(emailRegex, "kok-how_teh@b.c")
-    assert not re.match(emailRegex, "kok-how_teh@b.c.d")
-    assert not re.match(emailRegex, "123@456")
-    assert re.match(emailRegex, "123@ntu.edu.sg")
-    assert re.match(emailRegex, "me@gmail.com")
-    assert re.match(emailRegex, "tan_k_h@gmail.com")
-    assert re.match(emailRegex, "tan-k.h@gmail.com")
-    assert re.match(emailRegex, "tan-k.h@gmail.co.uk")
-    assert not re.match(emailRegex, "tan k h@gmail.com")
+    assert expected == bool(re.match(emailRegex, data))
 
-def test_numericRegex():
+NUMERIC_LENGTH_REGEX_TEST_CASES = [
+    ("1234567", False),
+    ("12345678", True),
+    ("123456789", True),
+    ("1234567890", True),
+    ("12345678901", False)
+]
+@pytest.mark.parametrize("data, expected", NUMERIC_LENGTH_REGEX_TEST_CASES)
+def test_numericRegex(data, expected):
     regex = r"^(\d{8,10})$"
-    assert not re.match(regex, "1234567")
-    assert re.match(regex, "12345678")
-    assert re.match(regex, "123456789")
-    assert re.match(regex, "1234567890")
-    assert not re.match(regex, "12345678901")
+    assert expected == bool(re.match(regex, data))
 
-def test_phoneNumberRegex():
+PHONE_NUMBER_REGEX_TEST_CASES = [
+    ("1234567", False),# Invalid due to length < 8
+    ("12345678", True),
+    ("1234567890", True),
+    ("12345678901", False),# Invalid due to length > 10
+    ("+6512345678", True),
+    ("+65-12345678", True),
+    ("+ab-91234567", False),
+    ("+65 91234567", False),# Invalid due to space
+    ("+123-1234567", False),# Invalid due to length < 8
+    ("+123-12345678", True),
+    ("+123-1234567890", True),
+    ("+123-12345678901", False),# Invalid due to length > 10
+    ("+-1234567890", False),# Invalid due to country code < 1
+    ("-1234567890", False),# Invalid due to country code < 1
+    ("+1234-1234567890", False),# Invalid due to country code > 3
+    ("+123-HelloWorld", False),
+    ("+123-", False)
+]
+@pytest.mark.parametrize("data, expected", PHONE_NUMBER_REGEX_TEST_CASES)
+def test_phoneNumberRegex(data, expected):
     # 91234567, +123-1234567890
     phoneRegex = r"^(\+\d{1,3}\-?)*(\d{8,10})$"
-    assert not re.match(phoneRegex, "1234567") # Invalid due to length < 8
-    assert re.match(phoneRegex, "12345678")
-    assert re.match(phoneRegex, "1234567890")
-    assert not re.match(phoneRegex, "12345678901") # Invalid due to length > 10
-    assert re.match(phoneRegex, "+6512345678")
-    assert re.match(phoneRegex, "+65-12345678")
-    assert not re.match(phoneRegex, "+ab-91234567")
-    assert not re.match(phoneRegex, "+65 91234567") # Invalid due to space
-    assert not re.match(phoneRegex, "+123-1234567") # Invalid due to length < 8
-    assert re.match(phoneRegex, "+123-12345678")
-    assert re.match(phoneRegex, "+123-1234567890")
-    assert not re.match(phoneRegex, "+123-12345678901") # Invalid due to length > 10
-    assert not re.match(phoneRegex, "+-1234567890") # Invalid due to country code < 1
-    assert not re.match(phoneRegex, "-1234567890") # Invalid due to country code < 1
-    assert not re.match(phoneRegex, "+1234-1234567890") # Invalid due to country code > 3
-    assert not re.match(phoneRegex, "+123-HelloWorld")
-    assert not re.match(phoneRegex, "+123-")
+    assert expected == bool(re.match(phoneRegex, data))
 
 def test_SringContainsAlphabets():
     assert re.search('[a-zA-Z]',"Hello World!!! 123")
