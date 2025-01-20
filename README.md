@@ -38,10 +38,10 @@ $ pipenv install --python=/path/to/python
   - JWT token generation and decoding
   - HomeController
   - FibonacciController
-    ```
-    $ pytest -v
-    $ python -m pytest
-    ```
+  ```
+  $ pytest -v
+  $ python -m pytest
+  ```
 
 # Continuous Integration:
 
