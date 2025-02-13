@@ -118,6 +118,19 @@ def test_phoneNumberRegex(data, expected):
     phoneRegex = r"^(\+\d{1,3}\-?)*(\d{8,10})$"
     assert expected == bool(re.match(phoneRegex, data))
 
+CPP_CSHARP_REGEX_TEST_CASES = [
+    ("C++", True),
+    ("C#", True),
+    ("C+", False),
+    ("C##", False),
+    ("C", True),
+]
+@pytest.mark.parametrize("data, expected", CPP_CSHARP_REGEX_TEST_CASES)
+def test_cpp_csharpRegex(data, expected):
+    cpp_csharp_regex = r"^C(?:\+\+|#)?$"
+    #cpp_csharp_regex = r"\bC(?:\+\+|#)?(?!\S)" # matches to be the entire input string
+    assert expected == bool(re.match(cpp_csharp_regex, data)) #If you want to catch these matches perhaps as part of a larger string, with the matches surrounded by whitespace
+
 def test_SringContainsAlphabets():
     assert re.search('[a-zA-Z]',"Hello World!!! 123")
     assert not re.search('[a-zA-Z]',"123")
