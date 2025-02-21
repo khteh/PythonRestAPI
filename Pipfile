@@ -7,7 +7,6 @@ name = "pypi"
 flask-healthz = "*"
 marshmallow = "*"
 python-dotenv = "*"
-Quart = "*"
 Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 Flask-Script = "*"
@@ -23,10 +22,11 @@ psycopg = {extras = ["binary"], version = "*"}
 psycopg2-binary = "*"
 quart-flask-patch = "*"
 hypercorn = {extras = ["asyncio"], version = "*"}
+quart = "*"
 
 [dev-packages]
-pytest = "*"
 pytest-flask = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.12"

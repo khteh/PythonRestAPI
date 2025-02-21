@@ -2,7 +2,16 @@
 
 Python RestAPI using Quart ASGI framework. It runs on HTTP/2 and will be HTTP/3 when mainstream browsers support it in the near future.
 
-# Database setup:
+## Environment setup
+
+- On a development host, create a virtual environment for development and test. Both must be using the same virtual environment.
+- Virtual environment is optional for CI/CD do because everything runs in a docker container.
+
+```
+$ pipenv shell
+```
+
+## Database setup:
 
 - This project uses PostgreSQL database with SQLAlchemy ORM with marshmallow for object SerDes.
 
@@ -39,7 +48,7 @@ $ pipenv install --python=/path/to/python
   - HomeController
   - FibonacciController
   ```
-  $ pytest -v
+  $ pipenv run pytest -v
   $ python -m pytest
   ```
 
