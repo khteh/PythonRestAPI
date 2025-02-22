@@ -27,6 +27,7 @@ quart = "*"
 [dev-packages]
 pytest-flask = "*"
 pytest = "*"
+pytest-asyncio = "*"
 
 [requires]
 python_version = "3.12"

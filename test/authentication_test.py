@@ -7,9 +7,10 @@ from src.app import create_app
 from quart_cors import cors
 sys.path.insert(0, abspath(join(dirname(__file__), '../src')))
 from common.Authentication import Authentication
+pytest_plugins = ('pytest_asyncio',)
 
-@pytest.fixture
-def app_context():
+@pytest.fixture()
+async def app_context():
     config = Config()
     config.bind = ["localhost:4433"]
     config.insecure_bind = ["localhost:8080"]
@@ -20,22 +21,22 @@ def app_context():
     app = create_app()
     app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
     asyncio.run(serve(app, config))
-    with app.app_context():
-        yield
-
-def test_tokengeneration_pass(app_context):
+    async with app.app_context() as app_context:
+        yield app_context    
+@pytest.mark.asyncio
+async def test_tokengeneration_pass(app_context):
     """ JWT token generation should pass with valid user input parameter """
     token = Authentication.generate_token("test_user")
     assert type(token) is str
     assert token != ""
-
-def test_tokengeneration_fail(app_context):
+@pytest.mark.asyncio
+async def test_tokengeneration_fail(app_context):
     """ JWT token generation should fail without valid user input parameter """
     with pytest.raises(Exception) as e:
         token = Authentication.generate_token("")
     assert "Invalid user id!" in str(e.value)
-
-def test_tokendecoding_pass(app_context):
+@pytest.mark.asyncio
+async def test_tokendecoding_pass(app_context):
     """ JWT token decoding should pass with valid user input parameter """
     token = Authentication.generate_token("test_user")
     assert type(token) is str
@@ -48,8 +49,8 @@ def test_tokendecoding_pass(app_context):
     assert decode["data"]["user_id"] == "test_user"
     expect = dict(data=dict(user_id="test_user"), error=dict())
     assert decode == expect
-
-def test_tokendecoding_fail(app_context):
+@pytest.mark.asyncio
+async def test_tokendecoding_fail(app_context):
     """ JWT token decoding should fail without valid user input parameter """
     with pytest.raises(Exception) as e:
         token = Authentication.decode_token("")
