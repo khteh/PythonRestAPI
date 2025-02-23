@@ -21,4 +21,4 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 
 #app.run(HOST, PORT)
 print(f"Running asyncio...")
-asyncio.run(serve(app, config))
+asyncio.run(serve(app, config), debug=True)
