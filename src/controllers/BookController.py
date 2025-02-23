@@ -1,6 +1,6 @@
 import re, logging
 from quart import request, json, Blueprint, session, render_template, flash, redirect, url_for
-from datetime import datetime
+from datetime import datetime, timezone
 from marshmallow import ValidationError
 from ..common.Authentication import Authentication
 from ..common.Response import custom_response
@@ -12,7 +12,7 @@ book_schema = BookSchema()
 author_schema = AuthorSchema()
 @book_api.context_processor
 def inject_now():
-    return {'now': datetime.utcnow()}
+    return {'now': datetime.now(timezone.utc)}
 
 @book_api.route("/index", methods=["GET"])
 async def index():

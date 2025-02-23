@@ -1,7 +1,7 @@
 import logging
 from quart import request, json, Blueprint, session, render_template, session, redirect, url_for
 from marshmallow import ValidationError
-from datetime import datetime
+from datetime import datetime, timezone
 from base64 import b64decode
 from ..models.UserModel import UserModel, UserSchema
 from ..common.Authentication import Authentication
@@ -11,7 +11,7 @@ auth_api = Blueprint("auth", __name__)
 user_schema = UserSchema()
 @auth_api.context_processor
 def inject_now():
-    return {'now': datetime.utcnow()}
+    return {'now': datetime.now(timezone.utc)}
 
 @auth_api.route("/login", methods=["GET", "POST"])
 async def login():
@@ -43,7 +43,7 @@ async def login():
             token = Authentication.generate_token(ser_data.get("id"))
             session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": token}
             #return custom_response({"jwt_token": token}, 200)
-            data["lastlogin"] = datetime.utcnow()
+            data["lastlogin"] = datetime.now(timezone.utc)
             user.update(data)
             logging.info(f"[Auth] User {user.email} logged in")
             if "url" in session and session["url"]:

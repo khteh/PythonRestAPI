@@ -1,4 +1,5 @@
-import jwt, datetime, logging
+import jwt, logging
+from datetime import datetime, timezone
 from quart import json, Response, session, redirect, url_for, session, abort, current_app
 #from flask_oidc import OpenIDConnect
 from functools import wraps
@@ -19,7 +20,7 @@ class Authentication():
             raise Exception("Invalid user id!")
         if user_id:
             try:
-                now = datetime.datetime.utcnow()
+                now = datetime.now(timezone.utc)
                 # https://pyjwt.readthedocs.io/en/latest/usage.html#registered-claim-names
                 payload = {
                     "exp": now + datetime.timedelta(hours=1),
@@ -94,7 +95,6 @@ class Authentication():
 #    @staticmethod
 #    def isAuthenticated():
 #        return oidc.user_loggedin and "user" in session and "token" in session["user"]
-
     @staticmethod
     def require_role(role):
         def decorated_require_role(func):

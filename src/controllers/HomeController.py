@@ -1,12 +1,12 @@
 from quart import Blueprint, render_template, session
-from datetime import datetime
+from datetime import datetime, timezone
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
 import re
 home_api = Blueprint("home", __name__)
 @home_api.context_processor
 def inject_now():
-    return {'now': datetime.utcnow()}
+    return {'now': datetime.now(timezone.utc)}
 
 @home_api.route("/")
 @home_api.route("/index")

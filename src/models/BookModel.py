@@ -1,7 +1,7 @@
 from . import db
 from marshmallow import fields, Schema
 from sqlalchemy.sql import func
-import datetime
+from datetime import datetime, timezone
 
 class BookModel(db.Model):
     """

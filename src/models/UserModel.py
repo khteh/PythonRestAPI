@@ -1,6 +1,6 @@
 from marshmallow import fields, Schema
 from sqlalchemy.sql import func
-import datetime
+from datetime import datetime, timezone
 from . import db, bcrypt
 from .BookModel import BookSchema
 class UserModel(db.Model):

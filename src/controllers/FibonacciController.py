@@ -1,18 +1,19 @@
 from quart import request, session, Blueprint, flash, render_template, session
 from quart.utils import run_sync
-from datetime import datetime
+from datetime import datetime, timezone
 from array import array
 from ..common.Response import custom_response
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
-import re
+from urllib.parse import urlparse, parse_qs
 fibonacci_api = Blueprint("fibonacci", __name__)
 @fibonacci_api.context_processor
 def inject_now():
-    return {'now': datetime.utcnow()}
+    return {'now': datetime.now(timezone.utc)}
 
 @fibonacci_api.route("/", methods=["GET", "POST"])
 async def fibonacci():
+    print("fibonacci()")
     fibonacci = None
     error = None
     user = None
@@ -26,18 +27,21 @@ async def fibonacci():
         if not user:
             return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
     if request.method == "POST":
-        form = await request.form
-        if form['n']:
-            n = form["n"]
-            if n and n.strip():
-                if n.isnumeric():
-                    try:
-                        fibonacci = f"Hello {('there' if not user else user.firstname)}, fibonacci(" + n + "): " + str(await run_sync(fib)(int(n)))
-                        """Renders a greetings page."""
-                    except (Exception) as error:
-                        error = "Exception {0}".format(error)
-                        await flash(f"Fibonacci {n} failed! {error}", "danger")
-                        return await render_template("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator")
+        print("fibonacci() POST")
+        data = await request.get_data()
+        params = parse_qs(data.decode('utf-8'))
+        print(f"data: {data}, params: {params}")
+        if params['n'] and params["n"][0].strip() and params["n"][0].strip().isdigit():
+            n = int(params["n"][0].strip())
+            print(f"fibonacci(): {n}")
+            try:
+                result = await run_sync(fib)(n)
+                print(f"result: {result}")
+                fibonacci = f"Hello {('there' if not user else user.firstname)}, fibonacci({n}): {await run_sync(fib)(n)}"
+            except (Exception) as error:
+                error = "Exception {0}".format(error)
+                await flash(f"Fibonacci {n} failed! {error}", "danger")
+                return await render_template("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator")
         if not fibonacci:
             #error = custom_response({"error": "Please provide an 'N' for the fibonacci number!"}, 400)
             await flash("Please provide a numeric value 'N' for the fibonacci number!", "danger")

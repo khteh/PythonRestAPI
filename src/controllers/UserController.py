@@ -1,7 +1,7 @@
 import re, logging
 from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
-from datetime import datetime
+from datetime import datetime, timezone
 from ..models.UserModel import UserModel, UserSchema
 from ..common.Authentication import Authentication
 from ..common.Response import custom_response
@@ -9,7 +9,7 @@ user_api = Blueprint("user", __name__)
 user_schema = UserSchema()
 @user_api.context_processor
 def inject_now():
-    return {'now': datetime.utcnow()}
+    return {'now': datetime.now(timezone.utc)}
 
 @user_api.route("/index", methods=["GET"])
 async def index():
