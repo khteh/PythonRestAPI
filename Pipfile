@@ -29,6 +29,7 @@ pytest-flask = "*"
 pytest = "*"
 pytest-asyncio = "*"
 beautifulsoup4 = "*"
+quart-wtforms = "*"
 
 [requires]
 python_version = "3.12"

@@ -24,7 +24,9 @@ async def app_context():
     #app = create_app()
     #app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
     #asyncio.run(serve(app, config))
+    print("conftest app_context()")
     async with app.app_context() as app_context:
+        print("conftest app. app_context()")
         yield app_context
 
 def pytest_generate_tests(metafunc):

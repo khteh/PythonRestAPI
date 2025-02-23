@@ -13,7 +13,6 @@ def inject_now():
 
 @fibonacci_api.route("/", methods=["GET", "POST"])
 async def fibonacci():
-    print("fibonacci()")
     fibonacci = None
     error = None
     user = None
@@ -26,6 +25,7 @@ async def fibonacci():
         user = UserModel.get_user(user_id)
         if not user:
             return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
+    print("fibonacci()")      
     if request.method == "POST":
         print("fibonacci() POST")
         data = await request.get_data()
@@ -43,6 +43,8 @@ async def fibonacci():
         if not fibonacci:
             #error = custom_response({"error": "Please provide an 'N' for the fibonacci number!"}, 400)
             await flash("Please provide a numeric value 'N' for the fibonacci number!", "danger")
+    else:
+        print(f"Invalid request metho: {request.method}!")
     return await render_template("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator", fibonacci=fibonacci)
 
 def fib(n):
