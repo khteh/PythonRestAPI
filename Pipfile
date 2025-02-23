@@ -10,9 +10,7 @@ python-dotenv = "*"
 Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 Flask-Script = "*"
-Flask-WTF = "*"
 Quart-CORS = "*"
-WTForms = "*"
 Flask-Bcrypt = "*"
 PyJWT = "*"
 alembic = "*"
@@ -23,13 +21,13 @@ psycopg2-binary = "*"
 quart-flask-patch = "*"
 hypercorn = {extras = ["asyncio"], version = "*"}
 quart = "*"
+quart-wtforms = "*"
 
 [dev-packages]
 pytest-flask = "*"
 pytest = "*"
 pytest-asyncio = "*"
 beautifulsoup4 = "*"
-quart-wtforms = "*"
 
 [requires]
 python_version = "3.12"

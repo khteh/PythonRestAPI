@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "78610c70820ca1a3d60c3bba9600fedaad605ef627a92511326bbcf8cb9f6efe"
+            "sha256": "d977c48c528a5169c7b7865eb5656a9fc01153628f7fd1e2c5d132ee933d9fa7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -134,15 +134,6 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==3.1.1"
-        },
-        "flask-wtf": {
-            "hashes": [
-                "sha256:79d2ee1e436cf570bccb7d916533fa18757a2f18c290accffab1b9a0b684666b",
-                "sha256:e93160c5c5b6b571cf99300b6e01b72f9a101027cab1579901f8b10c5daf0b70"
-            ],
-            "index": "pypi",
-            "markers": "python_version >= '3.9'",
-            "version": "==1.2.2"
         },
         "greenlet": {
             "hashes": [
@@ -623,6 +614,23 @@
             "index": "pypi",
             "version": "==0.3.0"
         },
+        "quart-uploads": {
+            "hashes": [
+                "sha256:67f7f53b975afb12c0630cebd6acde234c797fca98dd769a9088225aaacdd14a",
+                "sha256:fc19a99b45feada44e750c3b4b9ff323800451e5550e4b66b3003e688011d3fb"
+            ],
+            "markers": "python_version >= '3.8'",
+            "version": "==0.0.4"
+        },
+        "quart-wtforms": {
+            "hashes": [
+                "sha256:7d08214c9606d40d2b35c78a8c1eecc2913b03b09cd256d233c82c29c8526fab",
+                "sha256:9fa4b0203370d6f7294c387fae9e1f096bc1e77003f1207445ca5e1e01e80eb7"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==1.0.3"
+        },
         "rsa": {
             "hashes": [
                 "sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7",
@@ -701,6 +709,14 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==2.0.38"
+        },
+        "types-aiofiles": {
+            "hashes": [
+                "sha256:11d4e102af0627c02e8c1d17736caa3c39de1058bea37e2f4de6ef11a5b652ab",
+                "sha256:c40f6c290b0af9e902f7f3fa91213cf5bb67f37086fb21dc0ff458253586ad55"
+            ],
+            "markers": "python_version >= '3.8'",
+            "version": "==24.1.0.20241221"
         },
         "typing-extensions": {
             "hashes": [

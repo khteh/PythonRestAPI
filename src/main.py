@@ -1,7 +1,7 @@
 import quart_flask_patch
 import logging, os, re
 from flask_healthz import Healthz
-from flask_wtf.csrf import CSRFError, CSRFProtect
+from quart_wtf.csrf import CSRFProtect
 from quart_cors import cors
 from hypercorn.config import Config
 import asyncio
