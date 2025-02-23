@@ -35,8 +35,6 @@ async def fibonacci():
             n = int(params["n"][0].strip())
             print(f"fibonacci(): {n}")
             try:
-                result = await run_sync(fib)(n)
-                print(f"result: {result}")
                 fibonacci = f"Hello {('there' if not user else user.firstname)}, fibonacci({n}): {await run_sync(fib)(n)}"
             except (Exception) as error:
                 error = "Exception {0}".format(error)
@@ -50,11 +48,11 @@ async def fibonacci():
 def fib(n):
 #    n = input(n)
 #    if n.isnumeric():
-        if n <= 1:
-            return n
-        else:
-            #return fib(n-2) + fib(n-1)
-            result = array('Q', [0,1]) # https://docs.python.org/3/library/array.html
-            for i in range(2, n+1):
-                result[i % 2] = result[(i - 2) % 2] + result[(i - 1) % 2]
-            return result[n % 2]
+    if n <= 1:
+        return n
+    else:
+        #return fib(n-2) + fib(n-1)
+        result = array('Q', [0,1]) # https://docs.python.org/3/library/array.html
+        for i in range(2, n+1):
+            result[i % 2] = result[(i - 2) % 2] + result[(i - 1) % 2]
+        return result[n % 2]

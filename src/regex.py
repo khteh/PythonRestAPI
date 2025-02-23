@@ -1,22 +1,7 @@
-#import quart.flask_patch
 import logging, os, re
 from dotenv import load_dotenv
-#from flask_healthz import Healthz
-#from flask_wtf.csrf import CSRFError, CSRFProtect
-#from quart_cors import cors
-
-#from src.app import create_app
-#from src.models import bcrypt, db
-
-#from .common.Authentication import oidc
 load_dotenv()
-#app = create_app()
-#app = cors(app, allow_credentials=True, allow_origin="https://localhost:8080")
-#Healthz(app, no_log=True)
-#csrf = CSRFProtect(app)
-#bcrypt.init_app(app)
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')	
-#oidc.init_app(app)
 
 numberRegex = "^(\d)+$"
 print("numberRegex: Match!") if re.match(numberRegex, "123") else print("numberRegex: No match!") # Should match
