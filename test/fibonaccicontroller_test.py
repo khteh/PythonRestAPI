@@ -3,6 +3,7 @@ from quart import g, url_for
 from datetime import datetime, timezone
 from http import HTTPStatus
 from http.cookies import SimpleCookie
+# CSRF: https://gist.github.com/singingwolfboy/2fca1de64950d5dfed72?permalink_comment_id=4556252
 @pytest.mark.asyncio
 async def test_fibonacci_get_pass(client):
     headers = {
@@ -55,7 +56,7 @@ async def test_fibonacci_fail(client):
     headers = {
         'accept': 'text/html,application/xhtml+xml,application/xml',
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-    }    
+    }
     response = await client.get('/fibonacci', headers=headers, follow_redirects=True)
     #response = await client.post('/fibonacci', data={"n": 90, "csrf_token": g.csrf_token}, follow_redirects=True)
     response = await client.post(url_for('/fibonacci'), follow_redirects=True)
