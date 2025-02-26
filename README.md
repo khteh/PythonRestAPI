@@ -7,7 +7,16 @@ Python RestAPI using Quart ASGI framework. It runs on HTTP/2 and will be HTTP/3 
 - On a development host, create a virtual environment for development and test. Both must be using the same virtual environment.
 - Virtual environment is optional for CI/CD do because everything runs in a docker container.
 
+### Clean up pipenv
+
+- `pipenv --rm`
+- `pipenv --clear`
+- `pipenv lock --clear --verbose`
+
+### Setup new pipenv
+
 ```
+$ pipenv install
 $ pipenv shell
 ```
 
