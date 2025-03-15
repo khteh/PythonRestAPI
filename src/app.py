@@ -4,9 +4,8 @@ It contains the definition of routes and views for the application.
 """
 import quart_flask_patch, json, logging, os
 from quart import Quart, request
-from flask_healthz import HealthError
+from flask_healthz import Healthz, HealthError
 from datetime import datetime, timezone
-from flask_healthz import Healthz
 from quart_wtf.csrf import CSRFProtect
 from quart_cors import cors
 from src.controllers.AuthenticationController import auth_api as auth_blueprint
