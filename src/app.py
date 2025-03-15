@@ -6,6 +6,9 @@ import quart_flask_patch, json, logging, os
 from quart import Quart, request
 from flask_healthz import HealthError
 from datetime import datetime, timezone
+from flask_healthz import Healthz
+from quart_wtf.csrf import CSRFProtect
+from quart_cors import cors
 from src.controllers.AuthenticationController import auth_api as auth_blueprint
 from src.controllers.UserController import user_api as user_blueprint
 from src.controllers.AuthorController import author_api as author_blueprint
@@ -29,6 +32,11 @@ def create_app() -> Quart:
     app.register_blueprint(user_blueprint, url_prefix="/users")
     app.register_blueprint(author_blueprint, url_prefix="/authors")
     app.register_blueprint(book_blueprint, url_prefix="/books")
+    app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
+    Healthz(app, no_log=True)
+    csrf = CSRFProtect(app)
+    bcrypt.init_app(app)
+
     db.init_app(app)
     return app
 

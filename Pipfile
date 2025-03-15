@@ -18,10 +18,10 @@ itsdangerous = "*"
 flask-oidc = {ref = "refs/pull/144/head", git = "https://github.com/puiterwijk/flask-oidc.git"}
 psycopg = {extras = ["binary"], version = "*"}
 psycopg2-binary = "*"
-quart-flask-patch = "*"
 hypercorn = {extras = ["asyncio"], version = "*"}
 quart = "*"
 quart-wtforms = "*"
+quart-flask-patch = "*"
 
 [dev-packages]
 pytest-flask = "*"
