@@ -36,7 +36,6 @@ def create_app() -> Quart:
     Healthz(app, no_log=True)
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
-
     db.init_app(app)
     return app
 
