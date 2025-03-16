@@ -71,7 +71,7 @@ $ pipenv install --python=/path/to/python
 
 ## Create User:
 
-- POST https://localhost:8080/users/create with the following JSON data:
+- POST https://localhost:4433/users/create with the following JSON data:
   ```
   {
       "firstname": "First Name",
@@ -83,7 +83,7 @@ $ pipenv install --python=/path/to/python
 
 ## Login:
 
-- POST https://localhost:8080/users/login with the following JSON data:
+- POST https://localhost:4433/users/login with the following JSON data:
   ```
   {
       "email": "firstname.lastname@email.com",
@@ -106,7 +106,7 @@ Vaue: jwt_token from the login response
 
 ## Create Author:
 
-- POST https://localhost:8080/authors/create with the following JSON data:
+- POST https://localhost:4433/authors/create with the following JSON data:
   ```
   {
       "email": "jk@email.com",
@@ -117,7 +117,7 @@ Vaue: jwt_token from the login response
 
 ## Create Book:
 
-- POST https://localhost:8080/books/create with the following JSON data:
+- POST https://localhost:4433/books/create with the following JSON data:
   ```
   {
       "author_id": 1,
@@ -145,8 +145,8 @@ mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot b
   Vaue: jwt_token from the login response
   ```
 
-- visit https://localhost:8080
-- visit https://localhost:8080/fibonacci/
-- visit https://localhost:8080/users/all
-- visit https://localhost:8080/authors/all
-- visit https://localhost:8080/books/all
+- visit https://localhost:4433
+- visit https://localhost:4433/fibonacci/
+- visit https://localhost:4433/users/all
+- visit https://localhost:4433/authors/all
+- visit https://localhost:4433/books/all
