@@ -22,6 +22,8 @@ hypercorn = {extras = ["asyncio"], version = "*"}
 quart = "*"
 quart-wtforms = "*"
 quart-flask-patch = "*"
+aioquic = "*"
+psycopg-pool = "*"
 
 [dev-packages]
 pytest-flask = "*"
