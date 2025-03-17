@@ -1,4 +1,5 @@
-FROM python:latest
+#FROM python:latest
+FROM khteh/ubuntu:latest
 MAINTAINER Kok How, Teh <funcoolgeek@gmail.com>
 WORKDIR /app
 ADD src src
