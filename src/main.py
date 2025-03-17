@@ -37,6 +37,7 @@ def create_app() -> Quart:
     app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
     print(f"HEALTHZ: {app.config['HEALTHZ']}")
     Healthz(app, no_log=False)
+    # https://quart-wtf.readthedocs.io/en/stable/how_to_guides/configuration.html
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
