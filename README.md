@@ -1,6 +1,6 @@
 # PythonFlaskRestAPI
 
-Python RestAPI using Quart ASGI framework. It runs on HTTP/3 ASGI server.
+Python RestAPI using Quart HTTP/3 ASGI framework.
 
 ## Environment setup
 
