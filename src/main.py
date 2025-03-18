@@ -1,11 +1,12 @@
 import quart_flask_patch
-import logging, os, re
+import logging, os, asyncio
 from hypercorn.config import Config
 import quart_flask_patch, json, logging, os
 from quart import Quart, request
 from flask_healthz import Healthz, HealthError
 from quart_wtf.csrf import CSRFProtect
 from quart_cors import cors
+from psycopg import Error
 from psycopg_pool import AsyncConnectionPool
 from src.controllers.AuthenticationController import auth_api as auth_blueprint
 from src.controllers.UserController import user_api as user_blueprint
@@ -47,7 +48,7 @@ def liveness():
     print("liveness")
     pass 
 
-async def readiness():
+async def CheckDatabase():
     try:
         print("readiness")
         connection_kwargs = {
@@ -70,13 +71,16 @@ async def readiness():
                                 AND    table_name   = 'library'
                             );
                         """)
-                    except psycopg.Error as e:
+                    except Error as e:
                         raise HealthError(f"Error checking for library table: {e}")
                         # Optionally, you might want to raise this error
                         # raise
         print("Ready!")
     except Exception:
         raise HealthError(f"Failed to connect to the database! {app.config['SQLALCHEMY_DATABASE_URI']}")
+
+def readiness():
+    asyncio.get_event_loop().run_until_complete(CheckDatabase())
 
 app = create_app()
 print(f"Running asyncio...")
