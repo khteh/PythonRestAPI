@@ -16,14 +16,13 @@ PyJWT = "*"
 alembic = "*"
 itsdangerous = "*"
 flask-oidc = {ref = "refs/pull/144/head", git = "https://github.com/puiterwijk/flask-oidc.git"}
-psycopg = {extras = ["binary"], version = "*"}
-psycopg2-binary = "*"
 hypercorn = {extras = ["asyncio"], version = "*"}
 quart = "*"
 quart-wtforms = "*"
 quart-flask-patch = "*"
 aioquic = "*"
 psycopg-pool = "*"
+psycopg = {extras = ["binary"], version = "*"}
 
 [dev-packages]
 pytest-flask = "*"
