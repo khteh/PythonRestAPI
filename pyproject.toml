@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "pythonrestapi"
+version = "3.0.0"
+description = "Python RestAPI using Quart HTTP/3 ASGI framework."
+authors = ["Kok How, Teh <funcoolgeek@gmail.com>"]
+license = "GPL"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask-healthz = "*"
+marshmallow = "*"
+python-dotenv = "*"
+Flask-SQLAlchemy = "*"
+Flask-Migrate = "*"
+Flask-Script = "*"
+Quart-CORS = "*"
+Flask-Bcrypt = "*"
+PyJWT = "*"
+alembic = "*"
+itsdangerous = "*"
+flask-oidc = {git = "https://github.com/puiterwijk/flask-oidc.git", rev = "refs/pull/144/head"}
+psycopg = {extras = ["binary"], version = "*"}
+psycopg2-binary = "*"
+hypercorn = {extras = ["asyncio"], version = "*"}
+quart = "*"
+quart-wtforms = "*"
+quart-flask-patch = "*"
+aioquic = "*"
+psycopg-pool = "*"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest-flask = "*"
+pytest = "*"
+pytest-asyncio = "*"
+beautifulsoup4 = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
