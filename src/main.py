@@ -52,7 +52,6 @@ def liveness():
 
 def readiness():
     try:
-        print(f"readiness {app.config["POSTGRESQL_DATABASE_URI"]}")
         connection_kwargs = {
             "autocommit": True,
             "prepare_threshold": 0,
