@@ -30,7 +30,7 @@ def create_app() -> Quart:
     app.config.from_file("/etc/pythonrestapi_config.json", json.load)
     if "SQLALCHEMY_DATABASE_URI" not in app.config:
         app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg://{app.config['DB_USERNAME']}:{app.config['DB_PASSWORD']}@{app.config['DB_HOST']}/library"
-        app.config["POSTGRESQL_DATABASE_URI"] = f"postgresql://{app.config['DB_USERNAME']}:{parse.quote(app.config['DB_PASSWORD'])}@{app.config['DB_HOST']}/library"
+        app.config["POSTGRESQL_DATABASE_URI"] = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote(os.environ.get('DB_PASSWORD'))}@{app.config['DB_HOST']}/library"
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(fibonacci_blueprint, url_prefix="/fibonacci")
     app.register_blueprint(auth_blueprint, url_prefix="/auth")

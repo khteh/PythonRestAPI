@@ -6,6 +6,12 @@ Python RestAPI using Quart HTTP/3 ASGI framework.
 
 - On a development host, create a virtual environment for development and test. Both must be using the same virtual environment.
 - Virtual environment is optional for CI/CD do because everything runs in a docker container.
+- Add the following to `.env` for database access credentials:
+
+```
+DB_USERNAME=username
+DB_PASSWORD=password
+```
 
 ### Clean up pipenv
 
