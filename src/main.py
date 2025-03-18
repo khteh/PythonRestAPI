@@ -1,5 +1,6 @@
 import quart_flask_patch
 import logging, os, asyncio
+from urllib import parse
 from hypercorn.config import Config
 import quart_flask_patch, json, logging, os
 from quart import Quart, request
@@ -7,7 +8,7 @@ from flask_healthz import Healthz, HealthError
 from quart_wtf.csrf import CSRFProtect
 from quart_cors import cors
 from psycopg import Error
-from psycopg_pool import AsyncConnectionPool
+from psycopg_pool import AsyncConnectionPool, ConnectionPool
 from src.controllers.AuthenticationController import auth_api as auth_blueprint
 from src.controllers.UserController import user_api as user_blueprint
 from src.controllers.AuthorController import author_api as author_blueprint
@@ -28,7 +29,8 @@ def create_app() -> Quart:
     app = Quart(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
     app.config.from_file("/etc/pythonrestapi_config.json", json.load)
     if "SQLALCHEMY_DATABASE_URI" not in app.config:
-        app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg://{os.getenv('POSTGRESQL_USER')}:{os.getenv('POSTGRESQL_PASSWORD')}@{app.config['DB_HOST']}/library"
+        app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg://{app.config['DB_USERNAME']}:{app.config['DB_PASSWORD']}@{app.config['DB_HOST']}/library"
+        app.config["POSTGRESQL_DATABASE_URI"] = f"postgresql://{app.config['DB_USERNAME']}:{parse.quote(app.config['DB_PASSWORD'])}@{app.config['DB_HOST']}/library"
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(fibonacci_blueprint, url_prefix="/fibonacci")
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
@@ -45,26 +47,26 @@ def create_app() -> Quart:
     return app
 
 def liveness():
-    print("liveness")
+    print("Alive!")
     pass 
 
-async def CheckDatabase():
+def readiness():
     try:
-        print("readiness")
+        print(f"readiness {app.config["POSTGRESQL_DATABASE_URI"]}")
         connection_kwargs = {
             "autocommit": True,
             "prepare_threshold": 0,
         }
-        async with AsyncConnectionPool(
-            conninfo=app.config["SQLALCHEMY_DATABASE_URI"],
-            #max_size=DB_MAX_CONNECTIONS,
-            kwargs=connection_kwargs,
+        with ConnectionPool(
+            conninfo = app.config["POSTGRESQL_DATABASE_URI"],
+            max_size = app.config["DB_MAX_CONNECTIONS"],
+            kwargs = connection_kwargs,
         ) as pool:
             # Check if the checkpoints table exists
-            async with pool.connection() as conn:
-                async with conn.cursor() as cur:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
                     try:
-                        await cur.execute("""
+                        cur.execute("""
                             SELECT EXISTS (
                                 SELECT FROM information_schema.tables 
                                 WHERE  table_schema = 'public'
@@ -77,10 +79,7 @@ async def CheckDatabase():
                         # raise
         print("Ready!")
     except Exception:
-        raise HealthError(f"Failed to connect to the database! {app.config['SQLALCHEMY_DATABASE_URI']}")
-
-def readiness():
-    asyncio.get_event_loop().run_until_complete(CheckDatabase())
+        raise HealthError(f"Failed to connect to the database! {app.config['POSTGRESQL_DATABASE_URI']}")
 
 app = create_app()
 print(f"Running asyncio...")
