@@ -1,8 +1,7 @@
 import quart_flask_patch
-import logging, os, asyncio
+import logging, os, asyncio, json
 from urllib import parse
 from hypercorn.config import Config
-import quart_flask_patch, json, logging, os
 from quart import Quart, request
 from flask_healthz import Healthz, HealthError
 from quart_wtf.csrf import CSRFProtect
