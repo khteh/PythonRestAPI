@@ -156,3 +156,11 @@ mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot b
 - visit https://localhost:4433/users/all
 - visit https://localhost:4433/authors/all
 - visit https://localhost:4433/books/all
+
+## Diagnostics
+
+- HTTP/3 curl:
+
+```
+$ docker run --rm ymuski/curl-http3 curl --http3 --verbose https://<nodeport service>:<nodeport>/healthz/ready
+```
