@@ -1,4 +1,4 @@
-import logging
+import logging, jsonpickle
 from quart import request, json, Blueprint, session, render_template, session, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime, timezone
@@ -40,11 +40,12 @@ async def login():
                 logging.warning(f"[Auth] Invalid email or password {data.get('email')}!")
                 return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
             ser_data = user_schema.dump(user)
-            token = Authentication.generate_token(ser_data.get("id"))
-            session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": token}
+            user.token = Authentication.generate_token(ser_data.get("id"))
+            #session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": token}
             #return custom_response({"jwt_token": token}, 200)
             data["lastlogin"] = datetime.now(timezone.utc)
             user.update(data)
+            session['user'] = jsonpickle.encode(user)
             logging.info(f"[Auth] User {user.email} logged in")
             if "url" in session and session["url"]:
                 return redirect(session["url"])
@@ -105,7 +106,7 @@ async def logout():
     User Logout
     """
     print(f"logout()")
-    logging.info(f"[Auth] User {session['user']['email']} logged out")
+    logging.info(f"[Auth] User logged out")
     session["url"] = None
     session["user"] = None
     return redirect(url_for("home.index"))
@@ -127,7 +128,8 @@ async def profile():
     """
     Get my profile
     """
-    user = UserModel.get_user(session["user"]["id"])
+    u = jsonpickle.decode(session['user'])
+    user = UserModel.get_user(u.id)
     if not user:
-        raise Exception(f"User {session['user']['id']} not found!")
+        raise Exception(f"User {u.id} not found!")
     return custom_response(user_schema.dump(user), 200)

@@ -46,6 +46,8 @@ $ pipenv install --python=/path/to/python
 
 ## Database Migration
 
+- Copy `env.py` to `migrations/` folder.
+- Set the values -f `DB_foo` in `/etc/pythonrestapi_config.json`
 - run migrations initialization with db init command:
 
   ```

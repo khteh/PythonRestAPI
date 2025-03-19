@@ -1,5 +1,5 @@
-import jwt, logging
-from datetime import datetime, timezone
+import jwt, logging, jsonpickle
+from datetime import datetime, timezone, timedelta
 from quart import json, Response, session, redirect, url_for, session, abort, current_app
 #from flask_oidc import OpenIDConnect
 from functools import wraps
@@ -23,7 +23,7 @@ class Authentication():
                 now = datetime.now(timezone.utc)
                 # https://pyjwt.readthedocs.io/en/latest/usage.html#registered-claim-names
                 payload = {
-                    "exp": now + datetime.timedelta(hours=1),
+                    "exp": now + timedelta(hours=1),
                     "iat": now,
                     "nbf": now,
                     "iss": "urn:PythonFlaskRestAPI",
@@ -73,11 +73,14 @@ class Authentication():
             def decorated_auth_required(*args, **kwargs):
                 session["url"] = url_for(url, *args, **kwargs) if url else url
                 #if "api-token" not in request.headers:
-                if "user" not in session or not session["user"] or not session["user"]["token"]:
+                if "user" not in session or not session["user"]: # or not session["user"]["token"]:
                     #await flash(f"Please login to continue.", "info")
                     return redirect(url_for("auth.login"))
+                user = jsonpickle.decode(session['user'])
+                if not user or not hasattr(user, 'token'):
+                    return redirect(url_for("auth.login"))
                 #token = request.headers.get("api-token")
-                data = Authentication.decode_token(session["user"]["token"])
+                data = Authentication.decode_token(user.token)
                 if data["error"]:
                     logging.warning(f"[Auth] error: {data['error']}!")                
                     #await flash(f"{data['error']}", "danger")
@@ -100,8 +103,12 @@ class Authentication():
         def decorated_require_role(func):
             @wraps(func)
             def wrapped_require_role(*args, **kwargs):
-                if Authentication.isAuthenticated() and role in session["user"]["roles"]:
-                    return func(*args, **kwargs)
+                if Authentication.isAuthenticated() and "user" in session:
+                    user = jsonpickle.decode(session['user'])
+                    if role in user.roles:
+                        return func(*args, **kwargs)
+                    else:
+                        return abort(403)
                 else:
                     return abort(403)
             return wrapped_require_role

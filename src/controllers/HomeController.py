@@ -2,7 +2,7 @@ from quart import Blueprint, render_template, session
 from datetime import datetime, timezone
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
-import re
+import re, jsonpickle
 home_api = Blueprint("home", __name__)
 @home_api.context_processor
 def inject_now():
@@ -18,11 +18,16 @@ async def index():
     formatted_now = now.strftime("%A, %d %B, %Y at %X")
     #if request.method == "POST":
     user = None
-    if "user" not in session or not session["user"] or not session["user"]["token"]:
+    if "user" not in session or not session["user"]:
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
         return await render_template("index.html", title="Welcome to Python RESTful API", greeting=greeting)	
-    data = Authentication.decode_token(session["user"]["token"])
+    user = jsonpickle.decode(session['user'])
+    if not user or not hasattr(user, 'token'):
+        greeting = "Friend! It's " + formatted_now
+        #print(f"homeController hello greeting: {greeting}")
+        return await render_template("index.html", title="Welcome to Python RESTful API", greeting=greeting)	
+    data = Authentication.decode_token(user.token)
     if data["error"]:
         return await render_template("login.html", title="Welcome to Python RESTful API", error=data["error"])
     user_id = data["data"]["user_id"]

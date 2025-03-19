@@ -1,4 +1,4 @@
-import re, logging
+import re, logging, jsonpickle
 from quart import request, json, Blueprint, session, render_template, flash, redirect, url_for
 from datetime import datetime, timezone
 from marshmallow import ValidationError
@@ -27,6 +27,7 @@ async def create():
     """
     Create Book
     """
+    user = jsonpickle.decode(session['user'])
     if request.method == "POST":	
         try:
             form = await request.form
@@ -78,14 +79,14 @@ async def create():
             book = BookModel(data)
             book.save()
             await flash(f"Book {book.title} created successfully!", "success")
-            logging.info(f"User {session['user']['email']} created book {book.title} successfully!")
+            logging.info(f"User {user.email} created book {book.title} successfully!")
             return redirect(url_for("book.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")		
             await flash(f"Failed to create book! {err.messages}", "danger")
-            logging.error(f"User {session['user']['email']} failed to create book! Exception: {errors}")
+            logging.error(f"User {user.email} failed to create book! Exception: {errors}")
             return redirect(url_for("book.create"))
     authors = author_schema.dump(AuthorModel.get_authors(), many=True)
     return await render_template("book_create.html", title="Welcome to Python Flask RESTful API", authors = authors)
@@ -173,6 +174,7 @@ async def update(id):
     """
     Update Book 'id'
     """
+    user = jsonpickle.decode(session['user'])
     try:
         req_data = await request.get_json()
         data = book_schema.load(req_data, partial=True)
@@ -184,12 +186,12 @@ async def update(id):
             await flash(f"Trying to update non-existing book {id}!", "warning")
             return redirect(url_for("book.index"))
         book.update(data)
-        logging.info(f"User {session['user']['email']} updated book {id} successfully!")
+        logging.info(f"User {user.email} updated book {id} successfully!")
         await flash(f"Book {book.title} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        logging.error(f"User {session['user']['email']} failed to update book {id}! Exception: {errors}")
+        logging.error(f"User {user.email} failed to update book {id}! Exception: {errors}")
         await flash(f"Failed to update book {id}! Exception: {errors}", "danger")
     return redirect(url_for("book.index"))
 
@@ -199,17 +201,18 @@ async def delete(id):
     """
     Delete Book 'id'
     """
+    user = jsonpickle.decode(session['user'])
     try:
         book = BookModel.get_book(id)
         if not book:
             await flash(f"Trying to delete non-existing book {id}!", "warning")
             return redirect(url_for("book.index"))
         book.delete()
-        logging.warning(f"User {session['user']['email']} deleted book {book.title} successfully!")
+        logging.warning(f"User {user.email} deleted book {book.title} successfully!")
         await flash(f"Book {book.title} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        logging.error(f"User {session['user']['email']} failed to delete book {id}! Exception: {errors}")
+        logging.error(f"User {user.email} failed to delete book {id}! Exception: {errors}")
         await flash(f"Failed to delete book {id}! Exception: {errors}", "danger")
     return redirect(url_for("book.index"))

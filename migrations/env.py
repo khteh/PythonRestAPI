@@ -35,7 +35,8 @@ config.set_section_option(section, "DB_USERNAME", json_config["DB_USERNAME"])
 config.set_section_option(section, "DB_PASSWORD", urllib.parse.quote_plus(json_config['DB_PASSWORD']).replace("%", "%%"))
 config.set_section_option(section, "DB_HOST", json_config["DB_HOST"])
 config.set_section_option(section, "DB_DATABASE", json_config["DB_DATABASE"])
-def run_migrations_offline():
+
+def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
     This configures the context with just a URL
@@ -59,7 +60,7 @@ def run_migrations_offline():
         context.run_migrations()
 
 
-def run_migrations_online():
+def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
 
     In this scenario we need to create an Engine
@@ -67,7 +68,7 @@ def run_migrations_online():
 
     """
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
+        config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )

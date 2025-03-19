@@ -23,6 +23,7 @@ quart-flask-patch = "*"
 aioquic = "*"
 psycopg-pool = "*"
 psycopg = {extras = ["binary"], version = "*"}
+jsonpickle = "*"
 
 [dev-packages]
 pytest-flask = "*"

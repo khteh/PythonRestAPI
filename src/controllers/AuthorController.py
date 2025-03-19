@@ -1,4 +1,4 @@
-import re, logging
+import re, logging, jsonpickle
 from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime, timezone
@@ -27,6 +27,7 @@ async def create():
     """
     Create Author
     """
+    user = jsonpickle.decode(session['user'])
     if request.method == "POST":	
         try:
             form = await request.form
@@ -65,12 +66,12 @@ async def create():
             author = AuthorModel(data)
             author.save()
             await flash(f"Author {author.firstname}, {author.lastname} created successfully!", "success")
-            logging.info(f"User {session['user']['email']} created author {author.email} successfully!")
+            logging.info(f"User {user.email} created author {author.email} successfully!")
             return redirect(url_for("author.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
-            logging.error(f"User {session['user']['email']} failed to creat author! Exception: {errors}")
+            logging.error(f"User {user.email} failed to creat author! Exception: {errors}")
             await flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
     return await render_template("author_create.html", title="Welcome to Python Flask RESTful API")
@@ -81,7 +82,7 @@ async def get_author(id):
     """
     Get Auhor 'id'
     """
-    author = auhor_schema.dump(AuthorModel.get_author(id))
+    author = author_schema.dump(AuthorModel.get_author(id))
     if not author:
         return custom_response({"error": f"Author {id} not found!"}, 404)
     return custom_response(author_schema.dump(author), 200)
@@ -125,6 +126,7 @@ async def update(id):
     """
     Update Author 'id'
     """
+    user = jsonpickle.decode(session['user'])
     try:
         req_data = await request.get_json()
         data = author_schema.load(req_data, partial=True)
@@ -136,12 +138,12 @@ async def update(id):
             await flash(f"Trying to update non-existing author {id}!", "warning")
             return redirect(url_for("author.index"))
         author.update(data)
-        logging.info(f"User {session['user']['email']} updated author {author.email} successfully!")
+        logging.info(f"User {user.email} updated author {author.email} successfully!")
         await flash(f"Author {author.firstname}, {author.lastname} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data
-        logging.error(f"User {session['user']['email']} failed to update author {id}! Exception: {errors}")
+        logging.error(f"User {user.email} failed to update author {id}! Exception: {errors}")
         await flash(f"Failed to update author {id}! Exception: {errors}", "danger")
     return redirect(url_for("author.index"))
 
@@ -151,18 +153,19 @@ async def delete(id):
     """
     Delete Author 'id'
     """
+    user = jsonpickle.decode(session['user'])
     try:
         author = AuthorModel.get_author(id)
         if not author:
             await flash(f"Trying to delete non-existing author {id}!", "warning")
             return redirect(url_for("author.index"))
         author.delete()
-        logging.warning(f"User {session['user']['email']} deleted author {author.email} successfully!")
+        logging.warning(f"User {user.email} deleted author {author.email} successfully!")
         await flash(f"Author {author.firstname}, {author.lastname} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"Failed to delete author {id} error! {errors}")		
-        logging.error(f"User {session['user']['email']} failed to delete author {id}! Exception: {errors}")
+        logging.error(f"User {user.email} failed to delete author {id}! Exception: {errors}")
         await flash(f"Failed to delete author {id}! Exception: {errors}", "danger")
     return redirect(url_for("user.index"))

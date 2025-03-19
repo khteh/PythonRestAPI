@@ -1,4 +1,4 @@
-import re, logging
+import re, logging, json, jsonpickle
 from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime, timezone
@@ -66,14 +66,16 @@ async def create():
             ser_data = user_schema.dump(user) #.data
 		    #print(f"create() user id: {ser_data.get('id')}")
             token = Authentication.generate_token(ser_data.get("id"))
+            session['user'] = jsonpickle.encode(user)
+            print(f"session['user']: {session['user']}")
 		    #print(f"create() token: {token}")
-            await flash(f"User {session['user']['email']} created user {user.email} successfully!", "success")
+            await flash(f"User created user id: {user.id}, email: {user.email} successfully!", "success")
             return redirect(url_for("user.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
             print(f"create() error! {errors}")
-            await flash(f"User {session['user']['email']} failed to create user! {err.messages}", "danger")
+            await flash(f"Failed to create user! {err.messages}", "danger")
             return redirect(url_for("user.create"))
     return await render_template("user_create.html", title="Welcome to Python Flask RESTful API")
 
@@ -111,12 +113,13 @@ async def update(id):
             await flash(f"Trying to update non-existing user {id}!", "warning")
             return redirect(url_for("user.index"))
         user.update(data)
-        logging.info(f"User {session['user']['email']} updated user {id} successfully!")
+        session['user'] = jsonpickle.encode(user)
+        logging.info(f"User {user.email} updated user {id} successfully!")
         await flash(f"User {id} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
-        valid_data = err.valid_data	
-        logging.error(f"User {session['user']['email']} failed to update user {id}! Exception: {errors}")
+        valid_data = err.valid_data
+        logging.error(f"Failed to update user {id}! Exception: {errors}")
         await flash(f"Failed to update user {id}! Exception: {errors}!", "danger")
     return redirect(url_for("user.index"))
 
@@ -132,12 +135,13 @@ async def delete(id):
             await flash(f"Trying to delete non-existing user {id}!", "warning")
             return redirect(url_for("user.index"))
         user.delete()
-        logging.info(f"User {session['user']['email']} deleted user {id} successfully!")
+        session['user'] = None
+        logging.info(f"User {user.email} deleted user {id} successfully!")
         await flash(f"User {id} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
         print(f"create() error! {errors}")
-        logging.error(f"User {session['user']['email']} failed to delete user {id}! Exception: {errors}")
+        logging.error(f"User {user.email} failed to delete user {id}! Exception: {errors}")
         await flash(f"Failed to delete user {id}! Exception: {errors}", "danger")
     return redirect(url_for("user.index"))
