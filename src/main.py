@@ -42,7 +42,6 @@ def create_app() -> Quart:
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
-    print(f"create_app() finished")
     return app
 
 def liveness():
