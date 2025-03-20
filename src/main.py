@@ -45,7 +45,7 @@ def create_app() -> Quart:
     return app
 
 def liveness():
-    print("Alive!")
+    logging.debug("Alive!")
     pass 
 
 def readiness():
@@ -74,10 +74,11 @@ def readiness():
                         raise HealthError(f"Error checking for library table: {e}")
                         # Optionally, you might want to raise this error
                         # raise
-        print("Ready!")
+        logging.debug("Ready!")
     except Exception:
         raise HealthError(f"Failed to connect to the database! {app.config['POSTGRESQL_DATABASE_URI']}")
 
 app = create_app()
+
 print(f"Running app...")
 #asyncio.run(serve(app, config), debug=True)
