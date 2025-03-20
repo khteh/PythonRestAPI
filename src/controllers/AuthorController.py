@@ -54,7 +54,7 @@ async def create():
 			   "email": form["email"],
 			   "phone": form["phone"],
 			}
-            print(f"author.create() request data: {req_data}")
+            logging.debug(f"author.create() request data: {req_data}")
             data = author_schema.load(req_data)
             if not data:
                 await flash(f"Invalid input!", "danger")
@@ -71,7 +71,7 @@ async def create():
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
-            logging.error(f"User {user.email} failed to creat author! Exception: {errors}")
+            logging.exception(f"User {user.email} failed to creat author! Exception: {errors}")
             await flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
     return await render_template("author_create.html", title="Welcome to Python Flask RESTful API")
@@ -93,7 +93,7 @@ async def get_by_firstname(firstname):
     """
     Get Author by firstname
     """
-    print(f"get_author_by_author_firstname: {firstname}")
+    logging.debug(f"get_author_by_author_firstname: {firstname}")
     return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(firstname)), 200)
 
 @author_api.route("/lastname/<string:lastname>")
@@ -143,7 +143,7 @@ async def update(id):
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data
-        logging.error(f"User {user.email} failed to update author {id}! Exception: {errors}")
+        logging.exception(f"User {user.email} failed to update author {id}! Exception: {errors}")
         await flash(f"Failed to update author {id}! Exception: {errors}", "danger")
     return redirect(url_for("author.index"))
 
@@ -165,7 +165,6 @@ async def delete(id):
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        print(f"Failed to delete author {id} error! {errors}")		
-        logging.error(f"User {user.email} failed to delete author {id}! Exception: {errors}")
+        logging.exception(f"User {user.email} failed to delete author {id}! Exception: {errors}")
         await flash(f"Failed to delete author {id}! Exception: {errors}", "danger")
     return redirect(url_for("user.index"))

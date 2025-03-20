@@ -1,8 +1,8 @@
+import re, jsonpickle, logging
 from quart import Blueprint, render_template, session
 from datetime import datetime, timezone
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
-import re, jsonpickle
 home_api = Blueprint("home", __name__)
 @home_api.context_processor
 def inject_now():
@@ -11,7 +11,6 @@ def inject_now():
 @home_api.route("/")
 @home_api.route("/index")
 async def index():
-    #print("homeController hello")
     greeting = None
     now = datetime.now()
     # https://www.programiz.com/python-programming/datetime/strftime
@@ -31,13 +30,12 @@ async def index():
     if data["error"]:
         return await render_template("login.html", title="Welcome to Python RESTful API", error=data["error"])
     user_id = data["data"]["user_id"]
-    print(f"User: {user_id}")
+    logging.debug(f"User: {user_id}")
     user = UserModel.get_user(user_id)
     if not user:
         return await render_template("login.html", title="Welcome to Python RESTful API", error="Invalid user!")           
     try:
-        print("Get user name...")
-        print(f"Firstname: {user.firstname}, Lastname: {user.lastname}")
+        logging.debug(f"Firstname: {user.firstname}, Lastname: {user.lastname}")
         name = user.firstname + ", " + user.lastname
         # Filter the name argument to letters only using regular expressions. URL arguments
         # can contain arbitrary text, so we restrict to safe characters only.

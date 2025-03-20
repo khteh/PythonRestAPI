@@ -75,7 +75,7 @@ async def create():
             if not author:
                 await flash(f"Invalid author!", "danger")
                 return redirect(url_for("book.create"))
-            print(f"book.create(): {json.dumps(data)}")
+            logging.debug(f"book.create(): {json.dumps(data)}")
             book = BookModel(data)
             book.save()
             await flash(f"Book {book.title} created successfully!", "success")
@@ -84,9 +84,8 @@ async def create():
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
-            print(f"create() error! {errors}")		
             await flash(f"Failed to create book! {err.messages}", "danger")
-            logging.error(f"User {user.email} failed to create book! Exception: {errors}")
+            logging.exception(f"User {user.email} failed to create book! Exception: {errors}")
             return redirect(url_for("book.create"))
     authors = author_schema.dump(AuthorModel.get_authors(), many=True)
     return await render_template("book_create.html", title="Welcome to Python Flask RESTful API", authors = authors)
@@ -191,7 +190,7 @@ async def update(id):
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        logging.error(f"User {user.email} failed to update book {id}! Exception: {errors}")
+        logging.exception(f"User {user.email} failed to update book {id}! Exception: {errors}")
         await flash(f"Failed to update book {id}! Exception: {errors}", "danger")
     return redirect(url_for("book.index"))
 
@@ -213,6 +212,6 @@ async def delete(id):
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        logging.error(f"User {user.email} failed to delete book {id}! Exception: {errors}")
+        logging.exception(f"User {user.email} failed to delete book {id}! Exception: {errors}")
         await flash(f"Failed to delete book {id}! Exception: {errors}", "danger")
     return redirect(url_for("book.index"))

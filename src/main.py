@@ -80,5 +80,5 @@ def readiness():
 
 app = create_app()
 
-print(f"Running app...")
+logging.info(f"Running app...")
 #asyncio.run(serve(app, config), debug=True)

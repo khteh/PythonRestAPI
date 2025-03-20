@@ -54,8 +54,7 @@ async def login():
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data
-            logging.error(f"[Auth] login() error! {errors}")
-            print(f"login() error! {errors}")		
+            logging.exception(f"[Auth] login() exception! {errors}")
             return await render_template("login.html", title="Welcome to Python Flask RESTful API", error=errors)
     return await render_template("login.html", title="Welcome to Python Flask RESTful API")
 
@@ -105,7 +104,6 @@ async def logout():
     """
     User Logout
     """
-    print(f"logout()")
     logging.info(f"[Auth] User logged out")
     session["url"] = None
     session["user"] = None

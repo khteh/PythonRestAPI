@@ -33,10 +33,10 @@ class Authentication():
                 }
                 return jwt.encode(payload, current_app.config["JWT_SECRET_KEY"], "HS512")
             except Exception as e:
-                print("generate_token() exception!")
-                print(type(e))    # the exception instance
-                print(e.args)     # arguments stored in .args
-                print(e)          # __str__ allows args to be printed directly,
+                logging.exception(f"generate_token() exception! {e}")
+                #print(type(e))    # the exception instance
+                #print(e.args)     # arguments stored in .args
+                #print(e)          # __str__ allows args to be printed directly,
                                   # but may be overridden in exception subclasses
                 return Response(mimetype="application/json", response=json.dumps({"error": "Token generation error!"}), status=400)
         else:
@@ -57,7 +57,7 @@ class Authentication():
                 return result
             except jwt.InvalidAudienceError as audError:
                 result["error"] = {"message": "Invalid Audience! Please login again!"}
-                print("InvalidAudienceError!")
+                logging.exception(f"InvalidAudienceError! {audError}")
             except jwt.InvalidTokenError as invalid:
                 result["error"] = {"message": "Invalid Token! Please login again!"}
                 return result

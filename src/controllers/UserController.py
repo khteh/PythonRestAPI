@@ -51,7 +51,7 @@ async def create():
 			   "email": form["email"],
                "password": form["password"]
 			}
-            print(f"create() request data: {req_data}")
+            logging.debug(f"create() request data: {req_data}")
             data = user_schema.load(req_data)
 		    # Check if user already exists in the database
             if not data:
@@ -67,14 +67,14 @@ async def create():
 		    #print(f"create() user id: {ser_data.get('id')}")
             token = Authentication.generate_token(ser_data.get("id"))
             session['user'] = jsonpickle.encode(user)
-            print(f"session['user']: {session['user']}")
+            logging.debug(f"session['user']: {session['user']}")
 		    #print(f"create() token: {token}")
             await flash(f"User created user id: {user.id}, email: {user.email} successfully!", "success")
             return redirect(url_for("user.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
-            print(f"create() error! {errors}")
+            logging.exception(f"create() exception! {errors}")
             await flash(f"Failed to create user! {err.messages}", "danger")
             return redirect(url_for("user.create"))
     return await render_template("user_create.html", title="Welcome to Python Flask RESTful API")
@@ -92,7 +92,7 @@ async def get_user(id):
     """
     user = UserModel.get_user(id)
     if not user:
-        print(f"User id: {id} not found!")
+        logging.warning(f"User id: {id} not found!")
         return custom_response({"error": f"User {id} not found!"}, 400)
     return custom_response(user_schema.dump(user), 200)
 
@@ -119,7 +119,7 @@ async def update(id):
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data
-        logging.error(f"Failed to update user {id}! Exception: {errors}")
+        logging.exception(f"Failed to update user {id}! Exception: {errors}")
         await flash(f"Failed to update user {id}! Exception: {errors}!", "danger")
     return redirect(url_for("user.index"))
 
@@ -141,7 +141,6 @@ async def delete(id):
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        print(f"create() error! {errors}")
-        logging.error(f"User {user.email} failed to delete user {id}! Exception: {errors}")
+        logging.exception(f"User {user.email} failed to delete user {id}! Exception: {errors}")
         await flash(f"Failed to delete user {id}! Exception: {errors}", "danger")
     return redirect(url_for("user.index"))

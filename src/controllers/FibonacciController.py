@@ -1,4 +1,4 @@
-import jsonpickle
+import jsonpickle, logging
 from quart import request, session, Blueprint, flash, render_template, session
 from quart.utils import run_sync
 from datetime import datetime, timezone
@@ -24,19 +24,17 @@ async def fibonacci():
             if data["error"]:
                 return await render_template("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
             user_id = data["data"]["user_id"]
-            print(f"User: {user_id}")
+            logging.debug(f"User: {user_id}")
             user = UserModel.get_user(user_id)
             if not user:
                 return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
-    print("fibonacci()")      
     if request.method == "POST":
-        print("fibonacci() POST")
         data = await request.get_data()
         params = parse_qs(data.decode('utf-8'))
-        print(f"data: {data}, params: {params}")
+        logging.debug(f"data: {data}, params: {params}")
         if params['n'] and params["n"][0].strip() and params["n"][0].strip().isdigit():
             n = int(params["n"][0].strip())
-            print(f"fibonacci(): {n}")
+            logging.debug(f"fibonacci(): {n}")
             try:
                 fibonacci = f"Hello {('there' if not user else user.firstname)}, fibonacci({n}): {await run_sync(fib)(n)}"
             except (Exception) as error:
@@ -47,7 +45,7 @@ async def fibonacci():
             #error = custom_response({"error": "Please provide an 'N' for the fibonacci number!"}, 400)
             await flash("Please provide a numeric value 'N' for the fibonacci number!", "danger")
     else:
-        print(f"Invalid request method: {request.method}!")
+        logging.error(f"Invalid request method: {request.method}!")
     return await render_template("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator", fibonacci=fibonacci)
 
 def fib(n):
