@@ -23,7 +23,8 @@ aioquic = "*"
 psycopg-pool = "*"
 psycopg = {extras = ["binary"], version = "*"}
 jsonpickle = "*"
-hypercorn = {extras = ["asyncio", "h3"], version = "*"}
+hypercorn = {extras = ["h3"], version = "*"}
+quart-trio = "*"
 
 [dev-packages]
 pytest-flask = "*"

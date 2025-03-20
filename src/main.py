@@ -42,6 +42,7 @@ def create_app() -> Quart:
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
+    print(f"create_app() finished")
     return app
 
 def liveness():
@@ -79,5 +80,5 @@ def readiness():
         raise HealthError(f"Failed to connect to the database! {app.config['POSTGRESQL_DATABASE_URI']}")
 
 app = create_app()
-print(f"Running asyncio...")
+print(f"Running app...")
 #asyncio.run(serve(app, config), debug=True)

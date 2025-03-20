@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0bc13b75350a52f45e3b521520fceabf8270597947f1e9ad86b6b370f0763b71"
+            "sha256": "46013ff992eb8bfa22fa84f70cb1f3431909c10df3a96a38359dda9618c39a50"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -434,7 +434,6 @@
         },
         "hypercorn": {
             "extras": [
-                "asyncio",
                 "h3"
             ],
             "hashes": [
@@ -451,6 +450,14 @@
             ],
             "markers": "python_version >= '3.9'",
             "version": "==6.1.0"
+        },
+        "idna": {
+            "hashes": [
+                "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9",
+                "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==3.10"
         },
         "itsdangerous": {
             "hashes": [
@@ -568,6 +575,14 @@
                 "sha256:d486741e451287f69568a4d26d70d9acd73a2bbfa275746c535b4209891cccc6"
             ],
             "version": "==4.1.3"
+        },
+        "outcome": {
+            "hashes": [
+                "sha256:9dcf02e65f2971b80047b377468e72a268e15c0af3cf1238e6ff14f7f91143b8",
+                "sha256:e771c5ce06d1415e356078d3bdd68523f284b4ce5419828922b6871e65eda82b"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==1.3.0.post0"
         },
         "packaging": {
             "hashes": [
@@ -774,6 +789,15 @@
             "index": "pypi",
             "version": "==0.3.0"
         },
+        "quart-trio": {
+            "hashes": [
+                "sha256:02ec840998d0e897eeabc0e5f48c12d8204e91a823870fd0b8b2f7331b44198c",
+                "sha256:d42e3960f8865f18f7022f1f64093bde6de6fc8fa04bbfb1a06fa7e521d3311a"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.9'",
+            "version": "==0.12.0"
+        },
         "quart-uploads": {
             "hashes": [
                 "sha256:67f7f53b975afb12c0630cebd6acde234c797fca98dd769a9088225aaacdd14a",
@@ -814,6 +838,21 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==1.17.0"
+        },
+        "sniffio": {
+            "hashes": [
+                "sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2",
+                "sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==1.3.1"
+        },
+        "sortedcontainers": {
+            "hashes": [
+                "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88",
+                "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0"
+            ],
+            "version": "==2.4.0"
         },
         "sqlalchemy": {
             "hashes": [
@@ -877,6 +916,14 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==2.0.39"
+        },
+        "trio": {
+            "hashes": [
+                "sha256:d8c463f1a9cc776ff63e331aba44c125f423a5a13c684307e828d930e625ba66",
+                "sha256:ea0d3967159fc130acb6939a0be0e558e364fee26b5deeecc893a6b08c361bdf"
+            ],
+            "markers": "python_version >= '3.9'",
+            "version": "==0.29.0"
         },
         "types-aiofiles": {
             "hashes": [
