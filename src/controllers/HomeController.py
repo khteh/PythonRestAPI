@@ -1,5 +1,5 @@
 import re, jsonpickle, logging
-from quart import Blueprint, render_template, session
+from quart import Blueprint, ResponseReturnValue, render_template, session
 from datetime import datetime, timezone
 from ..common.Authentication import Authentication
 from ..models.UserModel import UserModel
