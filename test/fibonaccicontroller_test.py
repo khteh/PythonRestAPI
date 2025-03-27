@@ -1,69 +1,50 @@
 import pytest, json
-from quart import g, url_for
-from datetime import datetime, timezone
-from http import HTTPStatus
-from http.cookies import SimpleCookie
+from quart_wtf.utils import generate_csrf, validate_csrf, logger
+from src.main import app
 # CSRF: https://gist.github.com/singingwolfboy/2fca1de64950d5dfed72?permalink_comment_id=4556252
 @pytest.mark.asyncio
-async def test_fibonacci_get_pass(client):
-    headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml',
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-    }    
-    response = await client.get('/fibonacci', headers=headers, follow_redirects=True)
-    assert response != ""
-    assert len(response.headers.getlist('Set-Cookie'))
-    assert response.headers.getlist('Set-Cookie')[0] != ""
-
-@pytest.mark.asyncio
-async def test_fibonacci_pass(client):
-    headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml',
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-    }    
-    response = await client.get('/fibonacci', headers=headers, follow_redirects=True)
-    #response = await client.post('/fibonacci', data={"n": 10, "csrf_token": g.csrf_token}, follow_redirects=True)
-    response = await client.post(url_for('/fibonacci'), data=b'n=10', follow_redirects=True)
-    assert response.headers['content-type'] == "text/html; charset=utf-8"
-    assert response != ""
-    assert response.status_code == HTTPStatus.OK, 'FibonacciController failed'
-    json = await response.get_json()
-    data = await response.get_data()
-    print(f"response json: {json}")
-    print(f"data: {data}")
-    #strResponse = response.data.decode("utf-8")
-    assert json != ""
-    #assert strResponse == "Hello there, fibonacci(10): 55"
-
-@pytest.mark.asyncio
-async def test_big_fibonacci_pass(client):
-    headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml',
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-    }    
-    response = await client.get('/fibonacci', headers=headers, follow_redirects=True)
-    #response = await client.post('/fibonacci', data={"n": 90, "csrf_token": g.csrf_token}, follow_redirects=True)
-    response = await client.post(url_for('/fibonacci'), data=b'n=90', follow_redirects=True)
-    assert response.headers['content-type'] == "text/html; charset=utf-8"
-    assert response != ""
-    assert response.status_code == HTTPStatus.OK, 'FibonacciController failed'
-    strResponse = response.data.decode("utf-8")	
-    assert strResponse != ""
-    assert strResponse == "Hello there, fibonacci(10): 2880067194370816120"
-
-@pytest.mark.asyncio
-async def test_fibonacci_fail(client):
+async def test_fibonacci_get_pass(app_context):
     headers = {
         'accept': 'text/html,application/xhtml+xml,application/xml',
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
     }
+    client = app.test_client()
     response = await client.get('/fibonacci', headers=headers, follow_redirects=True)
-    #response = await client.post('/fibonacci', data={"n": 90, "csrf_token": g.csrf_token}, follow_redirects=True)
-    response = await client.post(url_for('/fibonacci'), follow_redirects=True)
-    assert response.headers['content-type'] == "application/json"
-    assert response != ""
-    assert response.status_code == HTTPStatus.BAD_REQUEST, 'FibonacciController failed'
-    #strResponse = response.data.decode("utf-8")	
-    assert response.json == {'error': "Please provide an 'N' for the fibonacci number!"}, 'Improper response'
-    #assert strResponse != ""
-    #assert strResponse == "Please provide an 'N' for the fibonacci number!"
+    assert response
+    assert response.status_code == 200, 'FibonacciController failed'
+    assert len(response.headers.getlist('Set-Cookie'))
+    assert response.headers.getlist('Set-Cookie')[0] != ""
+
+@pytest.mark.asyncio
+async def test_fibonacci_pass(app_context):
+    headers = {
+        'accept': 'text/html,application/xhtml+xml,application/xml',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+    }
+    client = app.test_client()
+    response = await client.get('/fibonacci', headers=headers, follow_redirects=True)
+    response = await client.post('/fibonacci', data=b'n=90', follow_redirects=True)
+    assert response.headers['content-type'] == "text/html; charset=utf-8"
+    assert response
+    assert response.status_code == 200, 'FibonacciController failed'
+    data = await response.get_data()
+    strResponse = data.decode("utf-8")
+    assert strResponse != ""
+    assert "Hello there, fibonacci(90): 2880067194370816120" in strResponse, "Invalid fibonacci(90) calculation response"
+
+@pytest.mark.asyncio
+async def test_fibonacci_fail(app_context):
+    headers = {
+        'accept': 'text/html,application/xhtml+xml,application/xml',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+    }
+    client = app.test_client()
+    response = await client.get('/fibonacci', headers=headers, follow_redirects=True)
+    response = await client.post('/fibonacci', follow_redirects=True)
+    assert response.headers['content-type'] == "text/html; charset=utf-8"
+    assert response
+    assert response.status_code == 200, 'FibonacciController failed'
+    data = await response.get_data()
+    strResponse = data.decode("utf-8")
+    assert strResponse != ""
+    assert "Please provide a numeric value &#39;N&#39; for the fibonacci number!" in strResponse, 'Improper response'

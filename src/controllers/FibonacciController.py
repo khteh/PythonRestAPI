@@ -42,7 +42,7 @@ async def fibonacci() -> ResponseReturnValue:
         data = await request.get_data()
         params = parse_qs(data.decode('utf-8'))
         logging.debug(f"data: {data}, params: {params}")
-        if params['n'] and params["n"][0].strip() and params["n"][0].strip().isdigit():
+        if 'n' in params and len(params['n']) and params["n"][0].strip() and params["n"][0].strip().isdigit():
             n = int(params["n"][0].strip())
             logging.debug(f"fibonacci(): {n}")
             try:
@@ -56,8 +56,9 @@ async def fibonacci() -> ResponseReturnValue:
             #error = custom_response({"error": "Please provide an 'N' for the fibonacci number!"}, 400)
             await flash("Please provide a numeric value 'N' for the fibonacci number!", "danger")
     else:
-        logging.error(f"Invalid request method: {request.method}!")
-    return await Respond("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator", fibonacci=fibonacci)
+        logging.warning(f"Invalid request method: {request.method}!")
+    response = await Respond("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator", fibonacci=fibonacci)
+    return response
 
 def _fib(n):
 #    n = input(n)

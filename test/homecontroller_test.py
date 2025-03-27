@@ -2,11 +2,13 @@ import pytest, json
 from datetime import datetime, timezone
 from http import HTTPStatus
 from bs4 import BeautifulSoup
+from src.main import app
 @pytest.mark.asyncio
-async def test_hello_pass(client):
+async def test_hello_pass(app_context):
     now = datetime.now()
     # https://www.programiz.com/python-programming/datetime/strftime
     formatted_now = now.strftime("%A, %d %B, %Y at %X")
+    client = app.test_client()
     response = await client.get('/')
     #print(f"GreetingController response content-type: {response.headers['content-type']}, data: {response.data}")
     #print(response.__dict__)
