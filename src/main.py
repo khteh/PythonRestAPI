@@ -49,12 +49,6 @@ def create_app() -> Quart:
     app.register_blueprint(author_blueprint, url_prefix="/authors")
     app.register_blueprint(book_blueprint, url_prefix="/books")
     app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
-    @app.post("/echo")
-    async def echo():
-        logging.info(f"\n=== {echo.__name__} ===")
-        data = await request.get_json()
-        #return {"input": data, "extra": True}
-        return await Respond({"input": data, "extra": True})
     # https://quart-wtf.readthedocs.io/en/stable/how_to_guides/configuration.html
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
