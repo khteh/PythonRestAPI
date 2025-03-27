@@ -1,11 +1,11 @@
 import jwt, logging, jsonpickle
 from datetime import datetime, timezone, timedelta
 from quart import json, Response, session, redirect, url_for, session, abort, current_app
-#from flask_oidc import OpenIDConnect
 from functools import wraps
 from src.models.UserModel import UserModel
-#oidc = OpenIDConnect() Use of deprecated JSONWebSignatureSerializer in itsdangerous lib.
-# https://github.com/jpadilla/pyjwt/blob/master/docs/usage.rst
+"""
+https://github.com/kroketio/quart-keycloak for OIDC
+"""
 class Authentication():
     """
     Authentication
@@ -95,9 +95,6 @@ class Authentication():
             return decorated_auth_required
         return actual_auth_required
 
-#    @staticmethod
-#    def isAuthenticated():
-#        return oidc.user_loggedin and "user" in session and "token" in session["user"]
     @staticmethod
     def require_role(role):
         def decorated_require_role(func):

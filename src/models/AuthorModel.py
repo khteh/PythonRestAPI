@@ -1,22 +1,40 @@
+from datetime import datetime
+from sqlalchemy import Integer, String, DateTime
 from marshmallow import fields, Schema
 from sqlalchemy.sql import func
+import sqlalchemy as sa
+import sqlalchemy.orm
+from sqlalchemy.orm import Mapped, mapped_column
+from quart import Quart
+from quart_sqlalchemy import SQLAlchemyConfig
+from quart_sqlalchemy.framework import QuartSQLAlchemy
+from .base import Base
 from .BookModel import BookSchema
-from datetime import datetime, timezone
-from . import db, bcrypt
+from .Database import db
 
-class AuthorModel(db.Model):
+class AuthorModel(Base):
     """
     Author Model
     """
     __tablename__ = 'authors'
-    id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(128), nullable=False)
-    lastname = db.Column(db.String(128), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    phone = db.Column(db.String(15), unique=True, nullable=True, index=True)
-    created_at = db.Column(db.DateTime(timezone=True))
-    modified_at = db.Column(db.DateTime(timezone=True))
-    books = db.relationship("BookModel", backref="authors", lazy=True)	
+    id: Mapped[int] = mapped_column(sa.Identity(), primary_key=True, autoincrement=True)
+    firstname: Mapped[str] = mapped_column(sa.String(128), nullable=False)
+    lastname: Mapped[str] = mapped_column(sa.String(128), nullable=False)
+    email: Mapped[str] = mapped_column(sa.String(255), unique=True, nullable=False, index=True)
+    phone: Mapped[str] = mapped_column(sa.String(15), unique=True, nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=sa.func.now(),
+        server_default=sa.FetchedValue()
+    )
+    modified_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=sa.func.now(),
+        onupdate=sa.func.now(),
+        server_default=sa.FetchedValue(),
+        server_onupdate=sa.FetchedValue()
+    )
+    books = sa.orm.relationship("BookModel", back_populates="authors", lazy=True)
     # Class constructor
     def __init__(self, data):
         """

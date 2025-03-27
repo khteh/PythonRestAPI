@@ -47,11 +47,12 @@ $ pipenv install --python=/path/to/python
 ## Database Migration
 
 - Copy `env.py` to `migrations/` folder.
-- Set the values -f `DB_foo` in `/etc/pythonrestapi_config.json`
+- Set the values `DB_foo` in `/etc/pythonrestapi_config.json`
 - run migrations initialization with db init command:
 
   ```
   $ pipenv run alembic init migrations
+  $ cp env.py migrations
   $ pipenv run alembic revision --autogenerate -m "Initial migration"
   $ pipenv run alembic upgrade head
   ```

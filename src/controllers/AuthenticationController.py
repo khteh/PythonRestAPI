@@ -6,7 +6,7 @@ from base64 import b64decode
 from ..models.UserModel import UserModel, UserSchema
 from ..common.Authentication import Authentication
 from ..common.Response import custom_response
-#from ..common.Authentication import oidc
+
 auth_api = Blueprint("auth", __name__)
 user_schema = UserSchema()
 @auth_api.context_processor
@@ -61,7 +61,9 @@ async def login():
 #@auth_api.route("/login_oidc", methods=["GET", "POST"])
 #@oidc.require_login
 #async def login_oidc():
-    """Example for protected endpoint that extracts private information from the OpenID Connect id_token.
+    """
+    https://github.com/kroketio/quart-keycloak for OIDC
+    Example for protected endpoint that extracts private information from the OpenID Connect id_token.
        Uses the accompanied access_token to access a backend service.
     """
 #    if oidc.user_loggedin:

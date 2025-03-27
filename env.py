@@ -1,13 +1,12 @@
 # Copy this file to migrations/env.py
 import os, sys, json, urllib
-from urllib.parse import quote
+from dotenv import load_dotenv
+from urllib import parse
 from logging.config import fileConfig
 from urllib.parse import unquote
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
+from sqlalchemy import engine_from_config, pool, FetchedValue
 from alembic import context
-
+load_dotenv()
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 f = open("/etc/pythonrestapi_config.json", "r")
@@ -22,17 +21,24 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from src.models import LibraryMetadata
-target_metadata = LibraryMetadata
+from src.models.base import Base
+from src.models.AuthorModel import AuthorModel
+from src.models.BookModel import BookModel
+from src.models.UserModel import UserModel
+
+target_metadata = Base.metadata
+
+#from src.models.Database import LibraryMetadata
+#target_metadata = LibraryMetadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 section = config.config_ini_section
-print(f"password: {json_config['DB_PASSWORD']}, host: {json_config['DB_HOST']}, db: {json_config['DB_DATABASE']}")
-config.set_section_option(section, "DB_USERNAME", json_config["DB_USERNAME"])
-config.set_section_option(section, "DB_PASSWORD", urllib.parse.quote_plus(json_config['DB_PASSWORD']).replace("%", "%%"))
+print(f"password: {os.environ.get('DB_PASSWORD')}, host: {json_config['DB_HOST']}, db: {json_config['DB_DATABASE']}")
+config.set_section_option(section, "DB_USERNAME", os.environ.get('DB_USERNAME'))
+config.set_section_option(section, "DB_PASSWORD", urllib.parse.quote_plus(os.environ.get('DB_PASSWORD')).replace("%", "%%"))
 config.set_section_option(section, "DB_HOST", json_config["DB_HOST"])
 config.set_section_option(section, "DB_DATABASE", json_config["DB_DATABASE"])
 def run_migrations_offline() -> None:

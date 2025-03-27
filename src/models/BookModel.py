@@ -1,20 +1,38 @@
-from . import db
+from datetime import datetime
+from sqlalchemy import Integer, String, DateTime
 from marshmallow import fields, Schema
 from sqlalchemy.sql import func
-from datetime import datetime, timezone
+import sqlalchemy as sa
+import sqlalchemy.orm
+from sqlalchemy.orm import Mapped, mapped_column
+from quart import Quart
+from quart_sqlalchemy import SQLAlchemyConfig
+from quart_sqlalchemy.framework import QuartSQLAlchemy
+from .base import Base
+from .Database import db
 
-class BookModel(db.Model):
+class BookModel(Base):
     """
     Book Model
     """
     __tablename__ = "books"
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), nullable=False)
-    isbn = db.Column(db.String(255), nullable=False)
-    page_count = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime(timezone=True))
-    modified_at = db.Column(db.DateTime(timezone=True))
-    author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
+    id: Mapped[int] = mapped_column(sa.Identity(), primary_key=True, autoincrement=True)
+    title: Mapped[str] = mapped_column(sa.String(128), nullable=False)
+    isbn: Mapped[str] = mapped_column(sa.String(255), nullable=False)
+    page_count: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=sa.func.now(),
+        server_default=sa.FetchedValue()
+    )
+    modified_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=sa.func.now(),
+        onupdate=sa.func.now(),
+        server_default=sa.FetchedValue(),
+        server_onupdate=sa.FetchedValue()
+    )
+    author_id: Mapped[int] = mapped_column(sa.ForeignKey("authors.id"), nullable=False)
     def __init__(self, data):
         self.author_id = data.get("author_id")
         self.title = data.get("title")
@@ -50,7 +68,7 @@ class BookModel(db.Model):
         return BookModel.query.filter_by(isbn = isbn).count() > 0
     @staticmethod
     def get_books_like(title):
-        return BookModel.query.with_entities(BookModel.title, BbookModel.isbn).filter(BookModel.name.ilike(f"%{title}%")).all()
+        return BookModel.query.with_entities(BookModel.title, BookModel.isbn).filter(BookModel.name.ilike(f"%{title}%")).all()
     def __repl__(self): # return a printable representation of BookpostModel object, in this case, we're only returning the id
         return "<id {}".format(self.id)
 class BookSchema(Schema):

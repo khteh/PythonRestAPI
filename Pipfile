@@ -7,24 +7,21 @@ name = "pypi"
 flask-healthz = "*"
 marshmallow = "*"
 python-dotenv = "*"
-Flask-SQLAlchemy = "*"
-Flask-Migrate = "*"
-Flask-Script = "*"
 Quart-CORS = "*"
-Flask-Bcrypt = "*"
 PyJWT = "*"
 alembic = "*"
 itsdangerous = "*"
-flask-oidc = {ref = "refs/pull/144/head", git = "https://github.com/puiterwijk/flask-oidc.git"}
 quart = "*"
 quart-wtforms = "*"
-quart-flask-patch = "*"
 aioquic = "*"
 psycopg-pool = "*"
 psycopg = {extras = ["binary"], version = "*"}
-hypercorn = {extras = ["h3"], version = "*"}
 quart-trio = "*"
 jsonpickle = "*"
+quart-bcrypt = "*"
+quart-sqlalchemy = "*"
+quart-keycloak = "*"
+hypercorn = {extras = ["h3", "trio"], version = "*"}
 
 [dev-packages]
 pytest-flask = "*"
