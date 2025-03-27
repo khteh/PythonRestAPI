@@ -15,11 +15,11 @@ def client():
 @pytest.fixture(scope="function")
 async def app_context():
     config = Config()
-    config.bind = ["localhost:8443"]
-    config.insecure_bind = ["localhost:8080"]
-    config.quic_bind = ["localhost:4433"]
+    config.bind = "0.0.0.0:4433"
+    config.insecure_bind = "0.0.0.0:8080"
+    config.quic_bind = ["0.0.0.0:4433", "[::]:4433"]
     config.worker_class = "asyncio"
-    config.alt_svc_headers = ["h3=\":443\"; ma=3600, h3-29=\":443\"; ma=3600"]
+    config.alt_svc_headers = ["h3=\":4433\"; ma=2592000"]
     config.loglevel = "DEBUG"
     #app = create_app()
     #app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
