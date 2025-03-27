@@ -87,8 +87,9 @@ curl --http3 --insecure -v https://localhost:4433/<path> -H "Host: khteh.com"
 ```
 
 ## Browser
-- Add `ModHeader` chrome extension: https://chromewebstore.google.com/detail/modheader-modify-http-hea/idgpnmonknjnojddfkpgkljpfnnfcklj?hl=en-US&utm_source=ext_sidebar
-- Add
+
+- Add extensions to add `Host` header based on filter
+
 ## Create User:
 
 - POST https://localhost:4433/users/create with the following JSON data:
