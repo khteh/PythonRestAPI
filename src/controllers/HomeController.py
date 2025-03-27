@@ -30,23 +30,19 @@ async def index() -> ResponseReturnValue:
     if "user" not in session or not session["user"]:
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
-        #return await render_template("index.html", title="Welcome to Python RESTful API", greeting=greeting)
         return await Respond("index.html", title="Welcome to Python RESTful API", greeting=greeting)
     user = jsonpickle.decode(session['user'])
     if not user or not hasattr(user, 'token'):
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
-        #return await render_template("index.html", title="Welcome to Python RESTful API", greeting=greeting)
         return await Respond("index.html", title="Welcome to Python RESTful API", greeting=greeting)
     data = Authentication.decode_token(user.token)
     if data["error"]:
-        #return await render_template("login.html", title="Welcome to Python RESTful API", error=data["error"])
         return await Respond("login.html", title="Welcome to Python RESTful API", error=data["error"])
     user_id = data["data"]["user_id"]
     logging.debug(f"User: {user_id}")
     user = UserModel.get_user(user_id)
     if not user:
-        #return await render_template("login.html", title="Welcome to Python RESTful API", error="Invalid user!")
         return await Respond("login.html", title="Welcome to Python RESTful API", error="Invalid user!")
     try:
         logging.debug(f"Firstname: {user.firstname}, Lastname: {user.lastname}")

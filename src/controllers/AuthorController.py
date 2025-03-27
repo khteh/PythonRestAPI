@@ -3,7 +3,7 @@ from quart import request, Blueprint, session, render_template, flash, redirect,
 from marshmallow import ValidationError
 from datetime import datetime, timezone
 from ..common.Authentication import Authentication
-from ..common.Response import custom_response
+from ..common.ResponseHelper import Respond
 from ..models.AuthorModel import AuthorModel, AuthorSchema
 author_api = Blueprint("author", __name__)
 author_schema = AuthorSchema()
@@ -19,7 +19,7 @@ async def index():
     authors = AuthorModel.get_authors()
     for author in authors:
         author.bookcount = author.bookCount()
-    return await render_template("authors.html", title="Welcome to Python RESTful API", authors=authors)
+    return await Respond("authors.html", title="Welcome to Python RESTful API", authors=authors)
 
 @author_api.route("/create", methods=["GET", "POST"])
 @Authentication.auth_required("author.create")
@@ -74,7 +74,7 @@ async def create():
             logging.exception(f"User {user.email} failed to creat author! Exception: {errors}")
             await flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
-    return await render_template("author_create.html", title="Welcome to Python Flask RESTful API")
+    return await Respond("author_create.html", title="Welcome to Python Flask RESTful API")
 		
 @author_api.route("/<int:id>")
 @Authentication.auth_required("author.get_author")

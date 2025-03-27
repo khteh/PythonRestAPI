@@ -3,6 +3,7 @@ from quart import request, json, Blueprint, session, render_template, session, r
 from marshmallow import ValidationError
 from datetime import datetime, timezone
 from base64 import b64decode
+from ..common.ResponseHelper import Respond
 from ..models.UserModel import UserModel, UserSchema
 from ..common.Authentication import Authentication
 from ..common.Response import custom_response
@@ -24,25 +25,19 @@ async def login():
             req_data = {"email": form["username"], "password": form["password"]}
             data = user_schema.load(req_data, partial=True)
             if not data:
-                message = {"error": "Invalid input!"}
-                return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid input!")
-                #return custom_response(message, 400)
+                return await Respond("login.html", title="Welcome to Python Flask RESTful API", error=data["Invalid input!"])
             if not data.get("email") or not data.get("password"):
-                #return custom_response({"error": "You need an email and password to login"}, 400)
-                return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="You need an email and password to login")
+                return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="You need an email and password to login")
             user = UserModel.get_user_by_email(data.get("email"))
             if not user:
-                #return custom_response({"error": "Invalid user!"}, 400)
                 logging.warning(f"[Auth] Invalid user {data.get('email')}!")
-                return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
+                return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
             if not user.check_hash(data.get("password")):
-                #return custom_response({"error": "Invalid email or password!"}, 400)
                 logging.warning(f"[Auth] Invalid email or password {data.get('email')}!")
-                return await render_template("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
+                return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
             ser_data = user_schema.dump(user)
             user.token = Authentication.generate_token(ser_data.get("id"))
             #session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": token}
-            #return custom_response({"jwt_token": token}, 200)
             data["lastlogin"] = datetime.now(timezone.utc)
             user.update(data)
             session['user'] = jsonpickle.encode(user)
@@ -55,8 +50,8 @@ async def login():
             errors = err.messages
             valid_data = err.valid_data
             logging.exception(f"[Auth] login() exception! {errors}")
-            return await render_template("login.html", title="Welcome to Python Flask RESTful API", error=errors)
-    return await render_template("login.html", title="Welcome to Python Flask RESTful API")
+            return await Respond("login.html", title="Welcome to Python Flask RESTful API", error=errors)
+    return await Respond("login.html", title="Welcome to Python Flask RESTful API")
 
 #@auth_api.route("/login_oidc", methods=["GET", "POST"])
 #@oidc.require_login
@@ -84,7 +79,7 @@ async def login():
 #                    session["user"] = {"id": user_id, "username": username, "email": email, "token": access_token, "roles": roles}
                     # YOLO
                     #greeting = requests.get('http://localhost:8080/greeting', headers=headers).text
-                    #return await render_template("index.html")
+                    #return await Respond("index.html")
 #                   print(f"[Auth] UserId: {user_id}, UserName: {username}, Email: {email}, Roles: {roles}, Profile: {profile} logged in")
 #                   if "url" in session and session["url"]:
 #                       return redirect(session["url"])
@@ -92,13 +87,13 @@ async def login():
 #                       return redirect(url_for("home.index"))
 #               except Exception as e:
 #                   print(f"Login fails! {str(e)}")
-#                   return await render_template("login_error.html", error_message="Invalid credentials!")
+#                   return await Respond("login_error.html", error_message="Invalid credentials!")
 #           else:
 #               print(f"Invalid credentials!")
-#               return await render_template("login_error.html", error_message="Invalid credentials!")
+#               return await Respond("login_error.html", error_message="Invalid credentials!")
 #       except Exception as e:
 #            print(f"Please login to continue. {str(e)}")
-#        return await render_template("login_error.html", error_message="Invalid credentials!")
+#        return await Respond("login_error.html", error_message="Invalid credentials!")
 
 @auth_api.route("/logout")
 @Authentication.auth_required(None)

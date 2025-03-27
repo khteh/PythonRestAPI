@@ -16,7 +16,7 @@ async def index():
     """
     User Index page
     """
-    return await render_template("users.html", title="Welcome to Python RESTful API", users=UserModel.get_users())
+    return await Respond("users.html", title="Welcome to Python RESTful API", users=UserModel.get_users())
 	
 @user_api.route("/create", methods=["GET","POST"])
 async def create():
@@ -77,7 +77,7 @@ async def create():
             logging.exception(f"create() exception! {errors}")
             await flash(f"Failed to create user! {err.messages}", "danger")
             return redirect(url_for("user.create"))
-    return await render_template("user_create.html", title="Welcome to Python Flask RESTful API")
+    return await Respond("user_create.html", title="Welcome to Python Flask RESTful API")
 
 @user_api.route("/all")
 @Authentication.auth_required("user.get_all")
