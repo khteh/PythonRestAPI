@@ -11,22 +11,22 @@ from quart import (
 )
 health_api = Blueprint("health", __name__)
 @health_api.route("/ready")
-def readiness() -> ResponseReturnValue:
+async def readiness() -> ResponseReturnValue:
     try:
         connection_kwargs = {
             "autocommit": True,
             "prepare_threshold": 0,
         }
-        with ConnectionPool(
+        async with AsyncConnectionPool(
             conninfo = current_app.config["POSTGRESQL_DATABASE_URI"],
             max_size = current_app.config["DB_MAX_CONNECTIONS"],
             kwargs = connection_kwargs,
         ) as pool:
             # Check if the checkpoints table exists
-            with pool.connection() as conn:
-                with conn.cursor() as cur:
+            async with pool.connection() as conn:
+                async with conn.cursor() as cur:
                     try:
-                        cur.execute("""
+                        await cur.execute("""
                             SELECT EXISTS (
                                 SELECT FROM information_schema.tables 
                                 WHERE  table_schema = 'public'
@@ -36,8 +36,6 @@ def readiness() -> ResponseReturnValue:
                     except Exception as e:
                         logging.exception(f"Error checking for library table: Exception: {e}")
                         raise e
-                        # Optionally, you might want to raise this error
-                        # raise
         logging.debug("Ready!")
         return "OK", 200
     except Exception as e:
