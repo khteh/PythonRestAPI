@@ -37,7 +37,7 @@ def _apply_security_headers(
 
 async def Respond(*args, **kwargs):
     nonce = token_urlsafe(12)
-    body = await render_template(args, kwargs)
+    body = await render_template(*args, **kwargs)
     body = body.replace('type="module"', f'type="module" nonce="{nonce}"')
     response = cast(Response, await make_response(body))
     return _apply_security_headers(response, nonce)

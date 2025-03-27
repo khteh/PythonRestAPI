@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "dd443d0b91c45415cec918d916c629479d08ec6c432c024754b4a5a92581fb46"
+            "sha256": "fbf3d0692d3b531fd790c67a7f407a6d11478596b1ac8e7f83457c80f7c791b5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -416,15 +416,6 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==3.0.3"
-        },
-        "flask-healthz": {
-            "hashes": [
-                "sha256:208e1f35d12d70bca623ac2dd9de17813c397f9f0a0c09aa746b4a543c75615d",
-                "sha256:3b25bfd8606950a77632925cfbbf19cac20650be51fc0efbe78c387e559e2541"
-            ],
-            "index": "pypi",
-            "markers": "python_full_version >= '3.8.0' and python_full_version < '4.0.0'",
-            "version": "==1.0.1"
         },
         "frozenlist": {
             "hashes": [
