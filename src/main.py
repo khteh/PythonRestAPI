@@ -48,7 +48,7 @@ def create_app() -> Quart:
     app.register_blueprint(user_blueprint, url_prefix="/users")
     app.register_blueprint(author_blueprint, url_prefix="/authors")
     app.register_blueprint(book_blueprint, url_prefix="/books")
-    app = cors(app, allow_credentials=True, allow_origin="https://localhost:4433")
+    app = cors(app, allow_credentials=True, allow_origin="*")
     # https://quart-wtf.readthedocs.io/en/stable/how_to_guides/configuration.html
     csrf = CSRFProtect(app)
     bcrypt.init_app(app)
