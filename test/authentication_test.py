@@ -1,7 +1,7 @@
 import os, pytest, sys, asyncio
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '../src')))
-os.environ["Testing"] = True
+os.environ["Testing"] = "True"
 from common.Authentication import Authentication
 
 def test_tokengeneration_pass(app_context):

@@ -2,7 +2,7 @@ import pytest, os
 from datetime import datetime, timezone
 from http import HTTPStatus
 from bs4 import BeautifulSoup
-os.environ["Testing"] = True
+os.environ["Testing"] = "True"
 from src.main import app
 @pytest.mark.asyncio
 async def test_hello_pass(app_context):
