@@ -44,7 +44,7 @@ jobs:
             psql -h localhost -U postgres -c "CREATE USER $POSTGRESQL_USER WITH PASSWORD '$POSTGRESQL_PASSWORD' ;"
             psql -h localhost -U postgres -c "CREATE DATABASE library WITH OWNER = $POSTGRESQL_USER ;"
             psql -h localhost -U $POSTGRESQL_USER -w -d library < library.sql
-      - run: pipenv run pytest -v
+      #- run: pipenv run pytest -v Needs /etc/hypercorn.toml
       - run:
           name: Build docker image
           command: docker build -t khteh/pythonrestapi:latest .
