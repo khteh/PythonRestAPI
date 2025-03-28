@@ -13,7 +13,6 @@ jobs:
   build_and_test:
     <<: *defaults
     docker:
-      #- image: circleci/python:latest
       - image: khteh/ubuntu:latest
       - image: postgres:latest
         environment:
@@ -27,20 +26,21 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run:
-          name: install dockerize
-          command: |
-            DOCKERIZE_VERSION="v0.9.3"
-            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+      #- run:
+      #    name: install dockerize
+      #    command: |
+      #      DOCKERIZE_VERSION="v0.9.3"
+      #      wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
       - restore_cache:
           key: v1-dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run: pipenv install -d
       - run:
           name: Wait for PostgreSQL Server
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+          #command: dockerize -wait tcp://localhost:5432 -timeout 1m
+          command: pg_isready -U "postgres" -h 127.0.0.1 -p 5432
       - run:
           name: Prepare database for tests
-          command: psql -h localhost -U $POSTGRESQL_USER -W $POSTGRESQL_PASSWORD -d library < library.sql
+          command: psql -h localhost -U $POSTGRESQL_USER -w -d library < library.sql
       - run: pipenv run pytest -v
       - run:
           name: Build docker image
