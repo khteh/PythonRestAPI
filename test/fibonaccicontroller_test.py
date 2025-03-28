@@ -1,5 +1,5 @@
-import pytest, json
-from quart_wtf.utils import generate_csrf, validate_csrf, logger
+import pytest, os
+os.environ["Testing"] = True
 from src.main import app
 # CSRF: https://gist.github.com/singingwolfboy/2fca1de64950d5dfed72?permalink_comment_id=4556252
 @pytest.mark.asyncio
