@@ -9,7 +9,7 @@ from quart import Quart
 from quart_sqlalchemy import SQLAlchemyConfig
 from quart_sqlalchemy.framework import QuartSQLAlchemy
 from src.common.Bcrypt import bcrypt
-from .base import Base
+from .base import Base, Session
 from .Database import db
 from .BookModel import BookSchema
 class UserModel(Base):
@@ -80,6 +80,11 @@ class UserModel(Base):
         return UserModel.query.filter_by(email = email).count() > 0
     @staticmethod
     def get_users():
+        with Session() as session:
+            return session.get()
+            statement = sa.select(UserModel)
+            eager_statement = statement.options(sa.orm.joinedload(User.posts))
+
         return UserModel.query.all()
     def __repl__(self): # return a printable representation of UserModel object, in this case we're only returning the id
         return "<id {}>".format(self.id)
