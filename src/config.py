@@ -11,7 +11,7 @@ class ConfigSingleton(type): # Inherit from "type" in order to gain access to me
         elif registry[cls][1] != args or registry(cls)[2] != kwargs:
               raise TypeError(f"Class already initialized with different arguments!")
         return registry[cls][0]
-class Config(ConfigSingleton):
+class Config(metaclass=ConfigSingleton):
     DEBUG = False
     TESTING = False
     SECRET_KEY:str = None

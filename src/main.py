@@ -18,9 +18,9 @@ from src.controllers.HealthController import health_api as health_blueprint
 from src.models.Database import db
 from src.common.Bcrypt import bcrypt
 from src.common.ResponseHelper import Respond
+from src.config import config as appconfig
 config = Config()
 config.from_toml("/etc/hypercorn.toml")
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')	
 
 def _add_secure_headers(response: Response) -> Response:
     response.headers["Strict-Transport-Security"] = (
