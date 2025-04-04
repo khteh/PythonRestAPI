@@ -136,3 +136,29 @@ def test_cpp_csharpRegex(data, expected):
 def test_SringContainsAlphabets():
     assert re.search('[a-zA-Z]',"Hello World!!! 123")
     assert not re.search('[a-zA-Z]',"123")
+
+def test_log_format():
+    text = "2025-04-04 05:44:55"
+    regex = r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})?$"
+    assert re.match(regex, text)
+
+    text = " INFO "
+    regex = r"^(\s)+INFO(\s)+?$"
+    assert re.match(regex, text)
+
+    text = " Running app..."
+    regex = r"^(\s)+([\w\d\-_\.\s])+?$"
+    assert re.match(regex, text)
+
+    text = " INFO Running app..."
+    regex = r"^(\s)+INFO(\s)+([\w\d\-_\.\s])+?$"
+    assert re.match(regex, text)
+
+    text = "2025-04-04 05:44:55 INFO Running app..."
+    regex = r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})(\s)+INFO(\s)+([\w\d\-_\.\s])+?$"
+    result = re.search(regex, text).groups()
+    print(f"result: {result}")
+
+#def test_access_log_format():
+#   text = "[2025-04-04 09:10:08 +0000] [10] [INFO] 192.168.0.149:34494 - - [04/Apr/2025:09:10:08 +0000] 'GET /health/live 2' 200 2 '-' 'kube-probe/1.27'"
+#   regex = r"^[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\s)+[+-]{1}\d{4}](\s)+INFO(\s)+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5})(\s)+-\w-(\s)+[(\d{2}/\w{3}/\d{4}:\d{2}:\d{2}:\d{2}(\s)+(\s)+[+-]{1}\d4)](\s)+\"\w{[3,4}(\s)+(\w)+(\s)+\d\"(\s)+\d{3}(\s)+\d?$"
