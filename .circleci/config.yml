@@ -19,7 +19,7 @@ jobs:
           POSTGRESQL_HOST: 127.0.0.1
           POSTGRESQL_DB: library
           POSTGRESQL_ALLOW_EMPTY_PASSWORD: true
-          DB_USER: $DB_USER
+          POSTGRESQL_USER: $DB_USERNAME
           POSTGRES_PASSWORD: $DB_PASSWORD
     #    restart: on-failure # Restart the container if it exits due to an error
     steps:
@@ -41,9 +41,9 @@ jobs:
       - run:
           name: Prepare database for tests
           command: |
-            psql -h localhost -U postgres -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD' ;"
-            psql -h localhost -U postgres -c "CREATE DATABASE library WITH OWNER = $DB_USER ;"
-            psql -h localhost -U $DB_USER -w -d library < library.sql
+            psql -h localhost -U postgres -c "CREATE USER $DB_USERNAME WITH PASSWORD '$DB_PASSWORD' ;"
+            psql -h localhost -U postgres -c "CREATE DATABASE library WITH OWNER = $DB_USERNAME ;"
+            psql -h localhost -U $DB_USERNAME -w -d library < library.sql
       #- run: pipenv run pytest -v Needs /etc/hypercorn.toml
       - run:
           name: Build docker image
