@@ -174,6 +174,7 @@ URI_REGEX_TEST_CASES = [
 ]
 @pytest.mark.parametrize("data, expected", URI_REGEX_TEST_CASES)
 def test_uri(data, expected):
+    # The ?: inside the group (?:\+\+|#) just make the group non capturing.
     uri_regex = re.compile(
         r'^(?:http|ftp)s?://'  # http:// or https://
         r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
