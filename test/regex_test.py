@@ -159,6 +159,31 @@ def test_log_format():
     result = re.search(regex, text).groups()
     print(f"result: {result}")
 
+URI_REGEX_TEST_CASES = [
+    ("www.google.com", False),
+    ("http://www.google.com", True),
+    ("https://www.google.com", True),
+    ("127.0.0.1:8080", False),
+    ("http://127.0.0.1:8080", True),
+    ("https://127.0.0.1:4433", True),
+    ("http://localhost:8080", True),
+    ("https://localhost:4433", True),
+    ("[::1]:8080", False),
+    ("http://[::1]:8080", True),
+    ("https://[::1]:4433", True),
+]
+@pytest.mark.parametrize("data, expected", URI_REGEX_TEST_CASES)
+def test_uri(data, expected):
+    uri_regex = re.compile(
+        r'^(?:http|ftp)s?://'  # http:// or https://
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|'  # ...or ipv4
+        r'\[?[A-F0-9]*:[A-F0-9:]+\]?)'  # ...or ipv6
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    assert expected == bool(re.match(uri_regex, data))
+
 #def test_access_log_format():
 #   text = "[2025-04-04 09:10:08 +0000] [10] [INFO] 192.168.0.149:34494 - - [04/Apr/2025:09:10:08 +0000] 'GET /health/live 2' 200 2 '-' 'kube-probe/1.27'"
 #   regex = r"^[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\s)+[+-]{1}\d{4}](\s)+INFO(\s)+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5})(\s)+-\w-(\s)+[(\d{2}/\w{3}/\d{4}:\d{2}:\d{2}:\d{2}(\s)+(\s)+[+-]{1}\d4)](\s)+\"\w{[3,4}(\s)+(\w)+(\s)+\d\"(\s)+\d{3}(\s)+\d?$"
