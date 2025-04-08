@@ -166,6 +166,7 @@ URI_REGEX_TEST_CASES = [
     ("127.0.0.1:8080", False),
     ("http://127.0.0.1:8080", True),
     ("https://127.0.0.1:4433", True),
+    ("localhost:8080", False),
     ("http://localhost:8080", True),
     ("https://localhost:4433", True),
     ("[::1]:8080", False),
