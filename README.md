@@ -59,7 +59,7 @@ $ pipenv install --python=/path/to/python
 
 - There will be 3 tables, "users", "books", and "authors" created in the PostgreSQL database "library" after the `upgrade`.
 
-# Test using PyTest:
+## Test using PyTest:
 
 - There are 7 test cases
   - JWT token generation and decoding
@@ -70,11 +70,11 @@ $ pipenv install --python=/path/to/python
   $ python -m pytest
   ```
 
-# Continuous Integration:
+## Continuous Integration:
 
 - Integrated with CircleCI
 
-# Start the application:
+## Start the application:
 
 - `./hypercorn.sh`
 
