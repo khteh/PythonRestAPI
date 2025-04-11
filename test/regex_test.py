@@ -129,8 +129,10 @@ CPP_CSHARP_REGEX_TEST_CASES = [
 def test_cpp_csharpRegex(data, expected):
     # https://stackoverflow.com/questions/79435236/how-to-match-c-c-or-c
     # The ?: inside the group (?:\+\+|#) just make the group non capturing. The (?<!S) and (?!\S) are called lookarounds, and assert that either whitespace or the start/end precedes/follows the match
+    # matches to be the entire input string
     cpp_csharp_regex = r"^C(?:\+\+|#)?$"
-    #cpp_csharp_regex = r"\bC(?:\+\+|#)?(?!\S)" # matches to be the entire input string
+    # matches perhaps as part of a larger string, with the matches surrounded by whitespace
+    #cpp_csharp_regex = r"\bC(?:\+\+|#)?(?!\S)"
     assert expected == bool(re.match(cpp_csharp_regex, data)) #If you want to catch these matches perhaps as part of a larger string, with the matches surrounded by whitespace
 
 def test_SringContainsAlphabets():
@@ -157,7 +159,15 @@ def test_log_format():
     text = "2025-04-04 05:44:55 INFO Running app..."
     regex = r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})(\s)+INFO(\s)+([\w\d\-_\.\s])+?$"
     result = re.search(regex, text).groups()
-    print(f"result: {result}")
+    print(f"test_log_format result: {result}")
+
+def test_time_string():
+    text = "test_hospital_waiting_time: The current wait time at Wallace-Hamilton is 7 hours and 9 minutes."
+    regex = r"\b(\d+)(\s)+(hours?|minutes?)+"
+    result = re.search(regex, text).groups()
+    print(f"test_time_string result: {result}")
+    assert result
+    assert result[0]
 
 URI_REGEX_TEST_CASES = [
     ("www.google.com", False),
