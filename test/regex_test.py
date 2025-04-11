@@ -161,11 +161,17 @@ def test_log_format():
     result = re.search(regex, text).groups()
     print(f"test_log_format result: {result}")
 
-def test_time_string():
-    text = "test_hospital_waiting_time: The current wait time at Wallace-Hamilton is 7 hours and 9 minutes."
+TIME_STRING_REGEX_TEST_CASES = [
+    ("is 7 hours and 9 minutes.", True),
+    ("is 1 hour.", True),
+    ("is 45 minutes.", True),
+    ("is 1 minute.", True)
+]
+@pytest.mark.parametrize("data, expected", TIME_STRING_REGEX_TEST_CASES)
+def test_time_string(data, expected):
     regex = r"\b(\d+)(\s)+(hours?|minutes?)+"
-    result = re.search(regex, text).groups()
-    print(f"test_time_string result: {result}")
+    result = re.search(regex, data).groups()
+    #print(f"test_time_string result: {result}")
     assert result
     assert result[0]
 
