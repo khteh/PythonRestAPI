@@ -162,10 +162,14 @@ def test_log_format():
     print(f"test_log_format result: {result}")
 
 TIME_STRING_REGEX_TEST_CASES = [
-    ("is 7 hours and 9 minutes.", True),
     ("is 1 hour.", True),
+    ("is 2 hours.", True),
+    ("is 1 minute.", True),
     ("is 45 minutes.", True),
-    ("is 1 minute.", True)
+    ("is 1 hour and 1 minute.", True),
+    ("is 1 hours and 45 minutes.", True),
+    ("is 2 hours and 1 minute.", True),
+    ("is 10 hours and 45 minute.", True)
 ]
 @pytest.mark.parametrize("data, expected", TIME_STRING_REGEX_TEST_CASES)
 def test_time_string(data, expected):
