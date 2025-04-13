@@ -2,9 +2,10 @@ import re, logging, jsonpickle
 from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime, timezone
-from ..common.Authentication import Authentication
-from ..common.ResponseHelper import Respond
-from ..models.AuthorModel import AuthorModel, AuthorSchema
+from src.common.Response import custom_response
+from src.common.Authentication import Authentication
+from src.common.ResponseHelper import Respond
+from src.models.AuthorModel import AuthorModel, AuthorSchema
 author_api = Blueprint("author", __name__)
 author_schema = AuthorSchema()
 @author_api.context_processor
