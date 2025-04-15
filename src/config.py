@@ -12,7 +12,7 @@ class ConfigSingleton(type): # Inherit from "type" in order to gain access to me
               raise TypeError(f"Class already initialized with different arguments!")
         return registry[cls][0]
 class Config(metaclass=ConfigSingleton):
-    DEBUG = False
+    LOGLEVEL:str = None
     TESTING = False
     SECRET_KEY:str = None
     SQLALCHEMY_DATABASE_URI:str = None
@@ -32,6 +32,6 @@ class Config(metaclass=ConfigSingleton):
         The level parameter now accepts a string representation of the level such as ‘INFO’ as an alternative to the integer constants such as INFO.
         """
         logging.getLogger("httpx").setLevel(logging.WARNING)
-        logging.basicConfig(filename='/var/log/pythonrestapi/log', filemode='w', format='%(asctime)s %(levelname)-8s %(message)s', level=config['LOGLEVEL'], datefmt='%Y-%m-%d %H:%M:%S')	
+        logging.basicConfig(filename='/var/log/pythonrestapi/log', filemode='w', format='%(asctime)s %(levelname)-8s %(message)s', level=self.LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')	
 
 config = Config()

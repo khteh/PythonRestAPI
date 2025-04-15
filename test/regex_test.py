@@ -1,7 +1,7 @@
 import pytest, logging, os, re
 from re import Match
 """
-$ pytest regex_test.py
+$ pipenv run pytest -v regex_test.py
 """
 NUMBER_REGEX_TEST_CASES = [
     ("123", True),
