@@ -57,7 +57,7 @@ def create_app() -> Quart:
     #return HTTPToHTTPSRedirectMiddleware(app, "khteh.com")  # type: ignore - Defined in hypercorn.toml server_names
     return app
 
+logging.info(f"Running app...")
 #app = asyncio.get_event_loop().run_until_complete(create_app())
 app = create_app()
-logging.info(f"Running app...")
 #asyncio.run(serve(app, config), debug=True)
