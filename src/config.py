@@ -38,12 +38,12 @@ class Config(metaclass=ConfigSingleton):
         The Hyphen-Minus Flag (-)
         When a formatted value is shorter than the specified field width, it’s usually right-justified in the field. The hyphen-minus (-) flag causes the value to be left-justified in the specified field instead.
         """
-        if config["ENVIRONMENT"] == "production":
+        if config["ENVIRONMENT"] == "development":
+            logging.basicConfig(filename='/var/log/pythonrestapi/log', filemode='w', format='%(asctime)s %(levelname)-8s %(message)s', level=self.LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')
+        else:
             logging.basicConfig(handlers=[
                 logging.FileHandler(filename='/var/log/pythonrestapi/log', mode='w'),
                 logging.StreamHandler(sys.stdout)
             ], format='%(asctime)s %(levelname)-8s %(message)s', level=self.LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')
-        else:
-            logging.basicConfig(filename='/var/log/pythonrestapi/log', filemode='w', format='%(asctime)s %(levelname)-8s %(message)s', level=self.LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')
 
 config = Config()
