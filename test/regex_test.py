@@ -233,7 +233,19 @@ def test_money(data, expected):
     ]))
     assert expected == bool(re.match(money_regex, data))
 
-def test_string_contains_money():
+STRING_MONEY_REGEX_TEST_CASES = [
+    ("billed amount of $", False),
+    ("billed amount of $0.50", True),
+    ("billed amount of $123.50", True),
+    ("billed amount of $123", True),
+    ("billed amount of $123,456", True),
+    ("billed amount of $123,456,789", True),
+    ("billed amount of $123,456,789.50", True),
+    ("billed amount of $123.", True),
+    ("billed amount of $123,456,789.", True),
+]
+@pytest.mark.parametrize("data, expected", STRING_MONEY_REGEX_TEST_CASES)
+def test_string_contains_money(data, expected):
     money_regex = re.compile('|'.join([
         r'\b\$?(\d*\.\d{1,2})',  # e.g., $.50, .50, $1.50, $.5, .5
         r'\b\$?(\d+)',           # e.g., $500, $5, 500, 5
@@ -242,9 +254,8 @@ def test_string_contains_money():
         r'\b\$?(\d{1,3},\d{3})*\.?',         # e.g., $123,456.5, $1,234, $12,345
         r'\b\$?(\d{1,3},\d{3})*\.\d{1,2}',         # e.g., $123,456.5, $1,234, $12,345
     ]))
-    str = "billed amount of $52,221,646.74."
-    result = re.findall(money_regex, str)#.groups()
+    result = re.findall(money_regex, data)
     #print(f"test_money result: {result}")
     assert result
     assert result[0]
-    assert re.match(money_regex, str)
+    assert re.match(money_regex, data)
