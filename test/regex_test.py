@@ -209,3 +209,26 @@ def test_uri(data, expected):
 #def test_access_log_format():
 #   text = "[2025-04-04 09:10:08 +0000] [10] [INFO] 192.168.0.149:34494 - - [04/Apr/2025:09:10:08 +0000] 'GET /health/live 2' 200 2 '-' 'kube-probe/1.27'"
 #   regex = r"^[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\s)+[+-]{1}\d{4}](\s)+INFO(\s)+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5})(\s)+-\w-(\s)+[(\d{2}/\w{3}/\d{4}:\d{2}:\d{2}:\d{2}(\s)+(\s)+[+-]{1}\d4)](\s)+\"\w{[3,4}(\s)+(\w)+(\s)+\d\"(\s)+\d{3}(\s)+\d?$"
+
+MONEY_REGEX_TEST_CASES = [
+    ("$", False),
+    ("$0.50", True),
+    ("$123.50", True),
+    ("$123", True),
+    ("$123,456", True),
+    ("$123,456,789", True),
+    ("$123,456,789.50", True),
+    ("$123.", True),
+    ("$123,456,789.", True),
+]
+@pytest.mark.parametrize("data, expected", MONEY_REGEX_TEST_CASES)
+def test_money(data, expected):
+    money_regex = re.compile('|'.join([
+    r'^\$?(\d*\.\d{1,2})$',  # e.g., $.50, .50, $1.50, $.5, .5
+    r'^\$?(\d+)$',           # e.g., $500, $5, 500, 5
+    r'^\$(\d+\.?)$',         # e.g., $5.
+    r'^\$?(\d+)(,\d{3})*$',           # e.g., $123,456, $1,234, $12,345
+    r'^\$?(\d+)(,\d{3})*\.?$',         # e.g., $123,456.5, $1,234, $12,345
+    r'^\$?(\d+)(,\d{3})*.\d{1,2}$',         # e.g., $123,456.5, $1,234, $12,345
+    ]))
+    assert expected == bool(re.match(money_regex, data))
