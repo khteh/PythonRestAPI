@@ -19,6 +19,7 @@ class Config(metaclass=ConfigSingleton):
     SQLALCHEMY_DATABASE_URI:str = None
     POSTGRESQL_DATABASE_URI:str = None
     JWT_SECRET_KEY:str = None
+    GEMINI_API_KEY:str = None
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
     def __init__(self, environment="Development"):
@@ -28,6 +29,7 @@ class Config(metaclass=ConfigSingleton):
         self.SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
         self.POSTGRESQL_DATABASE_URI = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
         self.JWT_SECRET_KEY = config["JWT_SECRET_KEY"]
+        self.GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
         """
         https://docs.python.org/3/library/logging.html
         The level parameter now accepts a string representation of the level such as ‘INFO’ as an alternative to the integer constants such as INFO.

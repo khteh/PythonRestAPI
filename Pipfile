@@ -21,6 +21,9 @@ quart-bcrypt = "*"
 quart-sqlalchemy = "*"
 quart-keycloak = "*"
 hypercorn = {extras = ["h3", "trio"], version = "*"}
+uuid7 = "*"
+google-genai = "*"
+quart-uploads = "*"
 
 [dev-packages]
 pytest-flask = "*"
