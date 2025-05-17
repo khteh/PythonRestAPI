@@ -1,3 +1,0 @@
-{
-    "SQLALCHEMY_DATABASE_URI": "postgresql://guest:P%40$$w0rd@svc-postgresql:5432/library"
-}
