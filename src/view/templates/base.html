@@ -75,7 +75,7 @@
   <div class="content" style="margin-top: 10px">
     {% block content %}
     {% endblock %}
-    <div class="container" style="margin-top: 10px">
+    <div id="notification" class="container" style="margin-top: 10px">
       {% with messages = get_flashed_messages(with_categories=true) %}
 		  {% if messages %}
 		  <hr>			

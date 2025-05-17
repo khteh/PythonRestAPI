@@ -57,8 +57,7 @@ async def fibonacci() -> ResponseReturnValue:
             await flash("Please provide a numeric value 'N' for the fibonacci number!", "danger")
     else:
         logging.warning(f"Invalid request method: {request.method}!")
-    response = await Respond("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator", fibonacci=fibonacci)
-    return response
+    return await Respond("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator", fibonacci=fibonacci)
 
 def _fib(n):
 #    n = input(n)

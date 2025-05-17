@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chat.css') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container" style="margin-top: 10px">
   <div id="chat-room-widget" style="margin-top: 10px">
     <div id="messages">
     </div>
     <form id="chatForm" name="chatForm" action="{{url_for('chat.invoke')}}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <div id="message-box">
         <div class="col-md-8">
           <textarea id="prompt" name="message" placeholder="How can I help?" class="form-control" rows="1" required onkeyup="stoppedTyping()"></textarea>
@@ -39,6 +41,7 @@
     // Select your input type file and store it in a variable
     document.querySelector("#chatForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+      var csrf_token = $('meta[name=csrf-token]').attr('content');
       const prompt = document.querySelector("#prompt").value;
       const image = document.querySelector("#image");
       const receipt = document.querySelector("#checkReceipt").checked;
@@ -48,7 +51,7 @@
         form.append("prompt", prompt);
         form.append("receipt", receipt);
         if (image && image.files.length && image.files[0]) {
-          console.log(`Image name: ${image.files[0].name}, size: ${image.files[0].size}, type: ${image.files[0].type}`);
+          //console.log(`Image name: ${image.files[0].name}, size: ${image.files[0].size}, type: ${image.files[0].type}`);
           form.append("image", image.files[0]);
         }// else 
           //console.log("No file selected!");
@@ -77,6 +80,9 @@
           const response = await fetch('invoke', { /* Without forward-slash prefix! */
             method: 'POST',
             //headers: { 'Content-Type': 'multipart/form-data' }, Do NOT declare Content-Type: multipart/form-data in request header
+            headers: {
+              "X-CSRFToken": csrf_token,
+            },
             body: form
           });
           const data = await response.json();
