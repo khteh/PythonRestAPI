@@ -13,6 +13,14 @@ DB_USERNAME=username
 DB_PASSWORD=password
 ```
 
+### Google Gemini API
+
+- Obtain an API key from https://aistudio.google.com/apikey
+- Add a `.env` file with the following content:
+  ```
+  GEMINI_API_KEY=<api key>
+  ```
+
 ### Clean up pipenv
 
 - `pipenv --rm`
@@ -87,14 +95,21 @@ curl --http3-only --insecure -v https://localhost:4433/<path> -H "Host: khteh.co
 ```
 
 ```
-curl --http3-only --insecure -vv https://localhost:4433/chat/invoke -F 'prompt=:"What is task decomposition?"' -F 'file=@/usr/src/Python/PythonRestAPI/data/1.jpg'
+curl --http3-only --insecure -vv https://localhost:4433/chat/invoke -F 'prompt=:"What is task decomposition?"' -F 'file=@/usr/src/Python/PythonRestAPI/data/1.jpg' -F 'receipt=true'
 ```
 
 ## Browser
 
 - Add extensions to add `Host` header based on filter
 
-## Create User:
+## Use Cases
+
+### Google Gemini API
+
+- Return text message from input prompt string by calling the API
+- Return text message from input prompt string and an image file by calling the API
+
+### Create User:
 
 - POST https://localhost:4433/users/create with the following JSON data:
   ```
@@ -106,7 +121,7 @@ curl --http3-only --insecure -vv https://localhost:4433/chat/invoke -F 'prompt=:
   }
   ```
 
-## Login:
+### Login:
 
 - POST https://localhost:4433/users/login with the following JSON data:
   ```
@@ -122,14 +137,14 @@ curl --http3-only --insecure -vv https://localhost:4433/chat/invoke -F 'prompt=:
   }
   ```
 
-## Subsequent request header:
+### Subsequent request header:
 
 ```
 Key: api-key
 Vaue: jwt_token from the login response
 ```
 
-## Create Author:
+### Create Author:
 
 - POST https://localhost:4433/authors/create with the following JSON data:
   ```
@@ -140,7 +155,7 @@ Vaue: jwt_token from the login response
   }
   ```
 
-## Create Book:
+### Create Book:
 
 - POST https://localhost:4433/books/create with the following JSON data:
   ```
@@ -152,7 +167,7 @@ Vaue: jwt_token from the login response
   }
   ```
 
-## Delete an author:
+### Delete an author:
 
 - Books table has a foreign key id to Authors.id and this is defined as required in BookSchema.
 - Therefore, when a DELETE RESTful operation is sent to the application to delete an author which has associated book:
@@ -161,7 +176,7 @@ Vaue: jwt_token from the login response
 mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot be null
 ```
 
-## Get Requests:
+### Get Requests:
 
 - Headers:
 
@@ -176,10 +191,12 @@ mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot b
 - visit https://localhost:4433/authors/all
 - visit https://localhost:4433/books/all
 
-## Diagnostics
+### Diagnostics
 
 - HTTP/3 curl:
 
 ```
 $ docker run --rm ymuski/curl-http3 curl --http3 --verbose https://<nodeport service>:<nodeport>/health/ready
 ```
+
+- To build your own HTTP/3 curl: https://curl.se/docs/http3.html
