@@ -136,9 +136,13 @@ async def ProcessReceipt(image):
         else:
             await flash("Invalid image!", "danger") # https://quart.palletsprojects.com/en/latest/reference/source/quart.helpers.html
             return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid input!")
+    except ValueError as v:
+        logging.exception(f"Exception: {v}")
+        await flash(f"Failed to process your message! {v}", "danger")
     except Exception as e:
         logging.exception(f"Exception: {e}")
         await flash(f"Failed to process your message! {e.messages}", "danger")
+    return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid input!")
 
 @chat_api.post("/invoke")
 async def invoke():
@@ -191,7 +195,10 @@ async def invoke():
         )
         logging.debug(f"/invoke prompt: {prompt}, response: {response.text}")
         return custom_response({"message": response.text}, 200)
+    except ValueError as v:
+        logging.exception(f"Exception: {v}")
+        await flash(f"Failed to process your message! {v}", "danger")   
     except Exception as e:
         logging.exception(f"Exception: {e}")
         await flash(f"Failed to process your message! {e.messages}", "danger")
-        #return redirect(url_for("chat.index"))
+    return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid input!")
