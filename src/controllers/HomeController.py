@@ -18,8 +18,8 @@ home_api = Blueprint("home", __name__)
 def inject_now():
     return {'now': datetime.now(timezone.utc)}
 
-@home_api.route("/")
-@home_api.route("/index")
+@home_api.get("/")
+@home_api.get("/index")
 async def index() -> ResponseReturnValue:
     greeting = None
     now = datetime.now()

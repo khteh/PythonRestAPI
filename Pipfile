@@ -18,12 +18,13 @@ psycopg = {extras = ["binary"], version = "*"}
 quart-trio = "*"
 jsonpickle = "*"
 quart-bcrypt = "*"
-quart-sqlalchemy = "*"
 quart-keycloak = "*"
 hypercorn = {extras = ["h3", "trio"], version = "*"}
 uuid7 = "*"
 google-genai = "*"
 quart-uploads = "*"
+flask-sqlalchemy = "*"
+quart-flask-patch = "*"
 
 [dev-packages]
 pytest-flask = "*"

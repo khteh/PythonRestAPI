@@ -12,7 +12,8 @@ user_schema = UserSchema()
 def inject_now():
     return {'now': datetime.now(timezone.utc)}
 
-@user_api.route("/index", methods=["GET"])
+@user_api.get("/")
+@user_api.get("/index")
 async def index():
     """
     User Index page

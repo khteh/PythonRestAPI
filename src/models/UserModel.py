@@ -6,40 +6,23 @@ import sqlalchemy as sa
 import sqlalchemy.orm
 from sqlalchemy.orm import Mapped, mapped_column
 from quart import Quart
-from quart_sqlalchemy import SQLAlchemyConfig
-from quart_sqlalchemy.framework import QuartSQLAlchemy
 from src.common.Bcrypt import bcrypt
-from .base import Base, Session
-from .Database import db
+from . import db
 from .BookModel import BookSchema
-class UserModel(Base):
+class UserModel(db.Model):
     """
     User Model
     """
     __tablename__ = 'users'
-    id: Mapped[int] = mapped_column(sa.Identity(), primary_key=True, autoincrement=True)
-    firstname: Mapped[str] = mapped_column(sa.String(128), nullable=False)
-    lastname: Mapped[str] = mapped_column(sa.String(128), nullable=False)
-    email: Mapped[str] = mapped_column(sa.String(255), unique=True, nullable=False, index=True)
-    phone: Mapped[str] = mapped_column(sa.String(15), unique=True, nullable=True, index=True)
-    password: Mapped[str] = mapped_column(sa.String(128), nullable=True)
-    lastlogin: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=sa.func.now(),
-        server_default=sa.FetchedValue(),
-        nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=sa.func.now(),
-        server_default=sa.FetchedValue()
-    )
-    modified_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=sa.func.now(),
-        onupdate=sa.func.now(),
-        server_default=sa.FetchedValue(),
-        server_onupdate=sa.FetchedValue()
-    )
+    id = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(128), nullable=False)
+    lastname = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False, index=True)
+    phone = db.Column(db.String(15), unique=True, nullable=True, index=True)
+    password = db.Column(db.String(128), nullable=True)
+    lastlogin = db.Column(db.DateTime(timezone=True), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True))
+    modified_at = db.Column(db.DateTime(timezone=True))
     # Class constructor
     def __init__(self, data):
         """
@@ -80,11 +63,6 @@ class UserModel(Base):
         return UserModel.query.filter_by(email = email).count() > 0
     @staticmethod
     def get_users():
-        with Session() as session:
-            return session.get()
-            statement = sa.select(UserModel)
-            eager_statement = statement.options(sa.orm.joinedload(User.posts))
-
         return UserModel.query.all()
     def __repl__(self): # return a printable representation of UserModel object, in this case we're only returning the id
         return "<id {}>".format(self.id)

@@ -6,33 +6,20 @@ import sqlalchemy as sa
 import sqlalchemy.orm
 from sqlalchemy.orm import Mapped, mapped_column
 from quart import Quart
-from quart_sqlalchemy import SQLAlchemyConfig
-from quart_sqlalchemy.framework import QuartSQLAlchemy
 from .base import Base
-from .Database import db
-
-class BookModel(Base):
+from . import db
+class BookModel(db.Model):
     """
     Book Model
     """
     __tablename__ = "books"
-    id: Mapped[int] = mapped_column(sa.Identity(), primary_key=True, autoincrement=True)
-    title: Mapped[str] = mapped_column(sa.String(128), nullable=False)
-    isbn: Mapped[str] = mapped_column(sa.String(255), nullable=False)
-    page_count: Mapped[int] = mapped_column(sa.Integer, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=sa.func.now(),
-        server_default=sa.FetchedValue()
-    )
-    modified_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=sa.func.now(),
-        onupdate=sa.func.now(),
-        server_default=sa.FetchedValue(),
-        server_onupdate=sa.FetchedValue()
-    )
-    author_id: Mapped[int] = mapped_column(sa.ForeignKey("authors.id"), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(128), nullable=False)
+    isbn = db.Column(db.String(255), nullable=False)
+    page_count = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True))
+    modified_at = db.Column(db.DateTime(timezone=True))
+    author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
     def __init__(self, data):
         self.author_id = data.get("author_id")
         self.title = data.get("title")

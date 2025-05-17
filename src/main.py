@@ -1,3 +1,4 @@
+import quart_flask_patch
 import logging, os, asyncio, json
 from datetime import date, datetime, timedelta, timezone
 from urllib import parse
@@ -7,6 +8,7 @@ from quart import Quart, Response, request
 from quart_trio import QuartTrio
 from quart_wtf.csrf import CSRFProtect
 from quart_cors import cors
+from quart_uploads import UploadSet, configure_uploads, FE
 from psycopg import Error
 from src.controllers.AuthenticationController import auth_api as auth_blueprint
 from src.controllers.UserController import user_api as user_blueprint
@@ -15,12 +17,11 @@ from src.controllers.BookController import book_api as book_blueprint
 from src.controllers.HomeController import home_api as home_blueprint
 from src.controllers.FibonacciController import fibonacci_api as fibonacci_blueprint
 from src.controllers.HealthController import health_api as health_blueprint
-from src.controllers.ChatController import chat_api as chat_blueprint
-from src.models.Database import db
+from src.controllers.ChatController import chat_api as chat_blueprint, images
+from src.models import db
 from src.common.Bcrypt import bcrypt
 from src.common.ResponseHelper import Respond
 from src.config import config as appconfig
-from quart_uploads import UploadSet, configure_uploads, FE
 config = Config()
 config.from_toml("/etc/hypercorn.toml")
 
@@ -52,10 +53,9 @@ def create_app() -> Quart:
     app.register_blueprint(author_blueprint, url_prefix="/authors")
     app.register_blueprint(book_blueprint, url_prefix="/books")
     app = cors(app, allow_credentials=True, allow_origin="https://localhost")
-    photos = UploadSet('photos', FE.Images)
-    configure_uploads(app, photos)
+    configure_uploads(app, images)
     # https://quart-wtf.readthedocs.io/en/stable/how_to_guides/configuration.html
-    csrf = CSRFProtect(app)
+    #csrf = CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
     # https://hypercorn.readthedocs.io/en/stable/how_to_guides/http_https_redirect.html

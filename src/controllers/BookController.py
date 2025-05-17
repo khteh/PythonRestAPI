@@ -14,7 +14,8 @@ author_schema = AuthorSchema()
 def inject_now():
     return {'now': datetime.now(timezone.utc)}
 
-@book_api.route("/index", methods=["GET"])
+@book_api.get("/")
+@book_api.get("/index")
 async def index():
     """
     Book Index page

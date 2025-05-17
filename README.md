@@ -83,7 +83,11 @@ $ pipenv install --python=/path/to/python
 - Add `Host` header which is defined as `server_names` in `hypercorn.toml`
 
 ```
-curl --http3 --insecure -v https://localhost:4433/<path> -H "Host: khteh.com"
+curl --http3-only --insecure -v https://localhost:4433/<path> -H "Host: khteh.com"
+```
+
+```
+curl --http3-only --insecure -vv https://localhost:4433/chat/invoke -F 'prompt=:"What is task decomposition?"' -F 'file=@/usr/src/Python/PythonRestAPI/data/1.jpg'
 ```
 
 ## Browser
@@ -177,5 +181,5 @@ mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot b
 - HTTP/3 curl:
 
 ```
-$ docker run --rm ymuski/curl-http3 curl --http3 --verbose https://<nodeport service>:<nodeport>/healthz/ready
+$ docker run --rm ymuski/curl-http3 curl --http3 --verbose https://<nodeport service>:<nodeport>/health/ready
 ```

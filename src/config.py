@@ -25,6 +25,7 @@ class Config(metaclass=ConfigSingleton):
     def __init__(self, environment="Development"):
         with open('/etc/pythonrestapi_config.json', 'r') as f:
             config = json.load(f)
+        self.LOGLEVEL = config['LOGLEVEL']
         self.SECRET_KEY = config["SECRET_KEY"] or "you-will-never-guess"
         self.SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
         self.POSTGRESQL_DATABASE_URI = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"

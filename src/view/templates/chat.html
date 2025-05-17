@@ -7,13 +7,17 @@
     </div>
     <form id="chatForm" name="chatForm" action="{{url_for('chat.invoke')}}" method="post" enctype="multipart/form-data">
       <div id="message-box">
-        <div class="col-md-9">
+        <div class="col-md-8">
           <textarea id="prompt" name="message" placeholder="How can I help?" class="form-control" rows="1" required onkeyup="stoppedTyping()"></textarea>
         </div>
         <div class="col-md-1 d-flex justify-content-center">
-          <label id="lbl-upload" class="btn btn-outline-secondary" for="image" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload an image for your question">Upload</label>
+          <label id="lbl-upload" class="btn btn-outline-secondary" for="image" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Upload an image for your question">Upload</label>
           <input id='image' name="image" type='file' class="form-control" accept="image/*" style='width:0;' placeholder="Upload an image for your question" aria-describedby="btn-upload" aria-label="Upload" hidden/>
         </div>
+        <div class="col-md-1 d-flex justify-content-center">
+          <input class="form-check-input" type="checkbox" value="" id="checkReceipt">
+          <label class="form-check-label" for="checkReceipt" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Check this to process receipt" style="margin-left: 10px;">Receipt</label>
+        </div>        
         <div class="col-md-2 d-flex justify-content-center">
           <button type="submit" id="btn-submit" class="btn btn-primary">Submit</button>
         </div>
@@ -37,23 +41,27 @@
       e.preventDefault();
       const prompt = document.querySelector("#prompt").value;
       const image = document.querySelector("#image");
-      //console.log(`btn-submit clicked. prompt: ${prompt}`)
+      const receipt = document.querySelector("#checkReceipt").checked;
+      console.log(`btn-submit clicked. prompt: ${prompt}, receipt: ${receipt}`)
       if (prompt.trim()) {
         var form = new FormData();
         form.append("prompt", prompt);
+        form.append("receipt", receipt);
         if (image && image.files.length && image.files[0]) {
-          //console.log(`Image name: ${image.files[0].name}, size: ${image.files[0].size}, type: ${image.files[0].type}`);
+          console.log(`Image name: ${image.files[0].name}, size: ${image.files[0].size}, type: ${image.files[0].type}`);
           form.append("image", image.files[0]);
         }// else 
           //console.log("No file selected!");
         // Display the key/value pairs
-        /*for (var pair of form.entries()) {
+        /*console.log(Array.from(form));
+        for (var pair of form.entries()) {
             console.log(pair[0]+ ', ' + pair[1]); 
         }*/
         $("#prompt").prop('disabled', true);
         $("#image").prop('disabled', true);
         $('#btn-submit').addClass('disabled');
         $('#lbl-upload').addClass('disabled');
+        $('#checkReceipt').addClass('disabled');
         $("#btn-submit").text('Processing...');
         $('#chatForm').addClass('loading');
         const queryContainer = document.createElement('div');
@@ -66,7 +74,7 @@
                                     </div>`;
         document.querySelector("#messages").appendChild(queryContainer);
         try {
-          const response = await fetch('/invoke', {
+          const response = await fetch('invoke', { /* Without forward-slash prefix! */
             method: 'POST',
             //headers: { 'Content-Type': 'multipart/form-data' }, Do NOT declare Content-Type: multipart/form-data in request header
             body: form
@@ -104,6 +112,8 @@
           $('#chatForm').removeClass('loading');
           $("#prompt").removeAttr('disabled');
           $("#image").removeAttr('disabled');
+          $('#checkReceipt').removeClass('disabled');
+          $("#checkReceipt").prop('checked', false);
           $('#lbl-upload').removeClass('disabled');
         }
       } else

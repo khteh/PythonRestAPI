@@ -10,7 +10,7 @@ from quart import (
     session
 )
 health_api = Blueprint("health", __name__)
-@health_api.route("/ready")
+@health_api.get("/ready")
 async def readiness() -> ResponseReturnValue:
     try:
         connection_kwargs = {
@@ -42,7 +42,7 @@ async def readiness() -> ResponseReturnValue:
         logging.exception(f"{readiness.__name__} Exception: {e}")
         return "Exceptions!", 500
 
-@health_api.route("/live")
+@health_api.get("/live")
 def liveness():
     logging.debug("Alive!")
     return "OK", 200

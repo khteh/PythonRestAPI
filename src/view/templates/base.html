@@ -8,6 +8,7 @@
   {% endif %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link type="image/png" href="/images/favicon.png" rel="icon"/>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
   <!-- Bootstrap CSS -->
@@ -56,7 +57,7 @@
           <li class="nav-item"><a id="user" class="nav-link" href="{{url_for('user.index')}}">Users</a></li>
           <li class="nav-item"><a id="author" class="nav-link" href="{{url_for('author.index')}}">Authors</a></li>
 		      <li class="nav-item"><a id="book" class="nav-link" href="{{url_for('book.index')}}">Books</a></li>
-          <li class="nav-item"><a id="book" class="nav-link" href="{{url_for('book.index')}}">Books</a></li>
+          <li class="nav-item"><a id="chat" class="nav-link" href="{{url_for('chat.index')}}">Chat</a></li>
         </ul>
         <ul class="nav navbar-nav ms-auto">
 		    {% if session["user"] %}   
