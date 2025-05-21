@@ -108,6 +108,125 @@ curl --http3-only --insecure -vv https://localhost:4433/chat/invoke -F 'prompt=:
 
 - Return text message from input prompt string by calling the API
 - Return text message from input prompt string and an image file by calling the API
+- Multimodal:
+  - Upload an image, "receipt" in this case, and it wil return a structured data containing details in the receipt:
+  ```
+  2025-05-21 13:15:34 DEBUG    ProcessReceipt response: {
+  "date_str": "28-07-2017",
+  "vendor": "Walmart",
+  "currency": "USD",
+  "items": [
+    {
+      "name": "PET TOY",
+      "amount": 1.97
+    },
+    {
+      "name": "FLOPPY PUPPY",
+      "amount": 1.97
+    },
+    {
+      "name": "SSSUPREME S",
+      "amount": 4.97
+    },
+    {
+      "name": "2.5 SQUEAK",
+      "amount": 5.92
+    },
+    {
+      "name": "MUNCHY DMBEL",
+      "amount": 3.77
+    },
+    {
+      "name": "DOG TREAT",
+      "amount": 2.92
+    },
+    {
+      "name": "PED PCH 1",
+      "amount": 0.50
+    },
+    {
+      "name": "PED PCH 1",
+      "amount": 0.50
+    },
+    {
+      "name": "COUPON 23100",
+      "amount": 1.00
+    },
+    {
+      "name": "HNYMD SMORES",
+      "amount": 3.98
+    },
+    {
+      "name": "FRENCH DRSNG",
+      "amount": 1.98
+    },
+    {
+      "name": "3 ORANGES",
+      "amount": 5.47
+    },
+    {
+      "name": "BABY CARROTS",
+      "amount": 1.48
+    },
+    {
+      "name": "COLLARDS",
+      "amount": 1.24
+    },
+    {
+      "name": "CALZONE",
+      "amount": 2.50
+    },
+    {
+      "name": "MM RVW MNT",
+      "amount": 19.77
+    },
+    {
+      "name": "STKOBRLPLABL",
+      "amount": 1.97
+    },
+    {
+      "name": "STKOBRLPLABL",
+      "amount": 1.97
+    },
+    {
+      "name": "STKO SUNFLWR",
+      "amount": 0.97
+    },
+    {
+      "name": "STKO SUNFLWR",
+      "amount": 0.97
+    },
+    {
+      "name": "STKO SUNFLWR",
+      "amount": 0.97
+    },
+    {
+      "name": "STKO SUNFLWR",
+      "amount": 0.97
+    },
+    {
+      "name": "BLING BEADS",
+      "amount": 0.97
+    },
+    {
+      "name": "GREAT VALUE",
+      "amount": 9.97
+    },
+    {
+      "name": "LIPTON",
+      "amount": 4.48
+    },
+    {
+      "name": "DRY DOG",
+      "amount": 12.44
+    }
+  ],
+  "tax": 4.59,
+  "total": 98.21
+  }, receipt: vendor='Walmart' currency='USD' items=[ReceiptItem(name='PET TOY', amount=1.97), ReceiptItem(name='FLOPPY PUPPY', amount=1.97), ReceiptItem(name='SSSUPREME S', amount=4.97), ReceiptItem(name='2.5 SQUEAK', amount=5.92), ReceiptItem(name='MUNCHY DMBEL', amount=3.77), ReceiptItem(name='DOG TREAT', amount=2.92), ReceiptItem(name='PED PCH 1', amount=0.5), ReceiptItem(name='PED PCH 1', amount=0.5), ReceiptItem(name='COUPON 23100', amount=1.0), ReceiptItem(name='HNYMD SMORES', amount=3.98), ReceiptItem(name='FRENCH DRSNG', amount=1.98), ReceiptItem(name='3 ORANGES', amount=5.47), ReceiptItem(name='BABY CARROTS', amount=1.48), ReceiptItem(name='COLLARDS', amount=1.24), ReceiptItem(name='CALZONE', amount=2.5), ReceiptItem(name='MM RVW MNT', amount=19.77), ReceiptItem(name='STKOBRLPLABL', amount=1.97), ReceiptItem(name='STKOBRLPLABL', amount=1.97), ReceiptItem(name='STKO SUNFLWR', amount=0.97), ReceiptItem(name='STKO SUNFLWR', amount=0.97), ReceiptItem(name='STKO SUNFLWR', amount=0.97), ReceiptItem(name='STKO SUNFLWR', amount=0.97), ReceiptItem(name='BLING BEADS', amount=0.97), ReceiptItem(name='GREAT VALUE', amount=9.97), ReceiptItem(name='LIPTON', amount=4.48), ReceiptItem(name='DRY DOG', amount=12.44)] tax=4.59 total=98.21 date_of_receipt=datetime.date(2017, 7, 28)
+  ```
+  - On the UI:
+    ![Process Receipt](./ProcessReceipt.png?raw=true "Process Receipt")
 
 ### Create User:
 

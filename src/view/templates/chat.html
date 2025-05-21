@@ -77,7 +77,7 @@
                                     </div>`;
         document.querySelector("#messages").appendChild(queryContainer);
         try {
-          const response = await fetch('invoke', { /* Without forward-slash prefix! */
+          const response = await fetch('invoke', {
             method: 'POST',
             //headers: { 'Content-Type': 'multipart/form-data' }, Do NOT declare Content-Type: multipart/form-data in request header
             headers: {

@@ -20,6 +20,7 @@ from urllib.parse import urlparse, parse_qs
 from uuid_extensions import uuid7, uuid7str
 from google import genai
 from google.genai import types
+from google.genai.types import Part
 from src.config import config
 from src.common.Authentication import Authentication
 from src.common.ResponseHelper import Respond
@@ -114,28 +115,19 @@ async def ProcessReceipt(image):
                         Total
                       """
         """
-      inlineData: {
-        data: image.buffer.toString('base64'),
-        mimeType: image.mimetype.toString(),
-      },
+        https://github.com/googleapis/python-genai/blob/main/README.md
         """
-        data: ContentModal = ContentModal(data = image.read(), mimeType = image.content_type)
-        logging.debug(f"data: {len(data.data)}, mime: {data.mimeType}")
-        if data.data and len(data.data) and data.mimeType and len(data.mimeType):          
-            response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=[prompt, data],
-                config={
-                    "response_mime_type": "application/json",
-                    "response_schema": ReceiptModel,
-                },
-            )
-            receipt: ReceiptModel = response.parsed
-            logging.debug(f"{ProcessReceipt.__name__} response: {response.text}, receipt: {receipt}")
-            return custom_response({"message": response.text}, 200)
-        else:
-            await flash("Invalid image!", "danger") # https://quart.palletsprojects.com/en/latest/reference/source/quart.helpers.html
-            return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid input!")
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=[prompt, Part.from_bytes(data=image.read(), mime_type=image.content_type)],
+            config={
+                "response_mime_type": "application/json",
+                "response_schema": ReceiptModel,
+            },
+        )
+        receipt: ReceiptModel = response.parsed
+        logging.debug(f"{ProcessReceipt.__name__} response: {response.text}, receipt: {receipt}")
+        return custom_response({"message": response.text}, 200)
     except ValueError as v:
         logging.exception(f"Exception: {v}")
         await flash(f"Failed to process your message! {v}", "danger")

@@ -1,5 +1,5 @@
 import logging, jsonpickle
-from quart import request, json, Blueprint, session, render_template, session, redirect, url_for
+from quart import flash, request, json, Blueprint, session, render_template, session, redirect, url_for
 from marshmallow import ValidationError
 from datetime import datetime, timezone
 from base64 import b64decode
@@ -25,14 +25,18 @@ async def login():
             req_data = {"email": form["username"], "password": form["password"]}
             data = user_schema.load(req_data, partial=True)
             if not data:
+                await flash("Invalid input!", "danger")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error=data["Invalid input!"])
             if not data.get("email") or not data.get("password"):
+                await flash("You need an email and password to login", "danger")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="You need an email and password to login")
             user = UserModel.get_user_by_email(data.get("email"))
             if not user:
+                await flash("Invalid user!", "danger")
                 logging.warning(f"[Auth] Invalid user {data.get('email')}!")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
             if not user.check_hash(data.get("password")):
+                await flash("Invalid email or password!", "danger")
                 logging.warning(f"[Auth] Invalid email or password {data.get('email')}!")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
             ser_data = user_schema.dump(user)
