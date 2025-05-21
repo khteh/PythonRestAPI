@@ -117,9 +117,16 @@ async def ProcessReceipt(image):
         """
         https://github.com/googleapis/python-genai/blob/main/README.md
         """
+        if not image.content_type or not len(image.content_type):
+            await flash(f"Invalid content type!", "warning")
+            return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid content type!")
+        data = image.read()
+        if not data or not len(data):
+            await flash(f"Invalid content!", "warning")
+            return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid content!")
         response = client.models.generate_content(
             model="gemini-2.0-flash",
-            contents=[prompt, Part.from_bytes(data=image.read(), mime_type=image.content_type)],
+            contents=[prompt, Part.from_bytes(data=data, mime_type=image.content_type)],
             config={
                 "response_mime_type": "application/json",
                 "response_schema": ReceiptModel,
