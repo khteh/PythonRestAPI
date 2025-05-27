@@ -86,8 +86,9 @@ $ pipenv install --python=/path/to/python
 
 - `./hypercorn.sh`
 
-## Curl
+## HTTP/3 curl:
 
+- To build your own HTTP/3 curl: https://curl.se/docs/http3.html
 - Add `Host` header which is defined as `server_names` in `hypercorn.toml`
 
 ```
@@ -324,13 +325,3 @@ mysql.connector.errors.IntegrityError: 1048 (23000): Column 'author_id' cannot b
 - visit https://localhost:4433/users/all
 - visit https://localhost:4433/authors/all
 - visit https://localhost:4433/books/all
-
-### Diagnostics
-
-- HTTP/3 curl:
-
-```
-$ docker run --rm ymuski/curl-http3 curl --http3 --verbose https://<nodeport service>:<nodeport>/health/ready
-```
-
-- To build your own HTTP/3 curl: https://curl.se/docs/http3.html
