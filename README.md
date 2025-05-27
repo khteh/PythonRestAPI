@@ -98,9 +98,24 @@ curl --http3-only --insecure -v https://localhost:4433/<path> -H "Host: khteh.co
 curl --http3-only --insecure -vv https://localhost:4433/chat/invoke -F 'prompt=:"What is task decomposition?"' -F 'file=@/usr/src/Python/PythonRestAPI/data/1.jpg' -F 'receipt=true'
 ```
 
-## Browser
+## Chrome browser
 
-- Add extensions to add `Host` header based on filter
+- Close ALL chrome browser (both tabs and windows)
+
+- Generate TLS certificate fingerprint:
+
+```
+$ fingerprint=`openssl x509 -pubkey -noout -in /tmp/server.crt |
+        openssl rsa -pubin -outform der |
+        openssl dgst -sha256 -binary | base64`
+```
+
+- Start Chrome browser with QUIC protocol for HTTP/3:
+- `$1` is URL. For example: `https://localhost:4433`
+
+```
+$  /opt/google/chrome/chrome --disable-setuid-sandbox --enable-quic --ignore-certificate-errors-spki-list=$fingerprint --origin-to-force-quic-on=${1#*//} $1
+```
 
 ## Use Cases
 
