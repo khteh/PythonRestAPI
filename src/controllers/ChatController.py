@@ -117,7 +117,7 @@ async def ProcessReceipt(image):
         """
         https://github.com/googleapis/python-genai/blob/main/README.md
         """
-        if not image.content_type or not len(image.content_type):
+        if image and (not image.content_type or not len(image.content_type)):
             await flash(f"Invalid content type!", "warning")
             return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid content type!")
         data = image.read()
@@ -169,7 +169,7 @@ async def invoke():
         if "prompt" in form and form["prompt"] and len(form["prompt"]):
             prompt = form["prompt"]
         if "receipt" in form and form["receipt"]:
-            isReceipt = form["receipt"]
+            isReceipt = form["receipt"] == "true"
         if "image" in files and files["image"]:
             image = files["image"]
     logging.debug(f"prompt: {prompt}, image: {image}, {type(image)}, receipt: {isReceipt}")

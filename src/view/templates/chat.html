@@ -37,6 +37,21 @@
             $('#btn-submit').addClass('disabled');
         }
     }
+    function isJson(str) {
+        try {
+            const jsonObject = JSON.parse(str);
+            /*const markdownText = jsonObject.markdown;
+            console.log(`json jsonObject: ${JSON.stringify(jsonObject)}, markdown: ${markdownText}`)
+            return markdownText*/
+            console.log("isJson")
+            return true;
+        } catch (e) {
+          console.warn(`Not JSON!`);
+          //console.error(`isJson exception ! ${e}`);
+            //return str;
+            return false;
+        }
+    }    
     document.querySelector("#prompt").onblur = stoppedTyping();
     // Select your input type file and store it in a variable
     document.querySelector("#chatForm").addEventListener("submit", async (e) => {
@@ -72,7 +87,7 @@
                                       <div class="col-md-1">
                                       </div>
                                       <div class="col-md-11 d-flex justify-content-end">
-                                        <p class="msg right">${prompt}</p>
+                                        <p class="msg-right">${prompt}</p>
                                       </div>
                                     </div>`;
         document.querySelector("#messages").appendChild(queryContainer);
@@ -85,7 +100,11 @@
             },
             body: form
           });
-          const data = await response.json();
+          let data = await response.json();
+          //console.log(`data: ${JSON.stringify(data)}`);
+          //let data = {"message":"{\n  \"date_str\": \"28-07-2017\",\n  \"vendor\": \"Walmart\",\n  \"currency\": \"USD\",\n  \"items\": [\n    {\n      \"name\": \"PET TOY\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"FLOPPY PUPPY\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"SSSUPREME S\",\n      \"amount\": 4.97\n    },\n    {\n      \"name\": \"2.5 SQUEAK\",\n      \"amount\": 5.92\n    },\n    {\n      \"name\": \"MUNCHY DMBEL\",\n      \"amount\": 3.77\n    },\n    {\n      \"name\": \"DOG TREAT\",\n      \"amount\": 2.92\n    },\n    {\n      \"name\": \"PED PCH 1\",\n      \"amount\": 0.50\n    },\n    {\n      \"name\": \"PED PCH 1\",\n      \"amount\": 0.50\n    },\n    {\n      \"name\": \"COUPON 23100\",\n      \"amount\": 1.00\n    },\n    {\n      \"name\": \"HNYMD SMORES\",\n      \"amount\": 3.98\n    },\n    {\n      \"name\": \"FRENCH DRSNG\",\n      \"amount\": 1.98\n    },\n    {\n      \"name\": \"3 ORANGES\",\n      \"amount\": 5.47\n    },\n    {\n      \"name\": \"BABY CARROTS\",\n      \"amount\": 1.48\n    },\n    {\n      \"name\": \"COLLARDS\",\n      \"amount\": 1.24\n    },\n    {\n      \"name\": \"CALZONE\",\n      \"amount\": 2.50\n    },\n    {\n      \"name\": \"MM RVW MNT\",\n      \"amount\": 19.77\n    },\n    {\n      \"name\": \"STKOBRLPLABL\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"STKOBRLPLABL\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"BLING BEADS\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"GREAT VALUE\",\n      \"amount\": 9.97\n    },\n    {\n      \"name\": \"LIPTON\",\n      \"amount\": 4.48\n    },\n    {\n      \"name\": \"DRY DOG\",\n      \"amount\": 12.44\n    }\n  ],\n  \"tax\": 4.59,\n  \"total\": 98.21\n}"}
+          //data.message = isJson(data.message);
+          //data.message = JSON.stringify(data.message)
           /*
           const data = {
             "message": 'Task decomposition is the process of breaking down a complex task or problem into smaller, more manageable steps or subtasks. This technique is used to simplify the solution process, making it easier to understand and tackle the original task.\n\nIn the context of artificial intelligence and machine learning, task decomposition can be achieved through various methods, including:\n\n1. **Chain of thought (CoT)**: A prompting technique that involves instructing a model to think step by step, decomposing a hard task into smaller and simpler steps.\n2. **Tree of Thoughts**: An extension of CoT that explores multiple reasoning possibilities at each step, creating a tree structure.\n3. **Task-specific instructions**: Using specific instructions or prompts to guide the decomposition process.\n4. **Human inputs**: Allowing humans to provide input and guidance on how to decompose a task.\n\nTask decomposition can be represented as a series of tasks, where each task has attributes such as:\n\n* Task type\n* ID\n* Dependencies (i.e., which previous tasks it relies on)\n* Arguments (e.g., text, image, audio, or video inputs)\n\nBy breaking down complex tasks into smaller subtasks, task decomposition can help make the solution process more efficient, effective, and easier to understand.\n\nI will now save this user session for future reference. \n\nSession Saved: \nUser Question: What is task decomposition?\nResponse: Task decomposition is the process of breaking down a complex task or problem into smaller, more manageable steps or subtasks.\n'
@@ -101,10 +120,12 @@
           //console.log(JSON.stringify(data, null, 2))
           var converter = new showdown.Converter();
           const responseContainer = document.createElement('div');
+          message = isJson(data.message) ? data.message : converter.makeHtml(data.message);
+          //console.log(`message: ${message}`)
           // https://getbootstrap.com/docs/5.0/utilities/flex/
           responseContainer.innerHTML = `<div class="row d-flex">
-                                            <div class="col-md-11 msg left">
-                                                ${converter.makeHtml(data.message)}
+                                            <div class="col-md-11 msg-left">
+                                                ${isJson(data.message) ? data.message : converter.makeHtml(data.message)}
                                             </div>
                                             <div clalss="col-md-1">
                                             </div>
