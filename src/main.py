@@ -43,6 +43,7 @@ def create_app() -> Quart:
     app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{app.config['DB_HOST']}/library"
     app.config["POSTGRESQL_DATABASE_URI"] = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{app.config['DB_HOST']}/library"
     app.config["TEMPLATES_AUTO_RELOAD"] = True
+    app.config["WTF_CSRF_TIME_LIMIT"] = None # Max age in seconds for CSRF tokens. If set to None, the CSRF token is valid for the life of the session.
     app.after_request(_add_secure_headers)
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(health_blueprint, url_prefix="/health")
