@@ -6,10 +6,11 @@ from hypercorn.config import Config
 from hypercorn.middleware import HTTPToHTTPSRedirectMiddleware
 from quart import Quart, Response, request
 from quart_trio import QuartTrio
-from quart_wtf.csrf import CSRFProtect
+from quart_wtf.csrf import CSRFProtect, CSRFError
 from quart_cors import cors
 from quart_uploads import UploadSet, configure_uploads, FE
 from psycopg import Error
+from quart import flash, request, json, Blueprint, session, render_template, session, redirect, url_for
 from src.controllers.AuthenticationController import auth_api as auth_blueprint
 from src.controllers.UserController import user_api as user_blueprint
 from src.controllers.AuthorController import author_api as author_blueprint
@@ -59,6 +60,14 @@ def create_app() -> Quart:
     CSRFProtect(app)
     bcrypt.init_app(app)
     db.init_app(app)
+
+    @app.errorhandler(CSRFError)
+    async def handle_csrf_error(e):
+        if "url" in session and session["url"]:
+            return redirect(session["url"]), 400
+        else:
+            return redirect(url_for("home.index")), 400
+
     # https://hypercorn.readthedocs.io/en/stable/how_to_guides/http_https_redirect.html
     #return HTTPToHTTPSRedirectMiddleware(app, "khteh.com")  # type: ignore - Defined in hypercorn.toml server_names
     return app
