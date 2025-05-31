@@ -49,12 +49,12 @@ async def index() -> ResponseReturnValue:
     if "user" not in session or not session["user"]:
         greeting = "Friend! It's " + formatted_now
         return await Respond("chat.html", title="Welcome to LLM-RAG 💬", greeting=greeting)
-    user = jsonpickle.decode(session['user'])
-    if not user or not hasattr(user, 'token'):
+    user = session['user']
+    if not user or "token" not in user:
         greeting = "Friend! It's " + formatted_now
         #print(f"ChatController hello greeting: {greeting}")
         return await Respond("chat.html", title="Welcome to LLM-RAG 💬", greeting=greeting)
-    data = Authentication.decode_token(user.token)
+    data = Authentication.decode_token(user['token'])
     if data["error"]:
         return await Respond("login.html", title="Welcome to LLM-RAG 💬", error=data["error"])
     user_id = data["data"]["user_id"]

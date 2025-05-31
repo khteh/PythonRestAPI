@@ -28,9 +28,9 @@ async def fibonacci() -> ResponseReturnValue:
     error = None
     user = None
     if "user" in session and session["user"]:
-        user = jsonpickle.decode(session['user'])
-        if user and hasattr(user, 'token'):
-            data = Authentication.decode_token(user.token)
+        user = session['user']
+        if not user or "token" not in user:
+            data = Authentication.decode_token(user['token'])
             if data["error"]:
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
             user_id = data["data"]["user_id"]

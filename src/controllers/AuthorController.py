@@ -29,8 +29,9 @@ async def create():
     """
     Create Author
     """
-    user = jsonpickle.decode(session['user'])
     if request.method == "POST":	
+        user = session['user']
+        logging.debug(f"author.create user: {user}")
         try:
             form = await request.form
             if "firstname" not in form or not form["firstname"]:
@@ -68,12 +69,12 @@ async def create():
             author = AuthorModel(data)
             author.save()
             await flash(f"Author {author.firstname}, {author.lastname} created successfully!", "success")
-            logging.info(f"User {user.email} created author {author.email} successfully!")
+            logging.info(f"User {user['email']} created author {author.email} successfully!")
             return redirect(url_for("author.index"))
         except ValidationError as err:
             errors = err.messages
             valid_data = err.valid_data	
-            logging.exception(f"User {user.email} failed to creat author! Exception: {errors}")
+            logging.exception(f"User {user['email']} failed to creat author! Exception: {errors}")
             await flash(f"Failed to create author! {err.messages}", "danger")
             return redirect(url_for("author.create"))
     return await Respond("author_create.html", title="Welcome to Python Flask RESTful API")
@@ -128,8 +129,8 @@ async def update(id):
     """
     Update Author 'id'
     """
-    user = jsonpickle.decode(session['user'])
     try:
+        user = session['user']
         req_data = await request.get_json()
         data = author_schema.load(req_data, partial=True)
         if not data:
@@ -140,12 +141,12 @@ async def update(id):
             await flash(f"Trying to update non-existing author {id}!", "warning")
             return redirect(url_for("author.index"))
         author.update(data)
-        logging.info(f"User {user.email} updated author {author.email} successfully!")
+        logging.info(f"User {user['email']} updated author {author.email} successfully!")
         await flash(f"Author {author.firstname}, {author.lastname} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data
-        logging.exception(f"User {user.email} failed to update author {id}! Exception: {errors}")
+        logging.exception(f"User {user['email']} failed to update author {id}! Exception: {errors}")
         await flash(f"Failed to update author {id}! Exception: {errors}", "danger")
     return redirect(url_for("author.index"))
 
@@ -155,18 +156,18 @@ async def delete(id):
     """
     Delete Author 'id'
     """
-    user = jsonpickle.decode(session['user'])
     try:
+        user = session['user']
         author = AuthorModel.get_author(id)
         if not author:
             await flash(f"Trying to delete non-existing author {id}!", "warning")
             return redirect(url_for("author.index"))
         author.delete()
-        logging.warning(f"User {user.email} deleted author {author.email} successfully!")
+        logging.warning(f"User {user['email']} deleted author {author.email} successfully!")
         await flash(f"Author {author.firstname}, {author.lastname} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        logging.exception(f"User {user.email} failed to delete author {id}! Exception: {errors}")
+        logging.exception(f"User {user['email']} failed to delete author {id}! Exception: {errors}")
         await flash(f"Failed to delete author {id}! Exception: {errors}", "danger")
     return redirect(url_for("user.index"))

@@ -41,10 +41,16 @@ async def login():
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
             ser_data = user_schema.dump(user)
             user.token = Authentication.generate_token(ser_data.get("id"))
-            #session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": token}
+            session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": user.token}
+            logging.debug(f"login(): {session["user"]}")
             data["lastlogin"] = datetime.now(timezone.utc)
             user.update(data)
-            session['user'] = jsonpickle.encode(user)
+            """
+            sqlalchemy.orm.exc.DetachedInstanceError: Instance <UserModel at 0x7af63c6e2250> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+            https://docs.sqlalchemy.org/en/20/errors.html#error-bhk3
+            https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
+            """
+            #session['user'] = jsonpickle.encode(user)
             logging.info(f"[Auth] User {user.email} logged in")
             if "url" in session and session["url"]:
                 return redirect(session["url"])
@@ -127,7 +133,7 @@ async def profile():
     """
     Get my profile
     """
-    u = jsonpickle.decode(session['user'])
+    u = session['user']
     user = UserModel.get_user(u.id)
     if not user:
         raise Exception(f"User {u.id} not found!")

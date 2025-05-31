@@ -116,7 +116,7 @@ async def update(id):
             return redirect(url_for("user.index"))
         user.update(data)
         session['user'] = jsonpickle.encode(user)
-        logging.info(f"User {user.email} updated user {id} successfully!")
+        logging.info(f"User {user['email']} updated user {id} successfully!")
         await flash(f"User {id} updated successfully!", "success")
     except ValidationError as err:
         errors = err.messages
@@ -138,11 +138,11 @@ async def delete(id):
             return redirect(url_for("user.index"))
         user.delete()
         session['user'] = None
-        logging.info(f"User {user.email} deleted user {id} successfully!")
+        logging.info(f"User {user['email']} deleted user {id} successfully!")
         await flash(f"User {id} deleted successfully!", "success")
     except ValidationError as err:
         errors = err.messages
         valid_data = err.valid_data	
-        logging.exception(f"User {user.email} failed to delete user {id}! Exception: {errors}")
+        logging.exception(f"User {user['email']} failed to delete user {id}! Exception: {errors}")
         await flash(f"Failed to delete user {id}! Exception: {errors}", "danger")
     return redirect(url_for("user.index"))

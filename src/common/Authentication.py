@@ -76,11 +76,11 @@ class Authentication():
                 if "user" not in session or not session["user"]: # or not session["user"]["token"]:
                     #await flash(f"Please login to continue.", "info")
                     return redirect(url_for("auth.login"))
-                user = jsonpickle.decode(session['user'])
-                if not user or not hasattr(user, 'token'):
+                user = session['user']
+                if not user or "token" not in user:
                     return redirect(url_for("auth.login"))
                 #token = request.headers.get("api-token")
-                data = Authentication.decode_token(user.token)
+                data = Authentication.decode_token(user['token'])
                 if data["error"]:
                     logging.warning(f"[Auth] error: {data['error']}!")                
                     #await flash(f"{data['error']}", "danger")
@@ -101,7 +101,7 @@ class Authentication():
             @wraps(func)
             def wrapped_require_role(*args, **kwargs):
                 if Authentication.isAuthenticated() and "user" in session:
-                    user = jsonpickle.decode(session['user'])
+                    user = session['user']
                     if role in user.roles:
                         return func(*args, **kwargs)
                     else:

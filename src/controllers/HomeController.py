@@ -31,12 +31,13 @@ async def index() -> ResponseReturnValue:
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
         return await Respond("index.html", title="Welcome to Python RESTful API", greeting=greeting)
-    user = jsonpickle.decode(session['user'])
-    if not user or not hasattr(user, 'token'):
+    user = session['user']
+    logging.debug(f"index: {session["user"]}")
+    if not user or "token" not in user:
         greeting = "Friend! It's " + formatted_now
         #print(f"homeController hello greeting: {greeting}")
         return await Respond("index.html", title="Welcome to Python RESTful API", greeting=greeting)
-    data = Authentication.decode_token(user.token)
+    data = Authentication.decode_token(user['token'])
     if data["error"]:
         return await Respond("login.html", title="Welcome to Python RESTful API", error=data["error"])
     user_id = data["data"]["user_id"]
