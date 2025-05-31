@@ -13,8 +13,6 @@ itsdangerous = "*"
 quart = "*"
 quart-wtforms = "*"
 aioquic = "*"
-psycopg-pool = "*"
-psycopg = {extras = ["binary"], version = "*"}
 quart-trio = "*"
 jsonpickle = "*"
 quart-bcrypt = "*"
@@ -25,6 +23,7 @@ google-genai = "*"
 quart-uploads = "*"
 flask-sqlalchemy = "*"
 quart-flask-patch = "*"
+psycopg = {extras = ["pool", "binary"], version = "*"}
 
 [dev-packages]
 pytest-flask = "*"

@@ -41,8 +41,8 @@ def create_app() -> Quart:
     app = Quart(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
     app.config.from_file("/etc/pythonrestapi_config.json", json.load)
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(days=90)
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{app.config['DB_HOST']}/library"
-    app.config["POSTGRESQL_DATABASE_URI"] = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{app.config['DB_HOST']}/library"
+    app.config["SQLALCHEMY_DATABASE_URI"] = appconfig.SQLALCHEMY_DATABASE_URI
+    app.config["POSTGRESQL_DATABASE_URI"] = appconfig.POSTGRESQL_DATABASE_URI
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["WTF_CSRF_TIME_LIMIT"] = None # Max age in seconds for CSRF tokens. If set to None, the CSRF token is valid for the life of the session.
     app.after_request(_add_secure_headers)
