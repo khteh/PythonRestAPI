@@ -101,7 +101,11 @@ class Authentication():
             @wraps(func)
             def wrapped_require_role(*args, **kwargs):
                 if Authentication.isAuthenticated() and "user" in session:
-                    user = session['user']
+                    user = UserModel.get_user(session['user'])
+                    if not user:
+                        logging.warning(f"[Auth] Invalid user {session['user']}!")
+                        #await flash(f"Invalid username and/or password!", "danger")
+                        return redirect(url_for("auth.login"))
                     if role in user.roles:
                         return func(*args, **kwargs)
                     else:
