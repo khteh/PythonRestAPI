@@ -73,7 +73,7 @@ class Authentication():
             def decorated_auth_required(*args, **kwargs):
                 session["url"] = url_for(url, *args, **kwargs) if url else url
                 #if "api-token" not in request.headers:
-                if "user" not in session or not session["user"]: # or not session["user"]["token"]:
+                if "user" not in session or not session["user"]:
                     #await flash(f"Please login to continue.", "info")
                     return redirect(url_for("auth.login"))
                 user = session['user']
