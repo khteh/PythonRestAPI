@@ -66,9 +66,9 @@ def create_app() -> Quart:
         logging.exception(f"handle_csrf_error {e.description}")
         await flash("Session expired!", "danger")
         if "url" in session and session["url"]:
-            return redirect(session["url"]), 400
+            return redirect(session["url"]), 440
         else:
-            return redirect(url_for("home.index")), 400
+            return redirect(url_for("home.index")), 440
 
     # https://hypercorn.readthedocs.io/en/stable/how_to_guides/http_https_redirect.html
     #return HTTPToHTTPSRedirectMiddleware(app, "khteh.com")  # type: ignore - Defined in hypercorn.toml server_names
