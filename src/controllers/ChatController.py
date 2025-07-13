@@ -125,7 +125,7 @@ async def ProcessReceipt(image):
             await flash(f"Invalid content!", "warning")
             return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid content!")
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=[prompt, Part.from_bytes(data=data, mime_type=image.content_type)],
             config={
                 "response_mime_type": "application/json",
@@ -189,7 +189,7 @@ async def invoke():
     try:
         client = genai.Client(api_key=config.GEMINI_API_KEY)
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=content
         )
         logging.debug(f"/invoke prompt: {prompt}, response: {response.text}")
