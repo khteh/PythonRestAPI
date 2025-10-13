@@ -256,6 +256,29 @@ def test_string_contains_money(data, expected):
     ]))
     result = re.findall(money_regex, data)
     #print(f"test_money result: {result}")
+    print(f"{test_string_contains_money.__name__} result: {result}")
     assert result
     assert result[0]
     assert re.match(money_regex, data)
+    #print(f"match result: {re.match(money_regex, data)}")
+    #assert expected == bool(re.match(money_regex, data))
+
+STRING_PUNCTUATION_TEST_CASES = [
+    ("Sky is blue.", ['Sky', 'is', 'blue', '.']),
+    ("Leaves are green.", ['Leaves', 'are', 'green', '.']),
+    ("Roses are red.", ['Roses', 'are', 'red', '.']),
+    ("Very very long sentence...", ['Very', 'very', 'long', 'sentence', '...']),
+    ("Last sentence .", ["Last", "sentence", "."])
+]
+@pytest.mark.parametrize("data, expected", STRING_PUNCTUATION_TEST_CASES)
+def test_string_with_punctuation(data, expected):
+    string_regex = re.compile('|'.join([
+        r'(\w+)\s*([.,!?;]*)',
+    ]))
+    result = re.findall(string_regex, data)
+    assert result
+    list_result = [x for t in result for x in t if x]
+    print(f"{test_string_with_punctuation.__name__} result: {result} {list_result}")
+    assert result[0]
+    assert re.match(string_regex, data)
+    assert expected == list_result
