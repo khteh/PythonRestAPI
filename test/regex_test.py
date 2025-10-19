@@ -1,7 +1,7 @@
 import pytest, logging, os, re
 from re import Match
 """
-$ pipenv run pytest -v regex_test.py
+$ pipenv run pytest -sv regex_test.py
 """
 NUMBER_REGEX_TEST_CASES = [
     ("123", True),
@@ -16,6 +16,18 @@ NUMBER_REGEX_TEST_CASES = [
 def test_numberRegex(data, expected):
     numberRegex = r"^(\d)+$"
     assert expected == bool(re.match(numberRegex, data))
+
+NUMERIC_LENGTH_REGEX_TEST_CASES = [
+    ("1234567", False),
+    ("12345678", True),
+    ("123456789", True),
+    ("1234567890", True),
+    ("12345678901", False)
+]
+@pytest.mark.parametrize("data, expected", NUMERIC_LENGTH_REGEX_TEST_CASES)
+def test_numericRegex(data, expected):
+    regex = r"^(\d{8,10})$"
+    assert expected == bool(re.match(regex, data))
 
 STRING_REGEX_TEST_CASES = [
     ("Hello World", True),
@@ -80,18 +92,6 @@ EMAIL_REGEX_TEST_CASES = [
 def test_emailRegex(data, expected):
     emailRegex = r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
     assert expected == bool(re.match(emailRegex, data))
-
-NUMERIC_LENGTH_REGEX_TEST_CASES = [
-    ("1234567", False),
-    ("12345678", True),
-    ("123456789", True),
-    ("1234567890", True),
-    ("12345678901", False)
-]
-@pytest.mark.parametrize("data, expected", NUMERIC_LENGTH_REGEX_TEST_CASES)
-def test_numericRegex(data, expected):
-    regex = r"^(\d{8,10})$"
-    assert expected == bool(re.match(regex, data))
 
 PHONE_NUMBER_REGEX_TEST_CASES = [
     ("1234567", False),# Invalid due to length < 8
@@ -254,14 +254,15 @@ def test_string_contains_money(data, expected):
         r'\b\$?(\d{1,3},\d{3})*\.?',         # e.g., $123,456.5, $1,234, $12,345
         r'\b\$?(\d{1,3},\d{3})*\.\d{1,2}',         # e.g., $123,456.5, $1,234, $12,345
     ]))
+    #print(f"\n{data}: ")
     result = re.findall(money_regex, data)
-    #print(f"test_money result: {result}")
-    print(f"{test_string_contains_money.__name__} result: {result}")
-    assert result
-    assert result[0]
-    assert re.match(money_regex, data)
-    #print(f"match result: {re.match(money_regex, data)}")
-    #assert expected == bool(re.match(money_regex, data))
+    #print(f"{test_string_contains_money.__name__} result: {result}")
+    found = False
+    for c in result:
+        assert 6 == len(c)
+        for i in c:
+            found |= len(i) > 0
+    assert expected == found
 
 STRING_PUNCTUATION_TEST_CASES = [
     ("Sky is blue.", ['Sky', 'is', 'blue', '.']),
@@ -272,13 +273,13 @@ STRING_PUNCTUATION_TEST_CASES = [
 ]
 @pytest.mark.parametrize("data, expected", STRING_PUNCTUATION_TEST_CASES)
 def test_string_with_punctuation(data, expected):
-    string_regex = re.compile('|'.join([
-        r'(\w+)\s*([.,!?;]*)',
-    ]))
-    result = re.findall(string_regex, data)
+    regex = r'(\w+)\s*([.,!?;]*)'
+    print(f"\n{data}: ")
+    result = re.findall(regex, data)
+    print(f"result: {result}")
     assert result
+    assert result[0]
+
     list_result = [x for t in result for x in t if x]
     print(f"{test_string_with_punctuation.__name__} result: {result} {list_result}")
-    assert result[0]
-    assert re.match(string_regex, data)
     assert expected == list_result
