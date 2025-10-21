@@ -23,7 +23,8 @@ jobs:
           POSTGRES_PASSWORD: $DB_PASSWORD
     #    restart: on-failure # Restart the container if it exits due to an error
     steps:
-      - checkout
+      - checkout:
+          method: full
       - setup_remote_docker:
           docker_layer_caching: true
       #- run:
