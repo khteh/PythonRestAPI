@@ -33,8 +33,8 @@ jobs:
       #      DOCKERIZE_VERSION="v0.9.3"
       #      wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
       - restore_cache:
-          key: v1-dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-      - run: pipenv install -d
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "uv.lock" }}
+      - run: uv pip install --group dev
       - run:
           name: Wait for PostgreSQL Server
           #command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -45,7 +45,7 @@ jobs:
             psql -h localhost -U postgres -c "CREATE USER $DB_USERNAME WITH PASSWORD '$DB_PASSWORD' ;"
             psql -h localhost -U postgres -c "CREATE DATABASE library WITH OWNER = $DB_USERNAME ;"
             psql -h localhost -U $DB_USERNAME -w -d library < library.sql
-      #- run: pipenv run pytest -v Needs /etc/hypercorn.toml
+      #- run: uv run pytest -v Needs /etc/hypercorn.toml
       - run:
           name: Build docker image
           command: docker build -t khteh/pythonrestapi:latest .
@@ -56,7 +56,7 @@ jobs:
           name: Push images to docker hub
           command: docker push khteh/pythonrestapi:latest
       - save_cache:
-          key: v1-dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "uv.lock" }}
           paths:
             - /home/circleci/.local/bin
             - /home/circleci/.local/lib

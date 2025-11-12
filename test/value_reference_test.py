@@ -1,7 +1,7 @@
 import pytest, logging, os, re
 from re import Match
 """
-$ pipenv run python -m test.value_reference_test
+$ uv run python -m test.value_reference_test
 
 Python uses a mechanism often described as "pass-by-object-reference," which can be a bit confusing. Here's a breakdown:
 How it Works:

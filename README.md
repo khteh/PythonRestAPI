@@ -27,11 +27,11 @@ DB_PASSWORD=password
 - `pipenv --clear`
 - `pipenv lock --clear --verbose`
 
-### Setup new pipenv
+### Setup new uv
 
 ```
-$ pipenv install
-$ pipenv shell
+$ uv sync
+$ uv venv
 ```
 
 ## Database setup:
@@ -41,11 +41,11 @@ $ pipenv shell
 ## Install python modules
 
 ```
-$ pipenv install --python=/path/to/python
+$ uv pip install --python=/path/to/python
 $ cd src
-$ pipenv install --python=/path/to/python
+$ uv pip install --python=/path/to/python
 $ cd test
-$ pipenv install --python=/path/to/python
+$ uv pip install --python=/path/to/python
 ```
 
 ## Create Database
@@ -59,10 +59,10 @@ $ pipenv install --python=/path/to/python
 - run migrations initialization with db init command:
 
   ```
-  $ pipenv run alembic init migrations
+  $ uv pip run alembic init migrations
   $ cp env.py migrations
-  $ pipenv run alembic revision --autogenerate -m "Initial migration"
-  $ pipenv run alembic upgrade head
+  $ uv pip run alembic revision --autogenerate -m "Initial migration"
+  $ uv pip run alembic upgrade head
   ```
 
 - There will be 3 tables, "users", "books", and "authors" created in the PostgreSQL database "library" after the `upgrade`.
@@ -74,7 +74,7 @@ $ pipenv install --python=/path/to/python
   - HomeController
   - FibonacciController
   ```
-  $ pipenv run pytest -v
+  $ uv pip run pytest -v
   $ python -m pytest
   ```
 

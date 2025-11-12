@@ -2,7 +2,7 @@ import pytest, logging, os, re
 from re import Match
 """
 https://regex101.com/ to test regex
-$ pipenv run pytest -sv regex_test.py
+$ uv run pytest -sv test/regex_test.py
 """
 NUMBER_REGEX_TEST_CASES = [
     ("123", True),

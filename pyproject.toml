@@ -1,0 +1,37 @@
+[project]
+name = "pythonrestapi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "marshmallow",
+    "python-dotenv",
+    "Quart-CORS",
+    "PyJWT",
+    "alembic",
+    "itsdangerous",
+    "quart",
+    "quart-wtforms",
+    "aioquic",
+    "quart-trio",
+    "jsonpickle",
+    "quart-bcrypt",
+    "quart-keycloak",
+    "hypercorn[h3,trio]",
+    "uuid7",
+    "google-genai",
+    "quart-uploads",
+    "flask-sqlalchemy",
+    "quart-flask-patch",
+    "psycopg[binary,pool]",
+]
+
+[dependency-groups]
+dev = [
+    "pytest-flask",
+    "pytest",
+    "pytest-asyncio",
+    "beautifulsoup4",
+    "tox",
+]
