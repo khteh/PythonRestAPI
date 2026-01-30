@@ -25,6 +25,7 @@ dependencies = [
     "flask-sqlalchemy",
     "quart-flask-patch",
     "psycopg[binary,pool]",
+    "marshmallow-sqlalchemy>=1.4.2",
 ]
 
 [dependency-groups]

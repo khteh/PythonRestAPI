@@ -2,11 +2,12 @@ import re, logging, jsonpickle
 from quart import request, json, Blueprint, session, render_template, flash, redirect, url_for
 from datetime import datetime, timezone
 from marshmallow import ValidationError
-from ..common.Authentication import Authentication
-from ..common.ResponseHelper import Respond
-from ..models.AuthorModel import AuthorModel, AuthorSchema
-from ..models.BookModel import BookModel, BookSchema
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
+from src.common.Authentication import Authentication
+from src.common.ResponseHelper import Respond
+from src.models.AuthorModel import AuthorModel, AuthorSchema
+from src.models.BookModel import BookModel, BookSchema
+from src.models import engine
 book_api = Blueprint("book", __name__)
 book_schema = BookSchema()
 author_schema = AuthorSchema()
@@ -49,6 +50,8 @@ async def create():
                 await flash("Please provide an valid page count!", "danger")
                 return redirect(url_for("book.create"))
             # https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s13.html
+            # ISBN 978-0-596-52068-7
+            # ISBN-13: 978-0-596-52068-7
             isbnRegex = "^(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-●]){4})[-●0-9]{17}$)(?:97[89][-●]?)?[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$"
             if not re.match(isbnRegex, form["isbn"]):
                 await flash("Please provide an valid ISBN!", "danger")
@@ -62,23 +65,22 @@ async def create():
 			   "author_id": form["author"],
 			   "page_count": form["pages"],
 			}
-            data = book_schema.load(req_data)
+            # Validate the data against BookModel schema
+            with Session(engine) as dbsession:
+                data = book_schema.load(req_data, session=dbsession)
+                logging.debug(f"book.create(): {data.serialized}")
             if not data:
                 await flash(f"Invalid input!", "danger")
                 return redirect(url_for("book.create"))
-            book = book_schema.dump(BookModel.get_book_by_isbn(data.get("isbn")))
-            if book:
-                isbn = book["isbn"]
-                await flash(f"Book {isbn} already exists!", "danger")
-                return redirect(url_for("book.create"))
-            author_id = data["author_id"]
-            author = author_schema.dump(AuthorModel.get_author(author_id))
-            if not author:
+            # Validate author id
+            if not AuthorModel.get_author(data.author_id):
                 await flash(f"Invalid author!", "danger")
                 return redirect(url_for("book.create"))
-            logging.debug(f"book.create(): {json.dumps(data)}")
-            book = BookModel(data)
-            book.save()
+            if BookModel.isExistingBook(data.isbn):
+                await flash(f"Book {data.isbn} already exists!", "danger")
+                return redirect(url_for("book.create"))
+            id = BookModel.add(data)
+            book = BookModel.get_book(id)
             await flash(f"Book {book.title} created successfully!", "success")
             logging.info(f"User {user['email']} created book {book.title} successfully!")
             return redirect(url_for("book.index"))

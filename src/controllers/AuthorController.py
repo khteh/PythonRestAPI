@@ -1,11 +1,13 @@
 import re, logging, jsonpickle
 from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from datetime import datetime, timezone
 from src.common.Response import custom_response
 from src.common.Authentication import Authentication
 from src.common.ResponseHelper import Respond
 from src.models.AuthorModel import AuthorModel, AuthorSchema
+from src.models import engine
 author_api = Blueprint("author", __name__)
 author_schema = AuthorSchema()
 @author_api.context_processor
@@ -19,8 +21,6 @@ async def index():
     Author Index page
     """
     authors = AuthorModel.get_authors()
-    for author in authors:
-        author.bookcount = author.bookCount()
     return await Respond("authors.html", title="Welcome to Python RESTful API", authors=authors)
 
 @author_api.route("/create", methods=["GET", "POST"])
@@ -58,18 +58,19 @@ async def create():
 			   "phone": form["phone"],
 			}
             logging.debug(f"author.create() request data: {req_data}")
-            data = author_schema.load(req_data)
+            # Validate the data against AuthorModel schema
+            with Session(engine) as dbsession:
+                data = author_schema.load(req_data, session=dbsession)
             if not data:
                 await flash(f"Invalid input!", "danger")
                 return redirect(url_for("author.create"))
-            author = author_schema.dump(AuthorModel.get_author_by_email(data.get("email")))
-            if author:
+            if AuthorModel.isExistingAuthor(data.email):
                 await flash(f"Trying to create an existing author!", "danger")
                 return redirect(url_for("author.create"))
-            author = AuthorModel(data)
-            author.save()
-            await flash(f"Author {author.firstname}, {author.lastname} created successfully!", "success")
-            logging.info(f"User {user['email']} created author {author.email} successfully!")
+            id = AuthorModel.add(data)
+            author = AuthorModel.get_author(id)
+            await flash(f"New author id: {author.id}, {author.firstname}, {author.lastname} created successfully!", "success")
+            logging.info(f"User {user['email']} created author {author.id} successfully!")
             return redirect(url_for("author.index"))
         except ValidationError as err:
             errors = err.messages

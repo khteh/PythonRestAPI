@@ -29,14 +29,20 @@ async def fibonacci() -> ResponseReturnValue:
     user = None
     if "user" in session and session["user"]:
         user = session['user']
-        if not user or "token" not in user:
+        logging.debug(f"session['user']: {user}")
+        if user and "token" in user:
             data = Authentication.decode_token(user['token'])
             if data["error"]:
+                logging.error(data["error"])
+                await flash(data["error"])
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error=data["error"])
+            logging.debug(f"data: {data}")
             user_id = data["data"]["user_id"]
             logging.debug(f"User: {user_id}")
             user = UserModel.get_user(user_id)
             if not user:
+                logging.error(f"Invalid user {user_id}!")
+                await flash(f"Invalid user {user_id}!")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
     if request.method == "POST":
         data = await request.get_data()
@@ -47,16 +53,14 @@ async def fibonacci() -> ResponseReturnValue:
             logging.debug(f"fibonacci(): {n}")
             try:
                 fibonacci = f"Hello {('there' if not user else user.firstname)}, fibonacci({n}): {await run_sync(_fib)(n)}"
-            except (Exception) as error:
-                error = "Exception {0}".format(error)
+            except Exception as error:
+                logging.exception(f"fibonacci() exception! {error}")
                 await flash(f"Fibonacci {n} failed! {error}", "danger")
                 #return await Respond("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator")
                 return await Respond("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator")
         if not fibonacci:
             #error = custom_response({"error": "Please provide an 'N' for the fibonacci number!"}, 400)
             await flash("Please provide a numeric value 'N' for the fibonacci number!", "danger")
-    else:
-        logging.warning(f"Invalid request method: {request.method}!")
     return await Respond("fibonacci.html", title="Welcome to Python Flask Fibonacci calculator", fibonacci=fibonacci)
 
 def _fib(n):

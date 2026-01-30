@@ -1,11 +1,13 @@
 import re, logging, json, jsonpickle
 from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from datetime import datetime, timezone
-from ..common.ResponseHelper import Respond
-from ..models.UserModel import UserModel, UserSchema
-from ..common.Authentication import Authentication
-from ..common.Response import custom_response
+from src.common.ResponseHelper import Respond
+from src.models.UserModel import UserModel, UserSchema
+from src.common.Authentication import Authentication
+from src.common.Response import custom_response
+from src.models import engine
 user_api = Blueprint("user", __name__)
 user_schema = UserSchema()
 @user_api.context_processor
@@ -54,29 +56,29 @@ async def create():
                "password": form["password"]
 			}
             logging.debug(f"create() request data: {req_data}")
-            data = user_schema.load(req_data)
+            # Validate input data against UserModel
+            with Session(engine) as dbsession:
+                data = user_schema.load(req_data, session=dbsession)
+                logging.debug(f"user.create(): {data.serialized}")
 		    # Check if user already exists in the database
             if not data:
                 await flash(f"Invalid input!", "danger")
                 return redirect(url_for("user.create"))
-            user = UserModel.get_user_by_email(data.get("email"))
-            if user:
+            if UserModel.isExistingUser(data.email):
                 await flash(f"Trying to create an existing user!", "danger")
                 return redirect(url_for("user.create"))
-            user = UserModel(data)
-            user.save()
-            ser_data = user_schema.dump(user) #.data
-		    #print(f"create() user id: {ser_data.get('id')}")
-            token = Authentication.generate_token(ser_data.get("id"))
+            id = UserModel.add(data)
+            user = UserModel.get_user(id)
+            logging.debug(f"New user id: {user.id}, email: {user.email} created successfully!")
+            token = Authentication.generate_token(user.id)
             session['user'] = jsonpickle.encode(user)
             logging.debug(f"session['user']: {session['user']}")
-		    #print(f"create() token: {token}")
-            await flash(f"User created user id: {user.id}, email: {user.email} successfully!", "success")
+            #print(f"create() token: {token}")
+            await flash(f"New user id: {user.id}, email: {user.email} created successfully!", "success")
             return redirect(url_for("user.index"))
         except ValidationError as err:
-            errors = err.messages
             valid_data = err.valid_data	
-            logging.exception(f"create() exception! {errors}")
+            logging.exception(f"create() exception! {err.messages}")
             await flash(f"Failed to create user! {err.messages}", "danger")
             return redirect(url_for("user.create"))
     return await Respond("user_create.html", title="Welcome to Python Flask RESTful API")

@@ -1,13 +1,14 @@
 import logging, jsonpickle
 from quart import flash, request, json, Blueprint, session, render_template, session, redirect, url_for
 from marshmallow import ValidationError
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from datetime import datetime, timezone
 from base64 import b64decode
-from ..common.ResponseHelper import Respond
-from ..models.UserModel import UserModel, UserSchema
-from ..common.Authentication import Authentication
-from ..common.Response import custom_response
-
+from src.common.ResponseHelper import Respond
+from src.models.UserModel import UserModel, UserSchema
+from src.common.Authentication import Authentication
+from src.common.Response import custom_response
+from src.models import engine
 auth_api = Blueprint("auth", __name__)
 user_schema = UserSchema()
 @auth_api.context_processor
@@ -23,27 +24,27 @@ async def login():
         try:
             form = await request.form
             req_data = {"email": form["username"], "password": form["password"]}
-            data = user_schema.load(req_data, partial=True)
+            with Session(engine) as dbsession:
+                data = user_schema.load(req_data, partial=True, session=dbsession)
             if not data:
                 await flash("Invalid input!", "danger")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error=data["Invalid input!"])
-            if not data.get("email") or not data.get("password"):
+            if not data.email or not data.password:
                 await flash("You need an email and password to login", "danger")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="You need an email and password to login")
-            user = UserModel.get_user_by_email(data.get("email"))
+            user = UserModel.get_user_by_email(data.email)
             if not user:
                 await flash("Invalid user!", "danger")
-                logging.warning(f"[Auth] Invalid user {data.get('email')}!")
+                logging.warning(f"[Auth] Invalid user {data.email}!")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid user!")
-            if not user.check_hash(data.get("password")):
+            if not user.check_hash(data.password):
                 await flash("Invalid email or password!", "danger")
-                logging.warning(f"[Auth] Invalid email or password {data.get('email')}!")
+                logging.warning(f"[Auth] Invalid email or password {user.email}!")
                 return await Respond("login.html", title="Welcome to Python Flask RESTful API", error="Invalid email or password!")
-            ser_data = user_schema.dump(user)
-            user.token = Authentication.generate_token(ser_data.get("id"))
-            session["user"] = {"id": ser_data.get("id"), "email": user.email, "token": user.token}
+            user.token = Authentication.generate_token(user.id) # decoded_token: {'data': {'user_id': 1}, 'error': {}}
+            session["user"] = {"id": user.id, "email": user.email, "token": user.token}
             logging.debug(f"login(): {session["user"]}")
-            data["lastlogin"] = datetime.now(timezone.utc)
+            data.lastlogin = datetime.now(timezone.utc)
             user.update(data)
             """
             sqlalchemy.orm.exc.DetachedInstanceError: Instance <UserModel at 0x7af63c6e2250> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
