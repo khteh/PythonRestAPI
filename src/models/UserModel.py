@@ -7,22 +7,23 @@ import sqlalchemy.orm
 from sqlalchemy.orm import Mapped, mapped_column
 from quart import Quart
 from src.common.Bcrypt import bcrypt
+from .base import Base
 from . import db
-from .BookModel import BookSchema
-class UserModel(db.Model):
+from .BookModel import BookModel, BookSchema
+class UserModel(Base):
     """
     User Model
     """
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(128), nullable=False)
-    lastname = db.Column(db.String(128), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    phone = db.Column(db.String(15), unique=True, nullable=True, index=True)
-    password = db.Column(db.String(128), nullable=True)
-    lastlogin = db.Column(db.DateTime(timezone=True), nullable=True)
-    created_at = db.Column(db.DateTime(timezone=True))
-    modified_at = db.Column(db.DateTime(timezone=True))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    firstname: Mapped[str] = mapped_column(String(128), nullable=False)
+    lastname: Mapped[str] = mapped_column(String(128), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    phone: Mapped[str] = mapped_column(String(15), unique=True, nullable=True, index=True)
+    password: Mapped[str] = mapped_column(String(128), nullable=True)
+    lastlogin: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True))
+    modified_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True))
     # Class constructor
     def __init__(self, data):
         """

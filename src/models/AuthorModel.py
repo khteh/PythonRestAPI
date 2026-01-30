@@ -1,27 +1,29 @@
+import sqlalchemy as sa
+import sqlalchemy.orm
 from datetime import datetime
 from sqlalchemy import Integer, String, DateTime
 from marshmallow import fields, Schema
 from sqlalchemy.sql import func
-import sqlalchemy as sa
-import sqlalchemy.orm
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import List
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from quart import Quart
 from .base import Base
-from .BookModel import BookSchema
+from .BookModel import BookModel, BookSchema
+from .base import Base
 from . import db
-class AuthorModel(db.Model):
+class AuthorModel(Base):
     """
     Author Model
     """
     __tablename__ = 'authors'
-    id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(128), nullable=False)
-    lastname = db.Column(db.String(128), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    phone = db.Column(db.String(15), unique=True, nullable=True, index=True)
-    created_at = db.Column(db.DateTime(timezone=True))
-    modified_at = db.Column(db.DateTime(timezone=True))
-    books = db.relationship("BookModel", backref="authors", lazy=True)	
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    firstname: Mapped[str] = mapped_column(String(128), nullable=False)
+    lastname: Mapped[str] = mapped_column(String(128), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    phone: Mapped[str] = mapped_column(String(15), unique=True, nullable=True, index=True)
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True))
+    modified_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True))
+    books: Mapped[List["BookModel"]] = relationship(back_populates="authors", lazy=True)
     # Class constructor
     def __init__(self, data):
         """

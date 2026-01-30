@@ -21,15 +21,12 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from src.models.base import Base
 from src.models.AuthorModel import AuthorModel
 from src.models.BookModel import BookModel
 from src.models.UserModel import UserModel
+from src.models.base import Base
 
 target_metadata = Base.metadata
-
-#from src.models.Database import LibraryMetadata
-#target_metadata = LibraryMetadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -41,6 +38,7 @@ config.set_section_option(section, "DB_USERNAME", os.environ.get('DB_USERNAME'))
 config.set_section_option(section, "DB_PASSWORD", urllib.parse.quote_plus(os.environ.get('DB_PASSWORD')).replace("%", "%%"))
 config.set_section_option(section, "DB_HOST", json_config["DB_HOST"])
 config.set_section_option(section, "DB_DATABASE", json_config["DB_DATABASE"])
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
