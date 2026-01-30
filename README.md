@@ -43,10 +43,10 @@ $ uv venv
 - run migrations initialization with db init command:
 
   ```
-  $ uv pip run alembic init migrations
+  $ uv run alembic init migrations
   $ cp env.py migrations
-  $ uv pip run alembic revision --autogenerate -m "Initial migration"
-  $ uv pip run alembic upgrade head
+  $ uv run alembic revision --autogenerate -m "Initial migration"
+  $ uv run alembic upgrade head
   ```
 
 - There will be 3 tables, "users", "books", and "authors" created in the PostgreSQL database "library" after the `upgrade`.
@@ -58,7 +58,7 @@ $ uv venv
   - HomeController
   - FibonacciController
   ```
-  $ uv pip run pytest -v
+  $ uv run pytest -v
   $ python -m pytest
   ```
 
