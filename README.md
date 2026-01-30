@@ -21,12 +21,6 @@ DB_PASSWORD=password
   GEMINI_API_KEY=<api key>
   ```
 
-### Clean up pipenv
-
-- `pipenv --rm`
-- `pipenv --clear`
-- `pipenv lock --clear --verbose`
-
 ### Setup new uv
 
 ```
@@ -37,16 +31,6 @@ $ uv venv
 ## Database setup:
 
 - This project uses PostgreSQL database with SQLAlchemy ORM with marshmallow for object SerDes.
-
-## Install python modules
-
-```
-$ uv pip install --python=/path/to/python
-$ cd src
-$ uv pip install --python=/path/to/python
-$ cd test
-$ uv pip install --python=/path/to/python
-```
 
 ## Create Database
 

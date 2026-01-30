@@ -38,6 +38,7 @@ def inject_now():
 
 @chat_api.get("/")
 @chat_api.get("/index")
+@Authentication.auth_required("chat.index")
 async def index() -> ResponseReturnValue:
     logging.info(f"\n=== /chat/index ===")
     greeting = None
@@ -144,6 +145,7 @@ async def ProcessReceipt(image):
     return await Respond("chat.html", title="Welcome to LLM-RAG 💬", error="Invalid input!")
 
 @chat_api.post("/invoke")
+@Authentication.auth_required("chat.invoke")
 async def invoke():
     """
     Invoke the agent with user input to retrieve a final response.
