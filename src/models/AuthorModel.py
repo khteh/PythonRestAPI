@@ -12,6 +12,7 @@ from . import engine
 class AuthorModel(Base):
     """
     Author Model
+    https://marshmallow-sqlalchemy.readthedocs.io/en/latest/
     """
     __tablename__ = 'authors'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

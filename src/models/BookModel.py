@@ -10,6 +10,7 @@ from . import engine
 class BookModel(Base):
     """
     Book Model
+    https://marshmallow-sqlalchemy.readthedocs.io/en/latest/
     """
     __tablename__ = "books"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
