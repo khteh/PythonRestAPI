@@ -30,7 +30,7 @@ $ uv venv
 
 ## Database setup:
 
-- This project uses PostgreSQL database with SQLAlchemy ORM with marshmallow for object SerDes.
+- This project uses PostgreSQL database with SQLAlchemy ORM and marshmallow model schema.
 
 ## Create Database
 

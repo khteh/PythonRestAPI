@@ -29,7 +29,7 @@ async def create():
     """
     Create Author
     """
-    if request.method == "POST":	
+    if request.method == "POST":
         user = session['user']
         logging.debug(f"author.create user: {user}")
         try:
