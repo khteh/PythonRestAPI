@@ -129,7 +129,13 @@ CPP_CSHARP_REGEX_TEST_CASES = [
 @pytest.mark.parametrize("data, expected", CPP_CSHARP_REGEX_TEST_CASES)
 def test_cpp_csharpRegex(data, expected):
     # https://stackoverflow.com/questions/79435236/how-to-match-c-c-or-c
-    # The ?: inside the group (?:\+\+|#) just make the group non capturing. The (?<!S) and (?!\S) are called lookarounds, and assert that either whitespace or the start/end precedes/follows the match
+    # The ?: inside the group (?:\+\+|#) just make the group non capturing. The (?<!S) and (?!\S) are called lookarounds, and assert that either whitespace or the start/end precedes/follows the match.
+    # (?<!S) is negative lookbehind
+    #   Meaning: Asserts that the current position in the string is not preceded by a non-whitespace character (\S).
+    #   Effect: This effectively matches locations that are preceded by a whitespace character (\s) or the beginning of the string (BOS), without including the whitespace character itself in the final match.
+    # (?!\S) is negative lookahead
+    #   Meaning: Asserts that the current position in the string is not followed by a non-whitespace character (\S).
+    #   Effect: This effectively matches locations that are followed by a whitespace character (\s) or the end of the string (EOS), without including the following character in the final match.
     # matches to be the entire input string
     cpp_csharp_regex = r"^C(?:\+\+|#)?$"
     # matches perhaps as part of a larger string, with the matches surrounded by whitespace
