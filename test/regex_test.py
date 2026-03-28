@@ -126,17 +126,32 @@ CPP_CSHARP_REGEX_TEST_CASES = [
     ("C##", False),
     ("C", True),
 ]
+# The regex pattern (? initiates a special non-capturing group or lookaround assertion, depending on the next character and the regex flavor used. It is a prefix for advanced patterns that modify how the regex engine matches text without creating a standard backreference. 
+# Here are the primary meanings for sequences starting with (?: 
+
+# (?: creates a non-capturing group. This groups elements for the purpose of applying quantifiers (like + or *) or the | (OR) operator, but the matched content is not stored in a backreference (e.g., $1, $2).
+# Example: The pattern (abc)(?:123)(def), when matched against abc123def, would capture abc in group 1 and def in group 2, but 123 would not be captured.
+
+# (?= defines a positive lookahead assertion. It matches a position in the string only if the pattern inside the lookahead follows that position, without actually including the following pattern in the match.
+# Example: The pattern Windows(?=XP) matches "Windows" only if it is immediately followed by "XP".
+
+# (?<= defines a positive lookbehind assertion (not supported in all regex flavors). It matches a position only if the pattern inside the lookbehind immediately precedes it.
+# Example: The pattern (?<=\$)\d+ matches a number only if it is immediately preceded by a dollar sign.
+
+# (?!) defines a negative lookahead assertion. It matches a position only if the pattern inside the lookahead does not follow it.
+# Example: (?<!S) Asserts that the current position in the string is not preceded by a non-whitespace character (\S).
+#                 This effectively matches locations that are preceded by a whitespace character (\s) or the beginning of the string (BOS), without including the whitespace character itself in the final match.
+
+# (?<! defines a negative lookbehind assertion (not supported in all regex flavors). It matches a position only if the pattern inside the lookbehind does not precede it.
+# Example: (?!\S) Asserts that the current position in the string is not followed by a non-whitespace character (\S).
+#                 This effectively matches locations that are followed by a whitespace character (\s) or the end of the string (EOS), without including the following character in the final match.
+
+# (?i), (?m), (?s), (?x) are inline modifiers that change the matching behavior (e.g., case-insensitivity, multiline mode) for the rest of the pattern or within the group in some flavors. 
 @pytest.mark.parametrize("data, expected", CPP_CSHARP_REGEX_TEST_CASES)
 def test_cpp_csharpRegex(data, expected):
     # https://stackoverflow.com/questions/79435236/how-to-match-c-c-or-c
     # The ?: inside the group (?:\+\+|#) just make the group non capturing. The (?<!S) and (?!\S) are called lookarounds, and assert that either whitespace or the start/end precedes/follows the match.
-    # (?<!S) is negative lookbehind
-    #   Meaning: Asserts that the current position in the string is not preceded by a non-whitespace character (\S).
-    #   Effect: This effectively matches locations that are preceded by a whitespace character (\s) or the beginning of the string (BOS), without including the whitespace character itself in the final match.
-    # (?!\S) is negative lookahead
-    #   Meaning: Asserts that the current position in the string is not followed by a non-whitespace character (\S).
-    #   Effect: This effectively matches locations that are followed by a whitespace character (\s) or the end of the string (EOS), without including the following character in the final match.
-    # matches to be the entire input string
+    # matches to be the entire input string. Quantifier '?' = 0 or 1.
     cpp_csharp_regex = r"^C(?:\+\+|#)?$"
     # matches perhaps as part of a larger string, with the matches surrounded by whitespace
     #cpp_csharp_regex = r"\bC(?:\+\+|#)?(?!\S)"
