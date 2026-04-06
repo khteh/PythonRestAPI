@@ -45,6 +45,8 @@ def create_app() -> Quart:
     app.config["POSTGRESQL_DATABASE_URI"] = appconfig.POSTGRESQL_DATABASE_URI
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["WTF_CSRF_TIME_LIMIT"] = None # Max age in seconds for CSRF tokens. If set to None, the CSRF token is valid for the life of the session.
+    app.config["SECRET_KEY"] = appconfig.SECRET_KEY
+    app.config["JWT_SECRET_KEY"] = appconfig.JWT_SECRET_KEY
     app.after_request(_add_secure_headers)
     app.register_blueprint(home_blueprint, url_prefix="/")
     app.register_blueprint(health_blueprint, url_prefix="/health")
