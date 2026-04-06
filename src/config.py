@@ -1,4 +1,4 @@
-import os, json, logging, sys
+import os, json, logging, sys, secrets
 from dotenv import load_dotenv
 from logging.handlers import TimedRotatingFileHandler
 from urllib import parse
@@ -37,7 +37,10 @@ class Config(metaclass=ConfigSingleton):
         self.SECRET_KEY = config["SECRET_KEY"] or "you-will-never-guess"
         self.SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
         self.POSTGRESQL_DATABASE_URI = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
-        self.JWT_SECRET_KEY = config["JWT_SECRET_KEY"]
+        if "JWT_SECRET_KEY" in config and len(config["JWT_SECRET_KEY"]) >= 64:
+            self.JWT_SECRET_KEY = config["JWT_SECRET_KEY"]
+        else:
+            self.JWT_SECRET_KEY = secrets.token_hex(64) # SHA512 requirement
         self.GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
         """
         https://docs.python.org/3/library/logging.html
