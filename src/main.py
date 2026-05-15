@@ -79,6 +79,6 @@ async def create_app() -> Quart:
 
 logging.info(f"Running app...")
 app = asyncio.run(create_app())
-#trio.run(create_app())
+#app = trio.run(create_app)
 #app = asyncio.get_event_loop().run_until_complete(create_app())
 #asyncio.run(serve(app, config), debug=True)
