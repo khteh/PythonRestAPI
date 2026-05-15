@@ -1,5 +1,6 @@
 import quart_flask_patch
-import logging, os, asyncio, json
+import asyncio, logging, json, trio
+from hypercorn.trio import serve
 from datetime import date, datetime, timedelta, timezone
 from urllib import parse
 from hypercorn.config import Config
@@ -33,7 +34,7 @@ def _add_secure_headers(response: Response) -> Response:
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
 
-def create_app() -> Quart:
+async def create_app() -> Quart:
     """
     Create App
     """
@@ -77,6 +78,7 @@ def create_app() -> Quart:
     return app
 
 logging.info(f"Running app...")
+app = asyncio.run(create_app())
+#trio.run(create_app())
 #app = asyncio.get_event_loop().run_until_complete(create_app())
-app = create_app()
 #asyncio.run(serve(app, config), debug=True)
