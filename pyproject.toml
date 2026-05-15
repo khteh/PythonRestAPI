@@ -3,7 +3,7 @@ name = "pythonrestapi"
 version = "1.0.0"
 description = "Python RestAPI using Quart HTTP/3 ASGI framework."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "marshmallow",
     "python-dotenv",
