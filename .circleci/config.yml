@@ -126,6 +126,6 @@ workflows:
 #              only: master
 #      - notification:
 #          context: slack-secrets
-#          name: BuyerPortal2.0
+#          name: Python RestAPI Notification
 #          requires:
 #            - BuildTestAndDeploy
