@@ -63,8 +63,11 @@ class Authentication():
                 return result
         else:
             raise Exception("Invalid token!")
+    # https://realpython.com/primer-on-python-decorators/#defining-decorators-with-arguments
     @staticmethod
     def auth_required(url):
+        # The function to decorate is only passed in directly if the decorator is called without arguments
+        # Return a decorator function that takes a function as an argument (actual_auth_required) and returns a wrapper function (decorated_auth_required).
         def actual_auth_required(func):
             """
             Authentication required
@@ -94,9 +97,11 @@ class Authentication():
                 return func(*args, **kwargs)
             return decorated_auth_required
         return actual_auth_required
-
+    # https://realpython.com/primer-on-python-decorators/#defining-decorators-with-arguments
     @staticmethod
     def require_role(role):
+        # The function to decorate is only passed in directly if the decorator is called without arguments
+        # Return a decorator function that takes a function as an argument (actual_auth_required) and returns a wrapper function (decorated_auth_required).
         def decorated_require_role(func):
             @wraps(func)
             def wrapped_require_role(*args, **kwargs):
