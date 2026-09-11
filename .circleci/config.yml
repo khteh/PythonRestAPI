@@ -59,7 +59,7 @@ jobs:
           name: Create required config file
           command: |
             sudo mkdir -p /etc
-            sudo tee /etc/fastapi-video-generation_config.json > /dev/null \<<EOF
+            sudo tee /etc/pythonrestapi_config.json > /dev/null \<<EOF
             {
                     "ENVIRONMENT": "development",
                     "DEBUG": true,
