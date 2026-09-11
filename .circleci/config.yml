@@ -76,7 +76,7 @@ jobs:
           name: Create required hypercorn config file
           command: |
             sudo mkdir -p /etc
-            sudo tee /etc/hypercorn.toml > /dev/null <<EOF
+            sudo tee /etc/hypercorn.toml > /dev/null \<<EOF
             accesslog = "/var/log/hypercorn/access.log"
             errorlog = "/var/log/hypercorn/errors.log"
             loglevel = "DEBUG" 
