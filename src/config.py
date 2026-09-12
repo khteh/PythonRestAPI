@@ -25,7 +25,6 @@ class ConfigSingleton(type): # Inherit from "type" in order to gain access to me
 class Config:
     with open('/etc/pythonrestapi_config.json', 'r') as f:
         config = json.load(f)
-    TESTING = False
     environment = config["ENVIRONMENT"]
     LOGLEVEL = config['LOGLEVEL']
     SECRET_KEY = config["SECRET_KEY"] or "you-will-never-guess"
