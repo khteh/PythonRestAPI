@@ -1,4 +1,5 @@
 import os, json, logging, sys, secrets
+from dataclasses import dataclass
 from dotenv import load_dotenv
 from logging.handlers import TimedRotatingFileHandler
 from urllib import parse
@@ -20,45 +21,35 @@ class ConfigSingleton(type): # Inherit from "type" in order to gain access to me
         elif registry[cls][1] != args or registry(cls)[2] != kwargs:
               raise TypeError(f"Class already initialized with different arguments!")
         return registry[cls][0]
-class Config(metaclass=ConfigSingleton):
-    LOGLEVEL:str = None
+@dataclass(frozen=True)
+class Config:
+    with open('/etc/pythonrestapi_config.json', 'r') as f:
+        config = json.load(f)
     TESTING = False
-    SECRET_KEY:str = None
-    SQLALCHEMY_DATABASE_URI:str = None
-    POSTGRESQL_DATABASE_URI:str = None
-    JWT_SECRET_KEY:str = None
-    GEMINI_API_KEY:str = None
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls)
-    def __init__(self, environment="Development"):
-        with open('/etc/pythonrestapi_config.json', 'r') as f:
-            config = json.load(f)
-        self.LOGLEVEL = config['LOGLEVEL']
-        self.SECRET_KEY = config["SECRET_KEY"] or "you-will-never-guess"
-        self.SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
-        self.POSTGRESQL_DATABASE_URI = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
-        if "JWT_SECRET_KEY" in config and len(config["JWT_SECRET_KEY"]) >= 64:
-            self.JWT_SECRET_KEY = config["JWT_SECRET_KEY"]
-        else:
-            self.JWT_SECRET_KEY = secrets.token_hex(64) # SHA512 requirement
-        self.GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-        """
-        https://docs.python.org/3/library/logging.html
-        The level parameter now accepts a string representation of the level such as ‘INFO’ as an alternative to the integer constants such as INFO.
-        """
-        logging.getLogger("httpx").setLevel(logging.WARNING)
-        """
-        https://realpython.com/python-modulo-string-formatting/#fine-tune-your-output-with-conversion-flags
-        -	Justification of values that are shorter than the specified field width
-        The Hyphen-Minus Flag (-)
-        When a formatted value is shorter than the specified field width, it’s usually right-justified in the field. The hyphen-minus (-) flag causes the value to be left-justified in the specified field instead.
-        """
-        if config["ENVIRONMENT"] == "development":
-            logging.basicConfig(filename='/var/log/pythonrestapi/log', filemode='w', format='%(asctime)s %(levelname)-8s %(message)s', level=self.LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')
-        else:
-            logging.basicConfig(handlers=[
-                TimedRotatingFileHandler(filename='/var/log/pythonrestapi/log', when='d', interval=1, backupCount=3),
-                logging.StreamHandler(sys.stdout)
-            ], format='%(asctime)s %(levelname)-8s %(message)s', level=self.LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')
+    environment = config["ENVIRONMENT"],
+    LOGLEVEL = config['LOGLEVEL'],
+    SECRET_KEY = config["SECRET_KEY"] or "you-will-never-guess",
+    JWT_SECRET_KEY = config["JWT_SECRET_KEY"] if "JWT_SECRET_KEY" in config and len(config["JWT_SECRET_KEY"]) >= 64 else secrets.token_hex(64),
+    SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
+    POSTGRESQL_DATABASE_URI = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
+    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+    """
+    https://docs.python.org/3/library/logging.html
+    The level parameter now accepts a string representation of the level such as ‘INFO’ as an alternative to the integer constants such as INFO.
+    """
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    """
+    https://realpython.com/python-modulo-string-formatting/#fine-tune-your-output-with-conversion-flags
+    -	Justification of values that are shorter than the specified field width
+    The Hyphen-Minus Flag (-)
+    When a formatted value is shorter than the specified field width, it’s usually right-justified in the field. The hyphen-minus (-) flag causes the value to be left-justified in the specified field instead.
+    """
+    if environment == "development":
+        logging.basicConfig(filename='/var/log/pythonrestapi/log', filemode='w', format='%(asctime)s %(levelname)-8s %(message)s', level=LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')
+    else:
+        logging.basicConfig(handlers=[
+            TimedRotatingFileHandler(filename='/var/log/pythonrestapi/log', when='d', interval=1, backupCount=3),
+            logging.StreamHandler(sys.stdout)
+        ], format='%(asctime)s %(levelname)-8s %(message)s', level=LOGLEVEL, datefmt='%Y-%m-%d %H:%M:%S')
 
 config = Config()
