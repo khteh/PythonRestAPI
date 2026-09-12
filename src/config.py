@@ -26,10 +26,10 @@ class Config:
     with open('/etc/pythonrestapi_config.json', 'r') as f:
         config = json.load(f)
     TESTING = False
-    environment = config["ENVIRONMENT"],
-    LOGLEVEL = config['LOGLEVEL'],
-    SECRET_KEY = config["SECRET_KEY"] or "you-will-never-guess",
-    JWT_SECRET_KEY = config["JWT_SECRET_KEY"] if "JWT_SECRET_KEY" in config and len(config["JWT_SECRET_KEY"]) >= 64 else secrets.token_hex(64),
+    environment = config["ENVIRONMENT"]
+    LOGLEVEL = config['LOGLEVEL']
+    SECRET_KEY = config["SECRET_KEY"] or "you-will-never-guess"
+    JWT_SECRET_KEY = config["JWT_SECRET_KEY"] if "JWT_SECRET_KEY" in config and len(config["JWT_SECRET_KEY"]) >= 64 else secrets.token_hex(64)
     SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
     POSTGRESQL_DATABASE_URI = f"postgresql://{os.environ.get('DB_USERNAME')}:{parse.quote_plus(os.environ.get('DB_PASSWORD'))}@{config['DB_HOST']}/library"
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
