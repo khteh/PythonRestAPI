@@ -39,7 +39,7 @@ async def fibonacci() -> ResponseReturnValue:
             logging.debug(f"data: {data}")
             user_id = data["data"]["user_id"]
             logging.debug(f"User: {user_id}")
-            user = UserModel.get_user(user_id)
+            user = await UserModel.get_user(user_id)
             if not user:
                 logging.error(f"Invalid user {user_id}!")
                 await flash(f"Invalid user {user_id}!")

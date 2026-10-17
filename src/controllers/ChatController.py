@@ -61,7 +61,7 @@ async def index() -> ResponseReturnValue:
     user_id = data["data"]["user_id"]
     logging.debug(f"User: {user_id}")
     """
-    user = UserModel.get_user(user_id)
+    user = await UserModel.get_user(user_id)
     if not user:
         return await Respond("login.html", title="Welcome to LLM-RAG 💬", error="Invalid user!")
     try:

@@ -1,12 +1,10 @@
-import quart_flask_patch
-import asyncio, logging, json, trio
-from hypercorn.trio import serve
+import asyncio, logging, json
+from hypercorn.asyncio import serve
 from datetime import date, datetime, timedelta, timezone
 from urllib import parse
 from hypercorn.config import Config
 from hypercorn.middleware import HTTPToHTTPSRedirectMiddleware
 from quart import Quart, Response, request
-from quart_trio import QuartTrio
 from quart_wtf.csrf import CSRFProtect, CSRFError
 from quart_cors import cors
 from quart_uploads import UploadSet, configure_uploads, FE
@@ -20,7 +18,7 @@ from src.controllers.HomeController import home_api as home_blueprint
 from src.controllers.FibonacciController import fibonacci_api as fibonacci_blueprint
 from src.controllers.HealthController import health_api as health_blueprint
 from src.controllers.ChatController import chat_api as chat_blueprint, images
-from src.models import db
+from src.models import engine
 from src.common.Bcrypt import bcrypt
 from src.common.ResponseHelper import Respond
 from src.config import config as appconfig
@@ -42,7 +40,6 @@ def create_app() -> Quart:
     app = Quart(__name__, template_folder='view/templates', static_url_path='', static_folder='view/static')
     app.config.from_file("/etc/pythonrestapi_config.json", json.load)
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(days=90)
-    app.config["SQLALCHEMY_DATABASE_URI"] = appconfig.SQLALCHEMY_DATABASE_URI
     app.config["POSTGRESQL_DATABASE_URI"] = appconfig.POSTGRESQL_DATABASE_URI
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["WTF_CSRF_TIME_LIMIT"] = None # Max age in seconds for CSRF tokens. If set to None, the CSRF token is valid for the life of the session.
@@ -62,7 +59,11 @@ def create_app() -> Quart:
     # https://quart-wtf.readthedocs.io/en/stable/how_to_guides/configuration.html
     CSRFProtect(app)
     bcrypt.init_app(app)
-    db.init_app(app)
+
+    @app.after_serving
+    async def dispose_db_engine():
+        # Close all pooled async database connections on shutdown
+        await engine.dispose()
 
     @app.errorhandler(CSRFError)
     async def handle_csrf_error(e):
@@ -80,6 +81,5 @@ def create_app() -> Quart:
 logging.info(f"Running app...")
 app = create_app()
 #app = asyncio.run(create_app())
-#app = trio.run(create_app)
 #app = asyncio.get_event_loop().run_until_complete(create_app())
 #asyncio.run(serve(app, config), debug=True)

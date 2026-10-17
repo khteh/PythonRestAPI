@@ -1,18 +1,18 @@
-from datetime import datetime
-from sqlalchemy import Integer, String, DateTime, select
+from datetime import datetime, timezone
+from sqlalchemy import Integer, String, DateTime, select, func
 from marshmallow import fields, Schema
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
-from sqlalchemy.sql import func
 from typing import List
-from sqlalchemy.orm import Mapped, mapped_column, relationship, Session, joinedload
+from sqlalchemy.orm import Mapped, mapped_column, relationship, backref, joinedload
 from .base import Base
 from .BookModel import BookModel, BookSchema
-from .base import Base
-from . import engine
+from . import async_session
 class AuthorModel(Base):
     """
     Author Model
     https://marshmallow-sqlalchemy.readthedocs.io/en/latest/
+    All database access is async (SQLAlchemy AsyncSession). Lazy loading is not possible with AsyncSession,
+    therefore relationships are eager loaded (lazy="selectin") or loaded explicitly with joinedload().
     """
     __tablename__ = 'authors'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -22,7 +22,7 @@ class AuthorModel(Base):
     phone: Mapped[str] = mapped_column(String(15), unique=True, nullable=True, index=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     modified_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    books: Mapped[List["BookModel"]] = relationship(backref="authors", lazy="select")
+    books: Mapped[List["BookModel"]] = relationship(backref=backref("authors", lazy="selectin"), lazy="selectin")
     @classmethod
     def fromdata(cls, data):
         author = AuthorModel()
@@ -30,28 +30,33 @@ class AuthorModel(Base):
         author.lastname = data.get("lastname")
         author.email = data.get("email")
         author.phone = data.get("phone")
-        author.created_at = func.now()
-        author.modified_at = func.now()
+        author.created_at = datetime.now(timezone.utc)
+        author.modified_at = datetime.now(timezone.utc)
         return author
-    def save(self):
-        with Session(engine) as session:
-            session.commit()
-    def update(self, data):
-        for key, item in data.items():
-            setattr(self, key, item)
-        self.modified_at = func.now()
-        with Session(engine) as session:
-            session.commit()
-    def delete(self):
-        with Session(engine) as session:
-            session.delete(self)
-            session.commit()
-    def hasBooks(self):
-        with Session(engine) as session:
-            return self.books
-    def bookCount(self):
-        with Session(engine) as session:
-            return len(list(self.books))
+    async def save(self):
+        async with async_session() as session:
+            session.add(self)
+            await session.commit()
+    async def update(self, data):
+        values = data if isinstance(data, dict) else {k: v for k, v in vars(data).items() if not k.startswith("_")}
+        values["modified_at"] = datetime.now(timezone.utc)
+        async with async_session() as session:
+            author = await session.get(AuthorModel, self.id)
+            for key, item in values.items():
+                setattr(author, key, item)
+            await session.commit()
+            for key, item in values.items():
+                setattr(self, key, item)
+    async def delete(self):
+        async with async_session() as session:
+            author = await session.get(AuthorModel, self.id)
+            if author:
+                await session.delete(author)
+                await session.commit()
+    async def hasBooks(self):
+        return len(self.books) > 0
+    async def bookCount(self):
+        return len(self.books)
     @property
     def serialized(self):
         """Return object data in serializable format"""
@@ -66,53 +71,52 @@ class AuthorModel(Base):
             'modified_at': self.modified_at
         }
     @staticmethod
-    def add(author) -> int:
-        with Session(engine) as session:
+    async def add(author) -> int:
+        async with async_session() as session:
             session.add(author)
             # Flush the session
             # This operation sends the INSERT statement to the database.
             # The database generates the primary key and returns it to SQLAlchemy,
-            # which updates the 'id' attribute of the 'new_user' object *in memory*.
-            session.flush()
-            session.commit()
-            return author.id       
+            # which updates the 'id' attribute of the 'author' object *in memory*.
+            await session.flush()
+            await session.commit()
+            return author.id
     @staticmethod
-    def get_author(id):
-        # Usage and parameters are the same as that of Session.execute(); the return result is a ScalarResult filtering object which will return single elements rather than Row objects.
-        with Session(engine) as session:
-            return session.get(AuthorModel, id)
+    async def get_author(id):
+        async with async_session() as session:
+            return await session.get(AuthorModel, id)
     @staticmethod
-    def get_author_by_firstname(firstname):
+    async def get_author_by_firstname(firstname):
         stmt = select(AuthorModel).filter_by(firstname=firstname).options(joinedload(AuthorModel.books)).execution_options(populate_existing=True)
-        with Session(engine) as session:
-            return session.scalars(stmt).first()
+        async with async_session() as session:
+            return (await session.scalars(stmt)).unique().first()
     @staticmethod
-    def get_author_by_lastname(lastname):
+    async def get_author_by_lastname(lastname):
         stmt = select(AuthorModel).filter_by(lastname=lastname).options(joinedload(AuthorModel.books)).execution_options(populate_existing=True)
-        with Session(engine) as session:
-            return session.scalars(stmt).first()
+        async with async_session() as session:
+            return (await session.scalars(stmt)).unique().first()
     @staticmethod
-    def get_author_by_email(email):
+    async def get_author_by_email(email):
         stmt = select(AuthorModel).filter_by(email=email).options(joinedload(AuthorModel.books)).execution_options(populate_existing=True)
-        with Session(engine) as session:
-            return session.scalars(stmt).first()
+        async with async_session() as session:
+            return (await session.scalars(stmt)).unique().first()
     @staticmethod
-    def isExistingAuthor(email):
-        with Session(engine) as session:
-            return session.query(AuthorModel).filter_by(email=email).count() > 0
+    async def isExistingAuthor(email):
+        stmt = select(func.count()).select_from(AuthorModel).filter_by(email=email)
+        async with async_session() as session:
+            return (await session.scalar(stmt)) > 0
     @staticmethod
-    def get_authors_like(name):
+    async def get_authors_like(name):
         stmt = select(AuthorModel).filter(AuthorModel.firstname.ilike(f"%{name}%"), AuthorModel.lastname.ilike(f"%{name}%")).options(joinedload(AuthorModel.books)).execution_options(populate_existing=True)
-        with Session(engine) as session:
-            return session.scalars(stmt).all()
+        async with async_session() as session:
+            return (await session.scalars(stmt)).unique().all()
     @staticmethod
-    def get_authors():
+    async def get_authors():
         stmt = select(AuthorModel).execution_options(populate_existing=True)
-        # Usage and parameters are the same as that of Session.execute(); the return result is a ScalarResult filtering object which will return single elements rather than Row objects.
-        with Session(engine) as session:
-            authors = session.scalars(stmt).all()
+        async with async_session() as session:
+            authors = (await session.scalars(stmt)).all()
             for author in authors:
-                author.bookcount = len(list(author.books))
+                author.bookcount = len(author.books)
             return authors
     def __repl__(self): # return a printable representation of AuthorModel object, in this case we're only returning the id
         return "<id {}>".format(self.id)
@@ -125,7 +129,9 @@ class AuthorSchema(SQLAlchemyAutoSchema):
         # Optional: include relationships, foreign keys, etc.
         include_relationships = True
         # Optional: deserialize to model instances
-        load_instance = True 
+        load_instance = True
+        # Build model instances without a Session: loading never touches the database (async-safe)
+        transient = True
     id = fields.Int(dump_only=True)
     firstname = fields.Str(required=True)
     lastname = fields.Str(required=True)

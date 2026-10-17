@@ -1,13 +1,11 @@
 import re, logging, jsonpickle
 from quart import request, Blueprint, session, render_template, flash, redirect, url_for
 from marshmallow import ValidationError
-from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from datetime import datetime, timezone
 from src.common.Response import custom_response
 from src.common.Authentication import Authentication
 from src.common.ResponseHelper import Respond
 from src.models.AuthorModel import AuthorModel, AuthorSchema
-from src.models import engine
 author_api = Blueprint("author", __name__)
 author_schema = AuthorSchema()
 @author_api.context_processor
@@ -20,7 +18,7 @@ async def index():
     """
     Author Index page
     """
-    authors = AuthorModel.get_authors()
+    authors = await AuthorModel.get_authors()
     return await Respond("authors.html", title="Welcome to Python RESTful API", authors=authors)
 
 @author_api.route("/create", methods=["GET", "POST"])
@@ -48,7 +46,7 @@ async def create():
             if "phone" not in form or not re.match(phoneRegex, form["phone"]):
                 await flash("Please provide an valid phone number!", "danger")
                 return redirect(url_for("author.create"))
-            if AuthorModel.isExistingAuthor(form['email']):
+            if await AuthorModel.isExistingAuthor(form['email']):
                 await flash(f"Trying to add an existing author {form['email']}!", "danger")
                 return redirect(url_for("author.create"))			
             req_data = {
@@ -59,16 +57,15 @@ async def create():
 			}
             logging.debug(f"author.create() request data: {req_data}")
             # Validate the data against AuthorModel schema
-            with Session(engine) as dbsession:
-                data = author_schema.load(req_data, session=dbsession)
+            data = author_schema.load(req_data)
             if not data:
                 await flash(f"Invalid input!", "danger")
                 return redirect(url_for("author.create"))
-            if AuthorModel.isExistingAuthor(data.email):
+            if await AuthorModel.isExistingAuthor(data.email):
                 await flash(f"Trying to create an existing author!", "danger")
                 return redirect(url_for("author.create"))
-            id = AuthorModel.add(data)
-            author = AuthorModel.get_author(id)
+            id = await AuthorModel.add(data)
+            author = await AuthorModel.get_author(id)
             await flash(f"New author id: {author.id}, {author.firstname}, {author.lastname} created successfully!", "success")
             logging.info(f"User {user['email']} created author {author.id} successfully!")
             return redirect(url_for("author.index"))
@@ -86,7 +83,7 @@ async def get_author(id):
     """
     Get Auhor 'id'
     """
-    author = author_schema.dump(AuthorModel.get_author(id))
+    author = author_schema.dump(await AuthorModel.get_author(id))
     if not author:
         return custom_response({"error": f"Author {id} not found!"}, 404)
     return custom_response(author_schema.dump(author), 200)
@@ -98,7 +95,7 @@ async def get_by_firstname(firstname):
     Get Author by firstname
     """
     logging.debug(f"get_author_by_author_firstname: {firstname}")
-    return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(firstname)), 200)
+    return custom_response(author_schema.dump(await AuthorModel.get_author_by_firstname(firstname)), 200)
 
 @author_api.route("/lastname/<string:lastname>")
 @Authentication.auth_required("author.get_by_lastname")
@@ -106,7 +103,7 @@ async def get_by_lastname(lastname):
     """
     Get Author by lastname
     """
-    return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(lastname)), 200)
+    return custom_response(author_schema.dump(await AuthorModel.get_author_by_firstname(lastname)), 200)
 
 @author_api.route("/email/<string:email>")
 @Authentication.auth_required("author.get_by_email")
@@ -114,7 +111,7 @@ async def get_by_email(email):
     """
     Get Author by email
     """
-    return custom_response(author_schema.dump(AuthorModel.get_author_by_firstname(email)), 200)
+    return custom_response(author_schema.dump(await AuthorModel.get_author_by_firstname(email)), 200)
 
 @author_api.route("/all")
 @Authentication.auth_required("author.get_all")
@@ -122,7 +119,7 @@ async def get_all():
     """
     Get All Authors
     """
-    return custom_response(author_schema.dump(AuthorModel.get_authors(), many=True), 200)
+    return custom_response(author_schema.dump(await AuthorModel.get_authors(), many=True), 200)
 
 @author_api.route("/update/<int:id>", methods=["PUT"])
 @Authentication.auth_required("author.update")
@@ -137,11 +134,11 @@ async def update(id):
         if not data:
             await flash(f"Failed to update author {id} with invalid input data!", "warning")
             return redirect(url_for("author.index"))
-        author = AuthorModel.get_author(id)
+        author = await AuthorModel.get_author(id)
         if not author:
             await flash(f"Trying to update non-existing author {id}!", "warning")
             return redirect(url_for("author.index"))
-        author.update(data)
+        await author.update(data)
         logging.info(f"User {user['email']} updated author {author.email} successfully!")
         await flash(f"Author {author.firstname}, {author.lastname} updated successfully!", "success")
     except ValidationError as err:
@@ -159,11 +156,11 @@ async def delete(id):
     """
     try:
         user = session['user']
-        author = AuthorModel.get_author(id)
+        author = await AuthorModel.get_author(id)
         if not author:
             await flash(f"Trying to delete non-existing author {id}!", "warning")
             return redirect(url_for("author.index"))
-        author.delete()
+        await author.delete()
         logging.warning(f"User {user['email']} deleted author {author.email} successfully!")
         await flash(f"Author {author.firstname}, {author.lastname} deleted successfully!", "success")
     except ValidationError as err:

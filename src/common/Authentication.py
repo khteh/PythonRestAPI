@@ -1,4 +1,4 @@
-import jwt, logging, jsonpickle
+import jwt, logging, jsonpickle, inspect
 from datetime import datetime, timezone, timedelta
 from quart import json, Response, session, redirect, url_for, session, abort, current_app
 from functools import wraps
@@ -73,7 +73,7 @@ class Authentication():
             Authentication required
             """
             @wraps(func)
-            def decorated_auth_required(*args, **kwargs):
+            async def decorated_auth_required(*args, **kwargs):
                 session["url"] = url_for(url, *args, **kwargs) if url else url
                 #if "api-token" not in request.headers:
                 if "user" not in session or not session["user"]:
@@ -89,12 +89,13 @@ class Authentication():
                     #await flash(f"{data['error']}", "danger")
                     return redirect(url_for("auth.login"))
                 user_id = data["data"]["user_id"]
-                check_user = UserModel.get_user(user_id)
+                check_user = await UserModel.get_user(user_id)
                 if not check_user:
                     logging.warning(f"[Auth] Invalid user {user_id}!")
                     #await flash(f"Invalid username and/or password!", "danger")
                     return redirect(url_for("auth.login"))
-                return func(*args, **kwargs)
+                result = func(*args, **kwargs)
+                return await result if inspect.isawaitable(result) else result
             return decorated_auth_required
         return actual_auth_required
     # https://realpython.com/primer-on-python-decorators/#defining-decorators-with-arguments
@@ -104,15 +105,16 @@ class Authentication():
         # Return a decorator function that takes a function as an argument (actual_auth_required) and returns a wrapper function (decorated_auth_required).
         def decorated_require_role(func):
             @wraps(func)
-            def wrapped_require_role(*args, **kwargs):
+            async def wrapped_require_role(*args, **kwargs):
                 if Authentication.isAuthenticated() and "user" in session:
-                    user = UserModel.get_user(session['user'])
+                    user = await UserModel.get_user(session['user'])
                     if not user:
                         logging.warning(f"[Auth] Invalid user {session['user']}!")
                         #await flash(f"Invalid username and/or password!", "danger")
                         return redirect(url_for("auth.login"))
                     if role in user.roles:
-                        return func(*args, **kwargs)
+                        result = func(*args, **kwargs)
+                        return await result if inspect.isawaitable(result) else result
                     else:
                         return abort(403)
                 else:

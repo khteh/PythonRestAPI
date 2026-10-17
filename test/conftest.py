@@ -8,9 +8,12 @@ pytest_plugins = ('pytest_asyncio',)
 async def app_context():
     os.environ["Testing"] = "True"
     from src.main import app
+    from src.models import engine
     async with app.app_context() as app_context:
         app.config["WTF_CSRF_ENABLED"] = False
         yield app_context
+    # Every test function runs in its own event loop: drop pooled async DB connections bound to it.
+    await engine.dispose()
 
 def pytest_generate_tests(metafunc):
     """ called once per each test function """
