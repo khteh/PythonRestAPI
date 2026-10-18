@@ -44,7 +44,7 @@ jobs:
       - restore_cache:
           key: v1-dependencies-{{ .Branch }}-{{ checksum "uv.lock" }}
       - run: uv sync
-      - run: uv sync --no-dev
+      - run: uv sync --group dev
       - run:
           name: Wait for PostgreSQL Server
           #command: dockerize -wait tcp://localhost:5432 -timeout 1m
